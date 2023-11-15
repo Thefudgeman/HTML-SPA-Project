@@ -15,12 +15,12 @@ class GameScene extends Phaser.Scene {
 
     preload() {
         this.load.image("map", "assets/map.png")
-        this.load.image("player", "assets/sprites/player.png")
+        this.load.image("player", "assets/sprites/characters/player.png")
     }
 
     create() {
         this.add.image(0, 0, "map").setOrigin(0, 0)
-        this.plaer = this.physics.add.image(0,0, "player").setOrigin(400, 300)
+        this.player = this.physics.add.image(0,0, "player").setOrigin(0,0)
     }
 
     update() {}
