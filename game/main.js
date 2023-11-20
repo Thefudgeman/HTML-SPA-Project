@@ -23,6 +23,7 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
+        this.keys = this.input.keyboard.addKeys("w,a,s,d")
         this.add.image(0, 0, "map").setOrigin(0, 0)
         //this.player = this.physics.add.image(0,0, "player").setOrigin(0,0)
         this.anims.create({
@@ -43,19 +44,49 @@ class GameScene extends Phaser.Scene {
             framerate:16,
             repeat:-1
         })
-        this.anims.create({
-            key:"idleLeft",
-            frames:this.anims.generateFrameNumbers("player", {frames:[6,7,8,9,10,11]}),
-            framerate:16,
-            repeat:-1
-        })
-        this.player = this.add.sprite(110,110, "player")
-        this.player.setFlipX(true)
-        this.player.play("idleLeft",true)
-        this.player.anims.msPerFrame=100
+        this.player = this.physics.add.sprite(110,110, "player")
     }
 
-    update() {}
+    update() 
+    {
+
+        this.player.setVelocity(0)
+
+        if (this.keys.w.isDown)
+        {
+            this.player.setVelocityY(-100),
+            this.player.setFlipX(false),
+            this.player.play("idleUp",true),
+            this.player.anims.msPerFrame = 100
+        }
+
+        if (this.keys.a.isDown)
+        {
+            this.player.setVelocityX(-100),
+            this.player.setFlipX(true),
+            this.player.play("idleRight",true),
+            this.player.anims.msPerFrame = 100 
+        }
+        if (this.keys.s.isDown)
+        {
+            this.player.setVelocityY(100),
+            this.player.setFlipX(false),
+            this.player.play("idleDown",true),
+            this.player.anims.msPerFrame = 100
+        }
+        if (this.keys.d.isDown)
+        {
+            this.player.setVelocityX(100),
+            this.player.setFlipX(false),
+            this.player.play("idleRight",true),
+            this.player.anims.msPerFrame = 100
+        }
+        //else
+        //{
+          //  this.player.setVelocityY(0)
+           // this.player.setVelocityX(0)
+        //}
+    }
 }
 
 const config = {
