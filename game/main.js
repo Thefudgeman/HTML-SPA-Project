@@ -1,8 +1,5 @@
 import './style.css'
 import Phaser from 'phaser'
-let spriteData;
-let animation = [];
-let playerC;
 
 const Sizes = {
     width: 960,
@@ -18,30 +15,44 @@ class GameScene extends Phaser.Scene {
 
     preload() {
         this.load.image("map", "assets/map.png")
-        this.load.spritesheet("player", "assets/sprites/characters/player.png")
-        frameWidth:48
-        frameHeight:48
-    }
-
-    setup()
-    {
-        let frames = spriteData.frames  
-        for(let i = 0; i <frames.length; i++) 
+        this.load.spritesheet("player", "assets/sprites/characters/player.png",
         {
-            let pos = frames[i].position
-            let img = spriteSheet.get(pos.x, pos.y, pos.w, pos.h)
-            animation[i] = img
-        }
-            playerC = new sprite(animation, 1)
+        frameWidth:48,
+        frameHeight:48
+        })
     }
-
 
     create() {
         this.add.image(0, 0, "map").setOrigin(0, 0)
         //this.player = this.physics.add.image(0,0, "player").setOrigin(0,0)
-        this.add.image(0,0, animation[10])
-        playerC.animate()
-        playerC.show()
+        this.anims.create({
+            key:"idleDown",
+            frames:this.anims.generateFrameNumbers("player", {frames:[0,1,2,3,4,5]}),
+            framerate:16,
+            repeat:-1
+        })
+        this.anims.create({
+            key:"idleRight",
+            frames:this.anims.generateFrameNumbers("player", {frames:[6,7,8,9,10,11]}),
+            framerate:16,
+            repeat:-1
+        })
+        this.anims.create({
+            key:"idleUp",
+            frames:this.anims.generateFrameNumbers("player", {frames:[12,13,14,15,16,17]}),
+            framerate:16,
+            repeat:-1
+        })
+        this.anims.create({
+            key:"idleLeft",
+            frames:this.anims.generateFrameNumbers("player", {frames:[6,7,8,9,10,11]}),
+            framerate:16,
+            repeat:-1
+        })
+        this.player = this.add.sprite(110,110, "player")
+        this.player.setFlipX(true)
+        this.player.play("idleLeft",true)
+        this.player.anims.msPerFrame=100
     }
 
     update() {}
