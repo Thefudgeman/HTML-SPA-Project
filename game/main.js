@@ -1,5 +1,6 @@
 import './style.css'
 import Phaser from 'phaser'
+var playerDirection
 
 const Sizes = {
     width: 960,
@@ -25,7 +26,6 @@ class GameScene extends Phaser.Scene {
     create() {
         this.keys = this.input.keyboard.addKeys("w,a,s,d")
         this.add.image(0, 0, "map").setOrigin(0, 0)
-        //this.player = this.physics.add.image(0,0, "player").setOrigin(0,0)
         this.anims.create({
             key:"idleDown",
             frames:this.anims.generateFrameNumbers("player", {frames:[0,1,2,3,4,5]}),
@@ -51,53 +51,99 @@ class GameScene extends Phaser.Scene {
             repeat:-1
         })
             this.anims.create({
-            key:"idleRight",
+            key:"walkRight",
             frames:this.anims.generateFrameNumbers("player", {frames:[24,25,26,27,28,29]}),
             framerate:16,
             repeat:-1
         })
+            this.anims.create({
+            key:"walkUp",
+            frames:this.anims.generateFrameNumbers("player", {frames:[30,31,32,33,34,35]}),
+            framerate:16,
+            repeat:-1
+        })
         this.player = this.physics.add.sprite(110,110, "player")
+        this.player.play("idleDown",true)
+        this.player.anims.msPerFrame = 100
     }
 
     update() 
     {
 
         this.player.setVelocity(0)
-
-        if (this.keys.w.isDown)
+        if(this.keys.w.isDown && this.keys.a.isDown)
         {
+            this.player.setVelocityY(-69.4)
+            this.player.setVelocityX(-69.4)
+        }
+        else if(this.keys.w.isDown && this.keys.d.isDown)
+        {
+            this.player.setVelocityY(-69.4)
+            this.player.setVelocityX(69.4)
+        }
+        else if (this.keys.w.isDown)
+        {
+            playerDirection = "w",
             this.player.setVelocityY(-100),
             this.player.setFlipX(false),
-            this.player.play("idleUp",true),
+            this.player.play("walkUp",true),
+            this.player.anims.msPerFrame = 100
+        }
+        else if(playerDirection == "w")
+        {
+            this.player.play("idleUp", true)
             this.player.anims.msPerFrame = 100
         }
 
         if (this.keys.a.isDown)
         {
+            playerDirection = "a",
             this.player.setVelocityX(-100),
             this.player.setFlipX(true),
-            this.player.play("idleRight",true),
+            this.player.play("walkRight",true),
             this.player.anims.msPerFrame = 100 
         }
-        if (this.keys.s.isDown)
+        else if(playerDirection == "a")
         {
+            this.player.play("idleRight", true)
+            this.player.anims.msPerFrame = 100
+        }
+        if(this.keys.s.isDown && this.keys.a.isDown)
+        {
+            this.player.setVelocityY(69.4)
+            this.player.setVelocityX(-69.4)
+        }
+        else if(this.keys.s.isDown && this.keys.d.isDown)
+        {
+            this.player.setVelocityY(69.4)
+            this.player.setVelocityX(69.4)
+        }
+        else if (this.keys.s.isDown)
+        {
+            playerDirection = "s",
             this.player.setVelocityY(100),
             this.player.setFlipX(false),
-            this.player.play("idleDown",true),
+            this.player.play("walkDown",true),
+            this.player.anims.msPerFrame = 100
+        }
+        else if(playerDirection == "s")
+        {
+            this.player.play("idleDown", true)
             this.player.anims.msPerFrame = 100
         }
         if (this.keys.d.isDown)
         {
+            playerDirection = "d"
             this.player.setVelocityX(100),
             this.player.setFlipX(false),
-            this.player.play("idleRight",true),
+            this.player.play("walkRight",true),
             this.player.anims.msPerFrame = 100
         }
-        //else
-        //{
-          //  this.player.setVelocityY(0)
-           // this.player.setVelocityX(0)
-        //}
+        else if(playerDirection == "d")
+        {
+            this.player.play("idleRight", true)
+            this.player.anims.msPerFrame = 100
+        }
     }
 }
 
