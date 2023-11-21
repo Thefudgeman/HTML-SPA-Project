@@ -44,6 +44,18 @@ class GameScene extends Phaser.Scene {
             framerate:16,
             repeat:-1
         })
+            this.anims.create({
+            key:"walkDown",
+            frames:this.anims.generateFrameNumbers("player", {frames:[18,19,20,21,22,23]}),
+            framerate:16,
+            repeat:-1
+        })
+            this.anims.create({
+            key:"idleRight",
+            frames:this.anims.generateFrameNumbers("player", {frames:[24,25,26,27,28,29]}),
+            framerate:16,
+            repeat:-1
+        })
         this.player = this.physics.add.sprite(110,110, "player")
     }
 
