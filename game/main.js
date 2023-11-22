@@ -24,7 +24,7 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
-        this.keys = this.input.keyboard.addKeys("w,a,s,d")
+        this.keys = this.input.keyboard.addKeys("w,a,s,d,f")
         this.add.image(0, 0, "map").setOrigin(0, 0)
         this.anims.create({
             key:"idleDown",
@@ -96,6 +96,12 @@ class GameScene extends Phaser.Scene {
             this.player.setVelocityY(-69.4)
             this.player.setVelocityX(69.4)
         }
+        else if (playerDirection == "w" && this.keys.f.isDown)
+        {
+            this.player.setFlipX(false)
+            this.player.play("attackUp",true)
+            this.player.anims.msPerFrame = 100
+        }
         else if (this.keys.w.isDown)
         {
             playerDirection = "w",
@@ -110,7 +116,13 @@ class GameScene extends Phaser.Scene {
             this.player.anims.msPerFrame = 100
         }
 
-        if (this.keys.a.isDown)
+        if (playerDirection == "a" && this.keys.f.isDown)
+        {
+            this.player.setFlipX(true)
+            this.player.play("attackRight",true)
+            this.player.anims.msPerFrame = 100
+        }
+        else if (this.keys.a.isDown)
         {
             playerDirection = "a",
             this.player.setVelocityX(-100),
@@ -133,6 +145,12 @@ class GameScene extends Phaser.Scene {
             this.player.setVelocityY(69.4)
             this.player.setVelocityX(69.4)
         }
+        else if (playerDirection == "s" && this.keys.f.isDown)
+        {
+            this.player.setFlipX(false)
+            this.player.play("attackDown",true)
+            this.player.anims.msPerFrame = 100
+        }
         else if (this.keys.s.isDown)
         {
             playerDirection = "s",
@@ -146,7 +164,13 @@ class GameScene extends Phaser.Scene {
             this.player.play("idleDown", true)
             this.player.anims.msPerFrame = 100
         }
-        if (this.keys.d.isDown)
+        if (playerDirection == "d" && this.keys.f.isDown)
+        {
+            this.player.setFlipX(false)
+            this.player.play("attackRight",true)
+            this.player.anims.msPerFrame = 100
+        }
+        else if (this.keys.d.isDown)
         {
             playerDirection = "d"
             this.player.setVelocityX(100),
@@ -160,30 +184,6 @@ class GameScene extends Phaser.Scene {
             this.player.anims.msPerFrame = 100
         }
         const pointer = this.input.activePointer
-        if (playerDirection == "w" && pointer.leftButtonDown())
-        {
-            this.player.setFlipX(false)
-            this.player.play("attackUp",true)
-            this.player.anims.msPerFrame = 100
-        }
-        else if (playerDirection == "a" && pointer.leftButtonDown())
-        {
-            this.player.setFlipX(true)
-            this.player.play("attackRight",true)
-            this.player.anims.msPerFrame = 100
-        }
-        else if (playerDirection == "s" && pointer.leftButtonDown())
-        {
-            this.player.setFlipX(false)
-            this.player.play("attackDown",true)
-            this.player.anims.msPerFrame = 100
-        }
-        else if (playerDirection == "d" && pointer.leftButtonDown())
-        {
-            this.player.setFlipX(false)
-            this.player.play("attackRight",true)
-            this.player.anims.msPerFrame = 100
-        }
     }
 }
 
