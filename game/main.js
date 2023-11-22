@@ -62,6 +62,21 @@ class GameScene extends Phaser.Scene {
             framerate:16,
             repeat:-1
         })
+        this.anims.create({
+            key:"attackDown",
+            frames:this.anims.generateFrameNumbers("player", {frames:[36,37,38,39]}),
+            framerate:16,
+        })
+        this.anims.create({
+            key:"attackRight",
+            frames:this.anims.generateFrameNumbers("player", {frames:[42,43,44,45]}),
+            framerate:16,
+        })
+        this.anims.create({
+            key:"attackUp",
+            frames:this.anims.generateFrameNumbers("player", {frames:[48,49,50,51]}),
+            framerate:16,
+        })
         this.player = this.physics.add.sprite(110,110, "player")
         this.player.play("idleDown",true)
         this.player.anims.msPerFrame = 100
@@ -142,6 +157,31 @@ class GameScene extends Phaser.Scene {
         else if(playerDirection == "d")
         {
             this.player.play("idleRight", true)
+            this.player.anims.msPerFrame = 100
+        }
+        const pointer = this.input.activePointer
+        if (playerDirection == "w" && pointer.leftButtonDown())
+        {
+            this.player.setFlipX(false)
+            this.player.play("attackUp",true)
+            this.player.anims.msPerFrame = 100
+        }
+        else if (playerDirection == "a" && pointer.leftButtonDown())
+        {
+            this.player.setFlipX(true)
+            this.player.play("attackRight",true)
+            this.player.anims.msPerFrame = 100
+        }
+        else if (playerDirection == "s" && pointer.leftButtonDown())
+        {
+            this.player.setFlipX(false)
+            this.player.play("attackDown",true)
+            this.player.anims.msPerFrame = 100
+        }
+        else if (playerDirection == "d" && pointer.leftButtonDown())
+        {
+            this.player.setFlipX(false)
+            this.player.play("attackRight",true)
             this.player.anims.msPerFrame = 100
         }
     }
