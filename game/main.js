@@ -86,6 +86,35 @@ class GameScene extends Phaser.Scene {
     {
 
         this.player.setVelocity(0)
+        if(this.keys.s.isDown && this.keys.a.isDown)
+        {
+            this.player.setVelocityY(69.4)
+            this.player.setVelocityX(-69.4)
+        }
+        else if(this.keys.s.isDown && this.keys.d.isDown)
+        {
+            this.player.setVelocityY(69.4)
+            this.player.setVelocityX(69.4)
+        }
+        else if (playerDirection == "s" && this.keys.f.isDown)
+        {
+            this.player.setFlipX(false)
+            this.player.play("attackDown",true)
+            this.player.anims.msPerFrame = 100
+        }
+        else if (this.keys.s.isDown)
+        {
+            playerDirection = "s",
+            this.player.setVelocityY(100),
+            this.player.setFlipX(false),
+            this.player.play("walkDown",true),
+            this.player.anims.msPerFrame = 100
+        }
+        else if(playerDirection == "s")
+        {
+            this.player.play("idleDown", true)
+            this.player.anims.msPerFrame = 100
+        }
         if(this.keys.w.isDown && this.keys.a.isDown)
         {
             this.player.setVelocityY(-69.4)
@@ -133,36 +162,7 @@ class GameScene extends Phaser.Scene {
         else if(playerDirection == "a")
         {
             this.player.play("idleRight", true)
-            this.player.anims.msPerFrame = 100
-        }
-        if(this.keys.s.isDown && this.keys.a.isDown)
-        {
-            this.player.setVelocityY(69.4)
-            this.player.setVelocityX(-69.4)
-        }
-        else if(this.keys.s.isDown && this.keys.d.isDown)
-        {
-            this.player.setVelocityY(69.4)
-            this.player.setVelocityX(69.4)
-        }
-        else if (playerDirection == "s" && this.keys.f.isDown)
-        {
-            this.player.setFlipX(false)
-            this.player.play("attackDown",true)
-            this.player.anims.msPerFrame = 100
-        }
-        else if (this.keys.s.isDown)
-        {
-            playerDirection = "s",
-            this.player.setVelocityY(100),
-            this.player.setFlipX(false),
-            this.player.play("walkDown",true),
-            this.player.anims.msPerFrame = 100
-        }
-        else if(playerDirection == "s")
-        {
-            this.player.play("idleDown", true)
-            this.player.anims.msPerFrame = 100
+            this.player.anims.msPerFrame = 100  
         }
         if (playerDirection == "d" && this.keys.f.isDown)
         {
@@ -183,7 +183,6 @@ class GameScene extends Phaser.Scene {
             this.player.play("idleRight", true)
             this.player.anims.msPerFrame = 100
         }
-        const pointer = this.input.activePointer
     }
 }
 
