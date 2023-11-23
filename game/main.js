@@ -12,6 +12,7 @@ class GameScene extends Phaser.Scene {
     constructor() {
         super("scene-game")
         this.player
+        this.slime
     }
 
     preload() {
@@ -21,11 +22,22 @@ class GameScene extends Phaser.Scene {
         frameWidth:48,
         frameHeight:48
         })
+        this.load.spritesheet("slime", "assets/sprites/characters/slime.png",
+        {
+            frameWidth:32,
+            frameHeight:32
+        })
     }
 
     create() {
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f")
         this.add.image(0, 0, "map").setOrigin(0, 0)
+       this.anims.create({
+            key:"idle",
+            frames:this.anims.generateFrameNames("slime", {frames:[0,1,2,3]}),
+            frameRate:16,
+            repeat:-1
+        })
         this.anims.create({
             key:"idleDown",
             frames:this.anims.generateFrameNumbers("player", {frames:[0,1,2,3,4,5]}),
@@ -80,12 +92,20 @@ class GameScene extends Phaser.Scene {
         this.player = this.physics.add.sprite(110,110, "player")
         this.player.play("idleDown",true)
         this.player.anims.msPerFrame = 100
+        this.slime = this.physics.add.sprite(200,200, "slime")
+        this.slime.play("idle", true)
+        this.slime.anims.msPerFrame = 150
+        this.slime.body.setSize(16,16)
+        this.player.body.setSize(16,16)
+        this.physics.add.collider(this.player, this.slime)
+        this.slime.setImmovable(true)
     }
 
     update() 
     {
-
+        
         this.player.setVelocity(0)
+        this.player.body.setSize(16,16)
         if(this.keys.s.isDown && this.keys.a.isDown)
         {
             this.player.setVelocityY(69.4)
@@ -99,6 +119,7 @@ class GameScene extends Phaser.Scene {
         else if (playerDirection == "s" && this.keys.f.isDown)
         {
             this.player.setFlipX(false)
+            this.player.body.setSize(48,48)
             this.player.play("attackDown",true)
             this.player.anims.msPerFrame = 100
         }
@@ -196,7 +217,6 @@ const config = {
         default:"arcade",
         arcade:
         {
-            gravity:{y:0},
             debug:false
         }
     },
