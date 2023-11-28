@@ -17,6 +17,7 @@ class GameScene extends Phaser.Scene {
 
     preload() {
         this.load.image("map", "assets/map.png")
+        this.load.image("map2", "assets/2D Pixel Dungeon Asset Pack/character and tileset/demonstration.png")
         this.load.spritesheet("player", "assets/sprites/characters/player.png",
         {
         frameWidth:48,
@@ -31,7 +32,7 @@ class GameScene extends Phaser.Scene {
 
     create() {
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f")
-        this.add.image(0, 0, "map").setOrigin(0, 0)
+        this.map = this.add.image(0, 0, "map").setOrigin(0, 0)
        this.anims.create({
             key:"idle",
             frames:this.anims.generateFrameNumbers("slime", {frames:[0,1,2,3]}),
@@ -123,11 +124,11 @@ class GameScene extends Phaser.Scene {
         this.slime.body.setSize(10,10)
         this.player.body.setSize(16,24)
         this.slime.setImmovable(true)
+        this.player.setCollideWorldBounds(true)
     }
 
     update() 
     {
-        
         this.player.setVelocity(0)
         this.player.setBodySize(16,20)
         this.player.setOffset(16,20)
@@ -238,6 +239,43 @@ class GameScene extends Phaser.Scene {
     }
 }
 
+class BattleScene extends Phaser.Scene
+{
+    preload()
+    {
+
+    }
+
+    create()
+    {
+
+    }
+
+    update()
+    {
+
+    }
+
+}
+
+class UIScene extends Phaser.Scene
+{
+   preload()
+    {
+
+    }
+
+    create()
+    {
+
+    }
+
+    update()
+    {
+
+    }
+    
+}
 const config = {
     type: Phaser.WEBGL,
     width: Sizes.width,
@@ -252,6 +290,6 @@ const config = {
         }
     },
 
-    scene: [GameScene]
+    scene: [GameScene, UIScene, BattleScene]
 }
 const game = new Phaser.Game(config)
