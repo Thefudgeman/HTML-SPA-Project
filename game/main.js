@@ -34,8 +34,32 @@ class GameScene extends Phaser.Scene {
         this.add.image(0, 0, "map").setOrigin(0, 0)
        this.anims.create({
             key:"idle",
-            frames:this.anims.generateFrameNames("slime", {frames:[0,1,2,3]}),
+            frames:this.anims.generateFrameNumbers("slime", {frames:[0,1,2,3]}),
             frameRate:16,
+            repeat:-1
+        })
+        this.anims.create({
+            key:"mediumJump",
+            frames:this.anims.generateFrameNumbers("slime", {frames:[7,8,9,10,11,12]}),
+            framerate:16,
+            repeat:-1
+        })
+        this.anims.create({
+            key:"longJump",
+            frames:this.anims.generateFrameNumbers("slime", {frames:[14,15,16,17,18,19,20]}),
+            framerate:16,
+            repeat:-1
+        })
+        this.anims.create({
+            key:"shortJump",
+            frames:this.anims.generateFrameNumbers("slime", {frames:[21,22,23]}),
+            framerate:16,
+            repeat:-1
+        })
+        this.anims.create({
+            key:"slimeDie",
+            frames:this.anims.generateFrameNumbers("slime", {frames:[28,29,30,31]}),
+            framerate:16,
             repeat:-1
         })
         this.anims.create({
@@ -95,9 +119,9 @@ class GameScene extends Phaser.Scene {
         this.slime = this.physics.add.sprite(200,200, "slime")
         this.slime.play("idle", true)
         this.slime.anims.msPerFrame = 150
-        this.slime.body.setSize(16,16)
-        this.player.body.setSize(16,16)
         this.physics.add.collider(this.player, this.slime)
+        this.slime.body.setSize(10,10)
+        this.player.body.setSize(16,24)
         this.slime.setImmovable(true)
     }
 
@@ -105,7 +129,9 @@ class GameScene extends Phaser.Scene {
     {
         
         this.player.setVelocity(0)
-        this.player.body.setSize(16,16)
+        this.player.setBodySize(16,20)
+        this.player.setOffset(16,20)
+        
         if(this.keys.s.isDown && this.keys.a.isDown)
         {
             this.player.setVelocityY(69.4)
@@ -119,7 +145,8 @@ class GameScene extends Phaser.Scene {
         else if (playerDirection == "s" && this.keys.f.isDown)
         {
             this.player.setFlipX(false)
-            this.player.body.setSize(48,48)
+            this.player.body.setSize(16,24)
+            this.player.setOffset(16,30)
             this.player.play("attackDown",true)
             this.player.anims.msPerFrame = 100
         }
@@ -169,6 +196,8 @@ class GameScene extends Phaser.Scene {
         if (playerDirection == "a" && this.keys.f.isDown)
         {
             this.player.setFlipX(true)
+            this.player.body.setSize(35,20)
+            this.player.setOffset(0,20)
             this.player.play("attackRight",true)
             this.player.anims.msPerFrame = 100
         }
@@ -188,6 +217,8 @@ class GameScene extends Phaser.Scene {
         if (playerDirection == "d" && this.keys.f.isDown)
         {
             this.player.setFlipX(false)
+            this.player.body.setSize(35,20)
+            this.player.setOffset(15,20)
             this.player.play("attackRight",true)
             this.player.anims.msPerFrame = 100
         }
@@ -217,7 +248,7 @@ const config = {
         default:"arcade",
         arcade:
         {
-            debug:false
+            debug:true
         }
     },
 
