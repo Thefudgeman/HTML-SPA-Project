@@ -1,10 +1,31 @@
 import './style.css'
 import Phaser from 'phaser'
+import {Player} from './player.js'
+import { Entity } from './entity.js'
 var playerDirection
+var battle = false
 
 const Sizes = {
     width: 960,
     height: 640
+}
+
+class battleScene extends Phaser.Scene{
+    constructor(){
+        super("scene-battle")
+    }
+    preload()
+    {
+        this.load.image("map2", "assets/2D Pixel Dungeon Asset Pack/character and tileset/demonstration.png")
+    }
+    create()
+    {
+      this.map = this.add.image(0,0,"map2").setOrigin(0,0)
+    }
+    update()
+    {
+
+    }
 }
 
 
@@ -17,7 +38,6 @@ class GameScene extends Phaser.Scene {
 
     preload() {
         this.load.image("map", "assets/map.png")
-        this.load.image("map2", "assets/2D Pixel Dungeon Asset Pack/character and tileset/demonstration.png")
         this.load.spritesheet("player", "assets/sprites/characters/player.png",
         {
         frameWidth:48,
@@ -33,6 +53,8 @@ class GameScene extends Phaser.Scene {
     create() {
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f")
         this.map = this.add.image(0, 0, "map").setOrigin(0, 0)
+        const button = this.add.text(100,100,"battle").setInteractive().on('pointerdown', () => this.battle())
+
        this.anims.create({
             key:"idle",
             frames:this.anims.generateFrameNumbers("slime", {frames:[0,1,2,3]}),
@@ -123,16 +145,33 @@ class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player, this.slime)
         this.slime.body.setSize(10,10)
         this.player.body.setSize(16,24)
-        this.slime.setImmovable(true)
+        this.slime.setImmovable(false)
+        this.slime.setBounce(50,50)
+        this.slime.setCollideWorldBounds(true)
         this.player.setCollideWorldBounds(true)
     }
-
+    battle()
+    {
+        if (battle == false)
+        {
+            console.log("battle")
+            battle = true
+            const player1 = new Player()
+            player1.Name = ""
+            player1.Attack = 50
+            player1.Health = 50
+            player1.Defence = 50
+            console.log(player1.attack)
+            this.scene.start("scene-battle")
+        }
+    }
     update() 
     {
+        
         this.player.setVelocity(0)
         this.player.setBodySize(16,20)
         this.player.setOffset(16,20)
-        
+        this.physics.add.overlap(this.slime, this.player, this.battle, undefined, this)
         if(this.keys.s.isDown && this.keys.a.isDown)
         {
             this.player.setVelocityY(69.4)
@@ -177,6 +216,7 @@ class GameScene extends Phaser.Scene {
         else if (playerDirection == "w" && this.keys.f.isDown)
         {
             this.player.setFlipX(false)
+            this.player.body.setSize(16,25)
             this.player.play("attackUp",true)
             this.player.anims.msPerFrame = 100
         }
@@ -239,43 +279,6 @@ class GameScene extends Phaser.Scene {
     }
 }
 
-class BattleScene extends Phaser.Scene
-{
-    preload()
-    {
-
-    }
-
-    create()
-    {
-
-    }
-
-    update()
-    {
-
-    }
-
-}
-
-class UIScene extends Phaser.Scene
-{
-   preload()
-    {
-
-    }
-
-    create()
-    {
-
-    }
-
-    update()
-    {
-
-    }
-    
-}
 const config = {
     type: Phaser.WEBGL,
     width: Sizes.width,
@@ -290,6 +293,6 @@ const config = {
         }
     },
 
-    scene: [GameScene, UIScene, BattleScene]
+    scene: [GameScene, battleScene]
 }
 const game = new Phaser.Game(config)
