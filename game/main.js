@@ -2,8 +2,12 @@ import './style.css'
 import Phaser from 'phaser'
 import {Player} from './player.js'
 import { Entity } from './entity.js'
+import {Slime} from './slime.js'
 var playerDirection
 var battle = false
+var battle2 = false
+var battle3 = false
+var slimeAlive = true
 
 const Sizes = {
     width: 960,
@@ -20,7 +24,57 @@ class battleScene extends Phaser.Scene{
     }
     create()
     {
+      const slime = new Slime();
+      const player = new Player("name", 50, 100, 50, 1);
+      console.log(slime.health)
       this.map = this.add.image(0,0,"map2").setOrigin(0,0)
+      
+      const AttackButton = this.add.text(500,100,"Attack").setInteractive().on('pointerdown', () => this.AttackButtonClicked(slime, player))
+
+      
+      const ItemButton = this.add.text(100,100,"Item")//.setInteractive().on('pointerdown', () => this.battle())
+
+      
+        const RunButton = this.add.text(100,100,"Run")//.setInteractive().on('pointerdown', () => this.battle())
+        this.anims.create({
+            key:"slimeDie",
+            frames:this.anims.generateFrameNumbers("slime", {frames:[28,29,30,31, 32]}),
+            framerate:16,
+            repeat:0
+        })
+        this.slime = this.add.sprite(700,200, "slime")
+        this.player = this.add.sprite(300,200, "player")
+        this.player.play("idleRight", true)
+        this.player.anims.msPerFrame = 100
+        this.slime.setFlipX(true)
+        this.slime.play("idle", true)
+        this.slime.anims.msPerFrame = 100
+    }
+    AttackButtonClicked(slime, player)
+    {
+        slime.health = slime.health - player.attack;
+        console.log(slime.health);
+        this.player.play("attackRight", 4,false)
+        this.player.anims.msPerFrame = 100
+        if(slime.health <= 0 && slimeAlive)
+        {
+            slimeAlive = false
+            this.slime.play("slimeDie", false)
+            this.slime.anims.msPerFrame = 200
+            this.add.text(500,200,"You Won The Battle");
+            this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
+        //    this.scene.switch("scene-game");
+        }
+        else if(player.health <= 0)
+        {
+            this.add.text(500,200, "You Lost The Battle")
+            battle = false
+            this.scene.switch("scene-game")
+        }
+    }
+    leaveScene()
+    {
+        this.scene.switch("scene-game")
     }
     update()
     {
@@ -76,12 +130,6 @@ class GameScene extends Phaser.Scene {
         this.anims.create({
             key:"shortJump",
             frames:this.anims.generateFrameNumbers("slime", {frames:[21,22,23]}),
-            framerate:16,
-            repeat:-1
-        })
-        this.anims.create({
-            key:"slimeDie",
-            frames:this.anims.generateFrameNumbers("slime", {frames:[28,29,30,31]}),
             framerate:16,
             repeat:-1
         })
@@ -149,6 +197,7 @@ class GameScene extends Phaser.Scene {
         this.slime.setBounce(50,50)
         this.slime.setCollideWorldBounds(true)
         this.player.setCollideWorldBounds(true)
+   
     }
     battle()
     {
@@ -156,18 +205,13 @@ class GameScene extends Phaser.Scene {
         {
             console.log("battle")
             battle = true
-            const player1 = new Player()
-            player1.Name = ""
-            player1.Attack = 50
-            player1.Health = 50
-            player1.Defence = 50
+            const player1 = new Player("Name", 50, 100, 50, 1)
             console.log(player1.attack)
             this.scene.start("scene-battle")
         }
     }
     update() 
     {
-        
         this.player.setVelocity(0)
         this.player.setBodySize(16,20)
         this.player.setOffset(16,20)
@@ -275,6 +319,10 @@ class GameScene extends Phaser.Scene {
         {
             this.player.play("idleRight", true)
             this.player.anims.msPerFrame = 100
+        }
+        if(battle == true)
+        {
+            this.slime.destroy(true);
         }
     }
 }

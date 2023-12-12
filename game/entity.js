@@ -44,9 +44,9 @@ export class Entity
 
     constructor(Name, Health, Attack, Defence)
     {
-        Name = this.name
-        Health = this.health
-        Attack = this.attack
-        Defence = this.defence
+        this.name = Name
+        this.health = Health
+        this.attack = Attack
+        this.defence = Defence
     }
 }
