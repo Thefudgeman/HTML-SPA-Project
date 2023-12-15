@@ -7,7 +7,8 @@ var playerDirection
 var battle = false
 var battle2 = false
 var battle3 = false
-var slimeAlive = true
+var createAnims = false
+var money = 0
 
 const Sizes = {
     width: 960,
@@ -29,13 +30,13 @@ class battleScene extends Phaser.Scene{
       console.log(slime.health)
       this.map = this.add.image(0,0,"map2").setOrigin(0,0)
       
-      const AttackButton = this.add.text(500,100,"Attack").setInteractive().on('pointerdown', () => this.AttackButtonClicked(slime, player))
+      let AttackButton = this.add.text(430,300,"Attack").setInteractive().on('pointerdown', () => this.AttackButtonClicked(slime, player, AttackButton, ItemButton, RunButton))
 
       
-      const ItemButton = this.add.text(100,100,"Item")//.setInteractive().on('pointerdown', () => this.battle())
+      let ItemButton = this.add.text(498,300,"Item")//.setInteractive().on('pointerdown', () => this.battle())
 
       
-        const RunButton = this.add.text(100,100,"Run")//.setInteractive().on('pointerdown', () => this.battle())
+        let RunButton = this.add.text(550,300,"Run").setInteractive().on('pointerdown', () => this.RunButtonClicked())
         this.anims.create({
             key:"slimeDie",
             frames:this.anims.generateFrameNumbers("slime", {frames:[28,29,30,31, 32]}),
@@ -50,28 +51,65 @@ class battleScene extends Phaser.Scene{
         this.slime.play("idle", true)
         this.slime.anims.msPerFrame = 100
     }
-    AttackButtonClicked(slime, player)
+
+    AttackButtonClicked(slime, player, AttackButton, ItemButton, RunButton)
     {
         slime.health = slime.health - player.attack;
         console.log(slime.health);
         this.player.play("attackRight", 4,false)
         this.player.anims.msPerFrame = 100
-        if(slime.health <= 0 && slimeAlive)
+        if(slime.health <= 0)
         {
-            slimeAlive = false
+            slime.health = 0
             this.slime.play("slimeDie", false)
             this.slime.anims.msPerFrame = 200
+            AttackButton.destroy()
+            ItemButton.destroy()
+            RunButton.destroy()
+            money += slime.moneyDrop
+            console.log(money)
             this.add.text(500,200,"You Won The Battle");
             this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
-        //    this.scene.switch("scene-game");
         }
-        else if(player.health <= 0)
+        else
+        {
+            player.health -= slime.attack
+            console.log("player health")
+            console.log(player.health)
+        }
+        if(player.health <= 0)
         {
             this.add.text(500,200, "You Lost The Battle")
+            this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
             battle = false
-            this.scene.switch("scene-game")
+            AttackButton.destroy()
+            ItemButton.destroy()
+            RunButton.destroy()
+            
         }
     }
+
+    ItemButtonClicked()
+    {
+
+    }
+
+    RunButtonClicked()
+    {
+        var random = Math.floor(Math.random() * 4);
+        console.log(random)
+        if(random == 1)
+        {
+            battle = false
+            this.leaveScene()
+        }
+        else
+        {
+            window.confirm("Failed To Run")
+        }
+        player.health -= slime.attack
+    }
+
     leaveScene()
     {
         this.scene.switch("scene-game")
@@ -107,83 +145,86 @@ class GameScene extends Phaser.Scene {
     create() {
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f")
         this.map = this.add.image(0, 0, "map").setOrigin(0, 0)
-        const button = this.add.text(100,100,"battle").setInteractive().on('pointerdown', () => this.battle())
+        if(createAnims == false)
+        {
+            createAnims = true
+            this.anims.create({
+                key:"idle",
+                frames:this.anims.generateFrameNumbers("slime", {frames:[0,1,2,3]}),
+                frameRate:16,
+                repeat:-1
+            })
+            this.anims.create({
+                key:"mediumJump",
+                frames:this.anims.generateFrameNumbers("slime", {frames:[7,8,9,10,11,12]}),
+                framerate:16,
+                repeat:-1
+            })
+            this.anims.create({
+                key:"longJump",
+                frames:this.anims.generateFrameNumbers("slime", {frames:[14,15,16,17,18,19,20]}),
+                framerate:16,
+                repeat:-1
+            })
+            this.anims.create({
+                key:"shortJump",
+                frames:this.anims.generateFrameNumbers("slime", {frames:[21,22,23]}),
+                framerate:16,
+                repeat:-1
+            })
+            this.anims.create({
+                key:"idleDown",
+                frames:this.anims.generateFrameNumbers("player", {frames:[0,1,2,3,4,5]}),
+                framerate:16,
+                repeat:-1
+            })
+            this.anims.create({
+                key:"idleRight",
+                frames:this.anims.generateFrameNumbers("player", {frames:[6,7,8,9,10,11]}),
+                framerate:16,
+                repeat:-1
+            })
+            this.anims.create({
+                key:"idleUp",
+                frames:this.anims.generateFrameNumbers("player", {frames:[12,13,14,15,16,17]}),
+                framerate:16,
+                repeat:-1
+            })
+                this.anims.create({
+                key:"walkDown",
+                frames:this.anims.generateFrameNumbers("player", {frames:[18,19,20,21,22,23]}),
+                framerate:16,
+                repeat:-1
+            })
+                this.anims.create({
+                key:"walkRight",
+                frames:this.anims.generateFrameNumbers("player", {frames:[24,25,26,27,28,29]}),
+                framerate:16,
+                repeat:-1
+            })
+                this.anims.create({
+                key:"walkUp",
+                frames:this.anims.generateFrameNumbers("player", {frames:[30,31,32,33,34,35]}),
+                framerate:16,
+                repeat:-1
+            })
+            this.anims.create({
+                key:"attackDown",
+                frames:this.anims.generateFrameNumbers("player", {frames:[36,37,38,39]}),
+                framerate:16,
+            })
+            this.anims.create({
+                key:"attackRight",
+                frames:this.anims.generateFrameNumbers("player", {frames:[42,43,44,45]}),
+                framerate:16,
+            })
+            this.anims.create({
+                key:"attackUp",
+                frames:this.anims.generateFrameNumbers("player", {frames:[48,49,50,51]}),
+                framerate:16,
+            })
+        }
 
-       this.anims.create({
-            key:"idle",
-            frames:this.anims.generateFrameNumbers("slime", {frames:[0,1,2,3]}),
-            frameRate:16,
-            repeat:-1
-        })
-        this.anims.create({
-            key:"mediumJump",
-            frames:this.anims.generateFrameNumbers("slime", {frames:[7,8,9,10,11,12]}),
-            framerate:16,
-            repeat:-1
-        })
-        this.anims.create({
-            key:"longJump",
-            frames:this.anims.generateFrameNumbers("slime", {frames:[14,15,16,17,18,19,20]}),
-            framerate:16,
-            repeat:-1
-        })
-        this.anims.create({
-            key:"shortJump",
-            frames:this.anims.generateFrameNumbers("slime", {frames:[21,22,23]}),
-            framerate:16,
-            repeat:-1
-        })
-        this.anims.create({
-            key:"idleDown",
-            frames:this.anims.generateFrameNumbers("player", {frames:[0,1,2,3,4,5]}),
-            framerate:16,
-            repeat:-1
-        })
-        this.anims.create({
-            key:"idleRight",
-            frames:this.anims.generateFrameNumbers("player", {frames:[6,7,8,9,10,11]}),
-            framerate:16,
-            repeat:-1
-        })
-        this.anims.create({
-            key:"idleUp",
-            frames:this.anims.generateFrameNumbers("player", {frames:[12,13,14,15,16,17]}),
-            framerate:16,
-            repeat:-1
-        })
-            this.anims.create({
-            key:"walkDown",
-            frames:this.anims.generateFrameNumbers("player", {frames:[18,19,20,21,22,23]}),
-            framerate:16,
-            repeat:-1
-        })
-            this.anims.create({
-            key:"walkRight",
-            frames:this.anims.generateFrameNumbers("player", {frames:[24,25,26,27,28,29]}),
-            framerate:16,
-            repeat:-1
-        })
-            this.anims.create({
-            key:"walkUp",
-            frames:this.anims.generateFrameNumbers("player", {frames:[30,31,32,33,34,35]}),
-            framerate:16,
-            repeat:-1
-        })
-        this.anims.create({
-            key:"attackDown",
-            frames:this.anims.generateFrameNumbers("player", {frames:[36,37,38,39]}),
-            framerate:16,
-        })
-        this.anims.create({
-            key:"attackRight",
-            frames:this.anims.generateFrameNumbers("player", {frames:[42,43,44,45]}),
-            framerate:16,
-        })
-        this.anims.create({
-            key:"attackUp",
-            frames:this.anims.generateFrameNumbers("player", {frames:[48,49,50,51]}),
-            framerate:16,
-        })
         this.player = this.physics.add.sprite(110,110, "player")
         this.player.play("idleDown",true)
         this.player.anims.msPerFrame = 100
@@ -207,7 +248,7 @@ class GameScene extends Phaser.Scene {
             battle = true
             const player1 = new Player("Name", 50, 100, 50, 1)
             console.log(player1.attack)
-            this.scene.start("scene-battle")
+            this.scene.switch("scene-battle")
         }
     }
     update() 
