@@ -3,6 +3,18 @@ import {Entity} from './entity.js'
 export class Player extends Entity
 {
     level = 1;
+    xp = 0;
+    xpToNextLevel = 100
+
+
+    set xpToNextLevel(value)
+    {
+        this.xpToNextLevel = value
+    }
+    set xp(value)
+    {
+        this.xp = value
+    }
     set Name(value)
     {
         super.name = value
@@ -18,6 +30,14 @@ export class Player extends Entity
     set Defence(value)
     {
         super.defence = value
+    }
+    get xp()
+    {
+        return this.xp
+    }
+    get xpToNextLevel()
+    {
+        return this.xpToNextLevel
     }
     get Level()
     {

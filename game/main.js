@@ -1,8 +1,10 @@
 import './style.css'
 import Phaser from 'phaser'
-import {Player} from './player.js'
-import { Entity } from './entity.js'
-import {Slime} from './slime.js'
+import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js"
+import {Player} from './src/classes/player.js'
+import { Entity } from './src/classes/entity.js'
+import {Slime} from './src/classes/slime.js'
+import { Weapon } from './src/classes/items/weapon';
 var playerDirection
 var battle = false
 var battle2 = false
@@ -14,6 +16,25 @@ const Sizes = {
     width: 960,
     height: 640
 }
+class shopScene extends Phaser.Scene{
+    constructor(){
+        super("scene-shop")
+    }
+    preload()
+    {
+
+    }
+
+    create()
+    {
+
+    }
+
+    update()
+    {
+
+    }
+}
 
 class battleScene extends Phaser.Scene{
     constructor(){
@@ -21,16 +42,17 @@ class battleScene extends Phaser.Scene{
     }
     preload()
     {
-        this.load.image("map2", "assets/2D Pixel Dungeon Asset Pack/character and tileset/demonstration.png")
+        this.load.image("map2", "src/assets/2D Pixel Dungeon Asset Pack/character and tileset/demonstration.png")
     }
     create()
     {
       const slime = new Slime();
       const player = new Player("name", 50, 100, 50, 1);
+      const weapon = new Weapon("Sword", "Sword Description", 30, 1);
       console.log(slime.health)
       this.map = this.add.image(0,0,"map2").setOrigin(0,0)
       
-      let AttackButton = this.add.text(430,300,"Attack").setInteractive().on('pointerdown', () => this.AttackButtonClicked(slime, player, AttackButton, ItemButton, RunButton))
+      let AttackButton = this.add.text(430,300,"Attack").setInteractive().on('pointerdown', () => this.AttackButtonClicked(slime, player, AttackButton, ItemButton, RunButton, weapon))
 
       
       let ItemButton = this.add.text(498,300,"Item")//.setInteractive().on('pointerdown', () => this.battle())
@@ -52,9 +74,9 @@ class battleScene extends Phaser.Scene{
         this.slime.anims.msPerFrame = 100
     }
 
-    AttackButtonClicked(slime, player, AttackButton, ItemButton, RunButton)
+    AttackButtonClicked(slime, player, AttackButton, ItemButton, RunButton, weapon)
     {
-        slime.health = slime.health - player.attack;
+        slime.health = slime.health - player.attack - weapon.damage;
         console.log(slime.health);
         this.player.play("attackRight", 4,false)
         this.player.anims.msPerFrame = 100
@@ -121,7 +143,7 @@ class battleScene extends Phaser.Scene{
 }
 
 
-class GameScene extends Phaser.Scene {
+export class GameScene extends Phaser.Scene {
     constructor() {
         super("scene-game")
         this.player
@@ -129,13 +151,13 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("map", "assets/map.png")
-        this.load.spritesheet("player", "assets/sprites/characters/player.png",
+        this.load.image("map", "src/assets/map.png")
+        this.load.spritesheet("player", "src/assets/sprites/characters/player.png",
         {
         frameWidth:48,
         frameHeight:48
         })
-        this.load.spritesheet("slime", "assets/sprites/characters/slime.png",
+        this.load.spritesheet("slime", "src/assets/sprites/characters/slime.png",
         {
             frameWidth:32,
             frameHeight:32

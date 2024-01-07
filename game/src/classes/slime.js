@@ -3,6 +3,15 @@ import {Entity} from './entity.js'
 export class Slime extends Entity
 {
     moneyDrop;
+    xpDrop;
+    set xpDrop(value)
+    {
+        this.xpDrop = value
+    }
+    set moneyDrop(value)
+    {
+        this.moneyDrop = value
+    }
     set Name(value)
     {
         super.name = value
@@ -28,5 +37,6 @@ export class Slime extends Entity
         super.defence = 5;
         super.health = 50;
         this.moneyDrop = 5;
+        this.xpDrop = 20;
     }
 }
