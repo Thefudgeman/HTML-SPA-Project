@@ -5,12 +5,15 @@ import {Player} from './src/classes/player.js'
 import { Entity } from './src/classes/entity.js'
 import {Slime} from './src/classes/slime.js'
 import { Weapon } from './src/classes/items/weapon';
+import Preloader from './src/scenes/Preloader.js'
 var playerDirection
 var battle = false
 var battle2 = false
 var battle3 = false
 var createAnims = false
 var money = 0
+var playerX = 110
+var playerY = 110
 
 const Sizes = {
     width: 960,
@@ -49,7 +52,6 @@ class battleScene extends Phaser.Scene{
       const slime = new Slime();
       const player = new Player("name", 50, 100, 50, 1);
       const weapon = new Weapon("Sword", "Sword Description", 30, 1);
-      console.log(slime.health)
       this.map = this.add.image(0,0,"map2").setOrigin(0,0)
       
       let AttackButton = this.add.text(430,300,"Attack").setInteractive().on('pointerdown', () => this.AttackButtonClicked(slime, player, AttackButton, ItemButton, RunButton, weapon))
@@ -77,7 +79,6 @@ class battleScene extends Phaser.Scene{
     AttackButtonClicked(slime, player, AttackButton, ItemButton, RunButton, weapon)
     {
         slime.health = slime.health - player.attack - weapon.damage;
-        console.log(slime.health);
         this.player.play("attackRight", 4,false)
         this.player.anims.msPerFrame = 100
         if(slime.health <= 0)
@@ -89,21 +90,18 @@ class battleScene extends Phaser.Scene{
             ItemButton.destroy()
             RunButton.destroy()
             money += slime.moneyDrop
-            console.log(money)
             this.add.text(500,200,"You Won The Battle");
+            battle = true
             this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
         }
         else
         {
             player.health -= slime.attack
-            console.log("player health")
-            console.log(player.health)
         }
         if(player.health <= 0)
         {
             this.add.text(500,200, "You Lost The Battle")
             this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
-            battle = false
             AttackButton.destroy()
             ItemButton.destroy()
             RunButton.destroy()
@@ -120,9 +118,8 @@ class battleScene extends Phaser.Scene{
     {
         var random = Math.floor(Math.random() * 4);
         console.log(random)
-        if(random == 1)
+        if(random != 1)
         {
-            battle = false
             this.leaveScene()
         }
         else
@@ -134,7 +131,7 @@ class battleScene extends Phaser.Scene{
 
     leaveScene()
     {
-        this.scene.switch("scene-game")
+        this.scene.start("scene-game")
     }
     update()
     {
@@ -151,7 +148,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image("map", "src/assets/map.png")
+    
         this.load.spritesheet("player", "src/assets/sprites/characters/player.png",
         {
         frameWidth:48,
@@ -166,7 +163,21 @@ export class GameScene extends Phaser.Scene {
 
     create() {
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f")
-        this.map = this.add.image(0, 0, "map").setOrigin(0, 0)
+        this.add.image(0, 0, "tiles").setOrigin(0,0)
+        const map = this.make.tilemap({key: 'dungeon'}) 
+        map.addTilesetImage('0x72_DungeonTilesetII_v1.6', 'tiles')
+        const tileset = map.addTilesetImage("0x72_DungeonTilesetII_v1.6", "tiles")
+        const GroundLayer =  map.createLayer("Ground", tileset, 0, 0)
+        const RoomCornerLayer = map.createLayer("RoomCorner", tileset, 0, 0)
+        const SideTopWallLayer = map.createLayer("Side/TopWall", tileset, 0 ,0)
+        const BottomWallLayer = map.createLayer("BottomWall", tileset, 0, 0)
+
+        RoomCornerLayer.setCollisionBetween(322, 323)
+        SideTopWallLayer.setCollisionBetween(2, 324)
+        BottomWallLayer.setCollisionBetween(2, 3)
+       
+
+
         if(createAnims == false)
         {
             createAnims = true
@@ -247,7 +258,7 @@ export class GameScene extends Phaser.Scene {
             })
         }
 
-        this.player = this.physics.add.sprite(110,110, "player")
+        this.player = this.physics.add.sprite(playerX, playerY, "player")
         this.player.play("idleDown",true)
         this.player.anims.msPerFrame = 100
         this.slime = this.physics.add.sprite(200,200, "slime")
@@ -256,21 +267,27 @@ export class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player, this.slime)
         this.slime.body.setSize(10,10)
         this.player.body.setSize(16,24)
-        this.slime.setImmovable(false)
-        this.slime.setBounce(50,50)
+        this.slime.setImmovable(true)
+       // this.slime.setBounce(50,50)
         this.slime.setCollideWorldBounds(true)
         this.player.setCollideWorldBounds(true)
+
+        this.physics.add.collider(this.player, SideTopWallLayer)
+        this.physics.add.collider(this.player, RoomCornerLayer)
+        this.physics.add.collider(this.player, BottomWallLayer)
+
+
    
     }
     battle()
     {
         if (battle == false)
         {
-            console.log("battle")
-            battle = true
+            this.player.stop()
+            playerX = this.player.body.x
+            playerY = this.player.body.y
             const player1 = new Player("Name", 50, 100, 50, 1)
-            console.log(player1.attack)
-            this.scene.switch("scene-battle")
+            this.scene.start("scene-battle")
         }
     }
     update() 
@@ -404,6 +421,6 @@ const config = {
         }
     },
 
-    scene: [GameScene, battleScene]
+    scene: [Preloader, GameScene, battleScene]
 }
 const game = new Phaser.Game(config)
