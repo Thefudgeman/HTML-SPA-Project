@@ -1,4 +1,4 @@
-import {Item} from "./item"
+import {Item} from "../item"
 
 export class Armour extends Item{
 
