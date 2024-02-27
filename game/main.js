@@ -56,7 +56,7 @@ class shopScene extends Phaser.Scene{
 
     LeaveButtonClicked()
     {
-        
+        this.scene.start("scene-game")
     }
 
     update()
@@ -194,8 +194,20 @@ export class GameScene extends Phaser.Scene {
             frameHeight:32
         })
     }
+    ShopClicked()
+    {
+        playerX = this.player.body.x
+        playerY = this.player.body.y
+        this.scene.start("scene-shop")
+    }
 
     create() {
+
+
+      
+
+
+
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f")
         this.add.image(0, 0, "tiles").setOrigin(0,0)
         const map = this.make.tilemap({key: 'dungeon'}) 
@@ -210,6 +222,7 @@ export class GameScene extends Phaser.Scene {
         SideTopWallLayer.setCollisionBetween(2, 324)
         BottomWallLayer.setCollisionBetween(2, 3)
        
+        let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
 
 
         if(createAnims == false)
@@ -313,6 +326,9 @@ export class GameScene extends Phaser.Scene {
 
    
     }
+
+
+
     battle()
     {
         if (battle == false)
@@ -455,6 +471,6 @@ const config = {
         }
     },
 
-    scene: [Preloader, GameScene, battleScene]
+    scene: [Preloader, GameScene, battleScene, shopScene]
 }
 const game = new Phaser.Game(config)
