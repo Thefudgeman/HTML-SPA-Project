@@ -6,6 +6,8 @@ import { Sword } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/items/
 import { WarriorArmour } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/items/Armour/WarriorArmour.js'
 import { Variables }from '/Users/theob/dev/HTML-SPA-Project/game/src/scenes/Maingame.js'
 
+var created = false
+
 export default class battleScene extends Phaser.Scene{
     constructor(){
         super("scene-battle")
@@ -28,13 +30,18 @@ export default class battleScene extends Phaser.Scene{
       let ItemButton = this.add.text(498,300,"Item")//.setInteractive().on('pointerdown', () => this.battle())
 
       
-        let RunButton = this.add.text(550,300,"Run").setInteractive().on('pointerdown', () => this.RunButtonClicked())
-        this.anims.create({
-            key:"slimeDie",
-            frames:this.anims.generateFrameNumbers("slime", {frames:[28,29,30,31, 32]}),
-            framerate:16,
-            repeat:0
-        })
+        let RunButton = this.add.text(550,300,"Run").setInteractive().on('pointerdown', () => this.RunButtonClicked(slime, player))
+        if(created = false)
+        {
+            this.anims.create({
+                key:"slimeDie",
+                frames:this.anims.generateFrameNumbers("slime", {frames:[28,29,30,31, 32]}),
+                framerate:16,
+                repeat:0
+            })
+            created = true
+        }
+
         this.slime = this.add.sprite(700,200, "slime")
         this.player = this.add.sprite(300,200, "player")
         this.player.play("idleRight", true)
@@ -89,7 +96,7 @@ export default class battleScene extends Phaser.Scene{
 
     }
 
-    RunButtonClicked()
+    RunButtonClicked(slime, player)
     {
         var random = Math.floor(Math.random() * 4);
         console.log(random)
