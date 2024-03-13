@@ -1,6 +1,6 @@
-import { Item } from './items/item.js'
+import { Item } from './../item'
 
-export class upgradeMaterial1 extends Item{
+export class iron extends Item{
 
     set NumberOwned(value)
     {
