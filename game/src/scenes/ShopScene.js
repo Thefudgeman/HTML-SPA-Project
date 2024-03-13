@@ -1,3 +1,6 @@
+import { Sword } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/items/Weapons/Sword.js'
+import {Variables} from '/Users/theob/dev/HTML-SPA-Project/game/src/scenes/Maingame.js'
+
 
 export default class shopScene extends Phaser.Scene{
     constructor(){
@@ -12,10 +15,13 @@ export default class shopScene extends Phaser.Scene{
     {
         this.add.image(0,0,"shop").setOrigin(0,0)
 
+
+        let weapon = new Sword("sword", "description", 50, 1)
+
         let BuyButton = this.add.text(230,300,"Buy").setInteractive().on('pointerdown', () => this.BuyButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton))
         let SellButton = this.add.text(430,300,"Sell").setInteractive().on('pointerdown', () => this.SellButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton))
         let LeaveButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton))
-        let UpgradeButton = this.add.text(430,350,"Upgrade").setInteractive().on('pointerdown', () => this.UpgradeButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton))
+        let UpgradeButton = this.add.text(430,350,"Upgrade").setInteractive().on('pointerdown', () => this.UpgradeButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, weapon))
 
     }
 
@@ -28,16 +34,38 @@ export default class shopScene extends Phaser.Scene{
     }
 
 
-    UpgradeButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton)
+    UpgradeButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, weapon)
     {   
         this.DestroyButtons(BuyButton, SellButton, LeaveButton, UpgradeButton)
-        let UpgradeWeapon = this.add.text(230,300, "Upgrade Weapon").setInteractive().on('pointerdown', () =>this.upgradeWeapon())
+        let UpgradeWeapon = this.add.text(230,300, "Upgrade Weapon").setInteractive().on('pointerdown', () =>this.upgradeWeapon(weapon))
+        let LeaveUpgradeButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveUpgradeClicked(UpgradeWeapon, LeaveUpgradeButton))
 
     }
 
-    upgradeWeapon()
+    LeaveUpgradeClicked(UpgradeWeapon, LeaveUpgradeButton)
     {
-        
+        UpgradeWeapon.destroy()
+        LeaveUpgradeButton.destroy()
+        this.create()
+    }
+
+    upgradeWeapon(weapon)
+    {
+        console.log(Variables.money)
+        var MoneyNeeded = Math.round(50*Math.pow(1.3, weapon.level))
+        console.log(MoneyNeeded)
+        if(Variables.money >= MoneyNeeded)
+        {
+            weapon.level++
+            Variables.money -= MoneyNeeded
+            console.log(Variables.money)
+        }
+        else
+        {
+            console.log("you don't have enough money")
+        }
+
+        console.log(weapon.level)
     }
 
     BuyButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton)

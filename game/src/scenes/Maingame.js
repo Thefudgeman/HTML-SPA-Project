@@ -155,8 +155,8 @@ export default class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player, this.slime)
         this.slime.body.setSize(10,10)
         this.player.body.setSize(16,24)
-        this.slime.setImmovable(true)
-       // this.slime.setBounce(50,50)
+        this.slime.setImmovable(false)
+        this.slime.setBounce(50,50)
         this.slime.setCollideWorldBounds(true)
         this.player.setCollideWorldBounds(true)
 

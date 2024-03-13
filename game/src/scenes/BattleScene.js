@@ -31,7 +31,7 @@ export default class battleScene extends Phaser.Scene{
 
       
         let RunButton = this.add.text(550,300,"Run").setInteractive().on('pointerdown', () => this.RunButtonClicked(slime, player))
-        if(created = false)
+        if(created == false)
         {
             this.anims.create({
                 key:"slimeDie",
