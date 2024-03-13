@@ -1,6 +1,6 @@
-import { Item } from './../item'
+import { Item } from '../item'
 
-export class iron extends Item{
+export class titanium extends Item{
 
     set NumberOwned(value)
     {
