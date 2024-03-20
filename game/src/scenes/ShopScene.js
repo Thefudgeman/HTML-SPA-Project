@@ -154,9 +154,6 @@ export default class shopScene extends Phaser.Scene{
         let Buy1 = this.add.text(230,100,"iron      Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buyIron))
         let Buy2 = this.add.text(230,150,"steel     Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buySteel))
         let Buy3 = this.add.text(230,200,"titanium  Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buyTitanium))
-        let Buy4 = this.add.text(230,250,"Buy").setInteractive().on('pointerdown', () => this.BuyButtonClicked())
-        let Buy5 = this.add.text(230,300,"Buy").setInteractive().on('pointerdown', () => this.BuyButtonClicked())
-        let Buy6 = this.add.text(230,350,"Buy").setInteractive().on('pointerdown', () => this.BuyButtonClicked())
         let LeaveBuyButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveBuyButtonClicked(Buy1, Buy2, Buy3, Buy4, Buy5, Buy6, LeaveBuyButton))
 
 
@@ -242,9 +239,6 @@ export default class shopScene extends Phaser.Scene{
         let Sell1 = this.add.text(230,100,"Iron      Sell").setInteractive().on('pointerdown', () => this.sellMaterial(materialIron))
         let Sell2 = this.add.text(230,150,"Steel     Sell").setInteractive().on('pointerdown', () => this.sellMaterial(materialSteel))
         let Sell3 = this.add.text(230,200,"Titanium  Sell").setInteractive().on('pointerdown', () => this.sellMaterial(materialTitanium))
-        let Sell4 = this.add.text(230,250,"Sell").setInteractive().on('pointerdown', () => this.BuyButtonClicked())
-        let Sell5 = this.add.text(230,300,"Sell").setInteractive().on('pointerdown', () => this.BuyButtonClicked())
-        let Sell6 = this.add.text(230,350,"Sell").setInteractive().on('pointerdown', () => this.BuyButtonClicked())
         let LeaveBuyButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveBuyButtonClicked(Sell1, Sell2, Sell3, Sell4, Sell5, Sell6, LeaveBuyButton))
 
 
