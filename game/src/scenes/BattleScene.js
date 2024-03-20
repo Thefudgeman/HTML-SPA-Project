@@ -12,6 +12,7 @@ export default class battleScene extends Phaser.Scene{
     constructor(){
         super("scene-battle")
     }
+    
     preload()
     {
         this.load.image("map2", "src/assets/2D Pixel Dungeon Asset Pack/character and tileset/demonstration.png")
@@ -66,7 +67,6 @@ export default class battleScene extends Phaser.Scene{
             RunButton.destroy()
             Variables.money += slime.moneyDrop
             this.add.text(500,200,"You Won The Battle");
-            Variables.battle = true
             this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
         }
         else
@@ -82,6 +82,9 @@ export default class battleScene extends Phaser.Scene{
         }
         if(player.health <= 0)
         {
+            Variables.battle = false
+            Variables.battle2 = false
+            Variables.battle3 = false
             this.add.text(500,200, "You Lost The Battle")
             this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
             AttackButton.destroy()
@@ -114,6 +117,7 @@ export default class battleScene extends Phaser.Scene{
     leaveScene()
     {
         this.scene.start("scene-game")
+        this.scene.stop()
     }
     update()
     {

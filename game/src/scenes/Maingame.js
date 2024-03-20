@@ -165,18 +165,39 @@ export default class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player, BottomWallLayer)
 
 
+        this.slime2 = this.physics.add.sprite(400, 400, "slime2")
+        this.slime2.play("idle", true)
+        this.slime.anims.msPerFrame = 150
+        this.physics.add.collider(this.player, this.slime2)
+        this.slime2.body.setSize(10, 10)
+        this.slime2.setImmovable(true)
+        this.physics.add.overlap(this.slime, this.player, this.battle, undefined, this)
+        this.physics.add.overlap(this.slime2, this.player, this.battle2, undefined, this)
+
    
     }
 
 
+    battle2()
+    {
+        this.player.stop()
+        playerX = this.player.body.x
+        playerY = this.player.body.y
+        if(Variables.battle2 == false)
+        {
+            Variables.battle2 = true
+            this.scene.start("scene-battle")
+        }
+    }
 
     battle()
     {
+        this.player.stop()
+        playerX = this.player.body.x
+        playerY = this.player.body.y
         if (Variables.battle == false)
         {
-            this.player.stop()
-            playerX = this.player.body.x
-            playerY = this.player.body.y
+            Variables.battle = true
             this.scene.start("scene-battle")
         }
     }
@@ -185,7 +206,7 @@ export default class GameScene extends Phaser.Scene {
         this.player.setVelocity(0)
         this.player.setBodySize(16,20)
         this.player.setOffset(16,20)
-        this.physics.add.overlap(this.slime, this.player, this.battle, undefined, this)
+
         if(this.keys.s.isDown && this.keys.a.isDown)
         {
             this.player.setVelocityY(69.4)
@@ -290,9 +311,15 @@ export default class GameScene extends Phaser.Scene {
             this.player.play("idleRight", true)
             this.player.anims.msPerFrame = 100
         }
+
         if(Variables.battle == true)
         {
-            this.slime.destroy(true);
+            this.slime.destroy(true)
         }
+        if(Variables.battle2 == true)
+        {
+            this.slime2.destroy(true)
+        }
+ 
     }
 }
