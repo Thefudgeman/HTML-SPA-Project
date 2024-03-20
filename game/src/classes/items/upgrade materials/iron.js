@@ -12,6 +12,16 @@ export class iron extends Item{
         super.numberOwned = value
     }
 
+    get ItemName()
+    {
+        return super.itemName
+    }
+
+    set ItemName(value)
+    {
+        super.itemName = value
+    }
+
     constructor(ItemName, ItemDescription, NumberOwned)
     {
         super()

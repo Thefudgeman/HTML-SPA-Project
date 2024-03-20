@@ -7,6 +7,21 @@ export class steel extends Item{
         super.numberOwned = value
     }
 
+    get NumberOwned()
+    {
+        return super.numberOwned
+    }
+
+    get ItemName()
+    {
+        return super.itemName
+    }
+
+    set ItemName(value)
+    {
+        super.itemName = value
+    }
+
     constructor(ItemName, ItemDescription, NumberOwned)
     {
         super()

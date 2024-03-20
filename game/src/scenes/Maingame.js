@@ -5,7 +5,7 @@ export class variables
     battle = false
     battle2 = false
     battle3 = false
-    money = 0
+    money = 99999
 }
 
 
