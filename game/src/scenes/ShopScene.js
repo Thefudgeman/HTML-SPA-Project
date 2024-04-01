@@ -67,7 +67,9 @@ export default class shopScene extends Phaser.Scene{
 
         var MaterialNeeded = armour.level
 
-        let ironUpgrade = new iron("material1", "description", 20)
+        let ironUpgrade = new iron("Iron", "description", 20)
+        let steelUpgrade = new iron("Steel", "description", 20)
+        let titaniumUpgrade = new iron("Titanium", "description", 20)
 
 
         upgrade : if(Variables.money >= MoneyNeeded)
@@ -75,23 +77,45 @@ export default class shopScene extends Phaser.Scene{
             if(armour.level < 11 && MaterialNeeded <= ironUpgrade.NumberOwned)
             {
                 ironUpgrade.NumberOwned -= MaterialNeeded
+                armour.level++
+                Variables.money -= MoneyNeeded
             }
             else if(10 < armour.level && armour.level < 21)
             {
-
+                MaterialNeeded -= 10
+                if (steelUpgrade.NumberOwned >= MaterialNeeded)
+                {
+                    steelUpgrade.NumberOwned -= MaterialNeeded
+                    armour.level++
+                    Variables.money -= MoneyNeeded
+                }  
+                else
+                {
+                    console.log("Not enough", steelUpgrade.ItemName)
+                    break upgrade 
+                }
             }
             else if(armour.level > 20)
             {
-
+                MaterialNeeded -= 20
+                if (titaniumUpgrade.NumberOwned >= MaterialNeeded)
+                {
+                    titaniumUpgrade.NumberOwned -= MaterialNeeded
+                    armour.level++
+                    Variables.money -= MoneyNeeded
+                }  
+                else
+                {
+                    console.log("Not enough", titaniumUpgrade.ItemName)
+                    break upgrade 
+                }
             }
             else
             {
-                console.log("Not enough upgrade materials")
+                console.log("Not enough ", ironUpgrade.ItemName)
                 break upgrade 
             }
 
-            armour.level++
-            Varlaibles.money -= MoneyNeeded
             console.log(Variables.money)
         }
         else
@@ -119,26 +143,48 @@ export default class shopScene extends Phaser.Scene{
             if(weapon.level < 11 && MaterialNeeded <= ironUpgrade.NumberOwned)
             {
                 ironUpgrade.NumberOwned -= MaterialNeeded
+                weapon.level++
+                Variables.money -= MoneyNeeded
             }
             else if(10 < weapon.level && weapon.level < 21)
             {
-
+                MaterialNeeded -= 10
+                if (steelUpgrade.NumberOwned >= MaterialNeeded)
+                {
+                    steelUpgrade.NumberOwned -= MaterialNeeded
+                    weapon.level++
+                    Variables.money -= MoneyNeeded
+                }  
+                else
+                {
+                    console.log("Not enough", steelUpgrade.ItemName)
+                    break upgrade 
+                }
             }
             else if(weapon.level > 20)
             {
-                
+                MaterialNeeded -= 20
+                if (titaniumUpgrade.NumberOwned >= MaterialNeeded)
+                {
+                    titaniumUpgrade.NumberOwned -= MaterialNeeded
+                    weapon.level++
+                    Variables.money -= MoneyNeeded
+                }  
+                else
+                {
+                    console.log("Not enough", titaniumUpgrade.ItemName)
+                    break upgrade 
+                }
             }
             else
             {
-                console.log("Not enough upgrade materials")
+                console.log("Not enough ", ironUpgrade.ItemName)
                 break upgrade 
             }
 
-            weapon.level++
-            Variables.money -= MoneyNeeded
             console.log(Variables.money)
         }
-        else if(Variables.money < MoneyNeeded)
+        else
         {
             console.log("you don't have enough money")
         }
@@ -154,7 +200,7 @@ export default class shopScene extends Phaser.Scene{
         let Buy1 = this.add.text(230,100,"iron      Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buyIron))
         let Buy2 = this.add.text(230,150,"steel     Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buySteel))
         let Buy3 = this.add.text(230,200,"titanium  Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buyTitanium))
-        let LeaveBuyButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveBuyButtonClicked(Buy1, Buy2, Buy3, Buy4, Buy5, Buy6, LeaveBuyButton))
+        let LeaveBuyButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveBuyButtonClicked(Buy1, Buy2, Buy3, LeaveBuyButton))
 
 
     }
@@ -218,14 +264,11 @@ export default class shopScene extends Phaser.Scene{
 
 
 
-    LeaveBuyButtonClicked(Buy1, Buy2, Buy3, Buy4, Buy5, Buy6, LeaveBuyButton)
+    LeaveBuyButtonClicked(Buy1, Buy2, Buy3, LeaveBuyButton)
     {
         Buy1.destroy()
         Buy2.destroy()
         Buy3.destroy()
-        Buy4.destroy()
-        Buy5.destroy()
-        Buy6.destroy()
         LeaveBuyButton.destroy()
 
         this.create()
@@ -239,7 +282,7 @@ export default class shopScene extends Phaser.Scene{
         let Sell1 = this.add.text(230,100,"Iron      Sell").setInteractive().on('pointerdown', () => this.sellMaterial(materialIron))
         let Sell2 = this.add.text(230,150,"Steel     Sell").setInteractive().on('pointerdown', () => this.sellMaterial(materialSteel))
         let Sell3 = this.add.text(230,200,"Titanium  Sell").setInteractive().on('pointerdown', () => this.sellMaterial(materialTitanium))
-        let LeaveBuyButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveBuyButtonClicked(Sell1, Sell2, Sell3, Sell4, Sell5, Sell6, LeaveBuyButton))
+        let LeaveBuyButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveBuyButtonClicked(Sell1, Sell2, Sell3, LeaveBuyButton))
 
 
     }

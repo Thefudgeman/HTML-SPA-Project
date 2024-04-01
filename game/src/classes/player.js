@@ -59,5 +59,6 @@ export class Player extends Entity
       super.health = Health
       super.defence = Defence
       this.level = Level
+      this.maxHealth = Health
     }
 }

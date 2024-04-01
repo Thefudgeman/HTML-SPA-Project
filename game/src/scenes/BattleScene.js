@@ -5,6 +5,9 @@ import { Weapon } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/items
 import { Sword } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/items/Weapons/Sword.js'
 import { WarriorArmour } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/items/Armour/WarriorArmour.js'
 import { Variables }from '/Users/theob/dev/HTML-SPA-Project/game/src/scenes/Maingame.js'
+import { SmallHealthPotion } from '../classes/items/Potions/smallHealthPotion.js'
+import { HealthPotion } from '../classes/items/Potions/healthPotion.js'
+import { LargeHealthPotion } from '../classes/items/Potions/largeHealthPotion.js'
 
 var created = false
 
@@ -23,12 +26,15 @@ export default class battleScene extends Phaser.Scene{
       const player = new Player("name", 50, 100, 50, 1);
       const sword = new Sword("Sword", "this is a sword", 20, 1)
       const armour = new WarriorArmour("Armour", "this is armour", 10, 1)
+      const smallHealthPotions = new SmallHealthPotion("Restores 25% of your health", 15, "Small Health Potion")
+      const healthPotions = new HealthPotion("Restores 50% of your health", 15, "Health Potion")
+      const largeHealthPotions = new LargeHealthPotion("Restores 75% of your health", 15, "Large Health Potion")
       this.map = this.add.image(0,0,"map2").setOrigin(0,0)
       
       let AttackButton = this.add.text(430,300,"Attack").setInteractive().on('pointerdown', () => this.AttackButtonClicked(slime, player, AttackButton, ItemButton, RunButton, sword, armour))
 
       
-      let ItemButton = this.add.text(498,300,"Item")//.setInteractive().on('pointerdown', () => this.battle())
+      let ItemButton = this.add.text(498,300,"Item").setInteractive().on('pointerdown', () => this.ItemButtonClicked(player, smallHealthPotions, healthPotions, largeHealthPotions))
 
       
         let RunButton = this.add.text(550,300,"Run").setInteractive().on('pointerdown', () => this.RunButtonClicked(slime, player))
@@ -94,8 +100,51 @@ export default class battleScene extends Phaser.Scene{
         }
     }
 
-    ItemButtonClicked()
+    ItemButtonClicked(player, smallHealthPotions, healthPotions, largeHealthPotions)
     {
+        var ItemBox = this.add.rectangle(505, 420, 300, 150, 0)
+        ItemBox.setStrokeStyle(2, 0xffffff);
+        let SmallHealthPotionT = this.add.text(357, 355,"Small Health Potion x " + smallHealthPotions.NumberOwned)
+        let useSmallHealthPotion = this.add.text(610, 355, "Use").setInteractive().on('pointerdown', () => this.usePotion(smallHealthPotions, player, smallHealthPotions, healthPotions, largeHealthPotions))
+        
+        let HealthPotionT = this.add.text(357, 395,"Health Potion x " + healthPotions.NumberOwned)
+        let useHealthPotion = this.add.text(610, 395, "Use").setInteractive().on('pointerdown', () => this.usePotion(healthPotions, player, smallHealthPotions, healthPotions, largeHealthPotions))
+
+        let LargeHealthPotionT = this.add.text(357, 435,"Large Health Potion x " + largeHealthPotions.NumberOwned)
+        let useLargeHealthPotion = this.add.text(610, 435, "Use").setInteractive().on('pointerdown', () => this.usePotion(largeHealthPotions, player, smallHealthPotions, healthPotions, largeHealthPotions))
+
+        let LeaveButton = this.add.text(600, 480, "Close").setInteractive().on('pointerdown', () => this.leaveItemSelect(ItemBox, SmallHealthPotionT, useSmallHealthPotion, HealthPotionT, useHealthPotion, LargeHealthPotionT, useLargeHealthPotion, LeaveButton))
+    }
+
+    usePotion(Potion, player, smallHealthPotions, healthPotions, largeHealthPotions)
+    {
+        if(Potion.NumberOwned > 0)
+        {
+            player.health += player.maxHealth*(Potion.HealthRecovery/100)
+            Potion.NumberOwned--
+        }
+        else
+        {
+            console.log("You have no more potions left")
+        }
+        if(player.health > player.maxHealth)
+        {
+            player.Health = player.maxHealth
+        }
+        console.log(player.health)
+        this.ItemButtonClicked(player, smallHealthPotions, healthPotions, largeHealthPotions)
+    }
+
+    leaveItemSelect(ItemBox, SmallHealthPotionT, useSmallHealthPotion, HealthPotionT, useHealthPotion, LargeHealthPotionT, useLargeHealthPotion, LeaveButton)
+    {
+        ItemBox.destroy()
+        SmallHealthPotionT.destroy()
+        useSmallHealthPotion.destroy()
+        HealthPotionT.destroy()
+        useHealthPotion.destroy()
+        LargeHealthPotionT.destroy()
+        useLargeHealthPotion.destroy()
+        LeaveButton.destroy()
 
     }
 
