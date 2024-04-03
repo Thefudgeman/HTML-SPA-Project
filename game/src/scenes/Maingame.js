@@ -323,3 +323,24 @@ export default class GameScene extends Phaser.Scene {
  
     }
 }
+
+export class GameSceneFloor2 extends Phaser.Scene {
+    constructor() {
+        super("scene-game-floor2")
+
+    }
+    preload()
+    {
+
+    }
+
+    create()
+    {
+
+    }
+
+    update()
+    {
+        
+    }
+}
