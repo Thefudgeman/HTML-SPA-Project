@@ -3,7 +3,7 @@ import Phaser from 'phaser'
 import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js"
 import Preloader from './src/scenes/Preloader.js'
 import shopScene from './src/scenes/ShopScene.js'
-import GameScene from './src/scenes/Maingame.js'
+import GameScene, { GameSceneFloor2 } from './src/scenes/Maingame.js'
 import battleScene from './src/scenes/BattleScene.js'
 
 
@@ -30,6 +30,6 @@ const config = {
         }
     },
 
-    scene: [Preloader, GameScene, battleScene, shopScene]
+    scene: [Preloader, GameScene, GameSceneFloor2, battleScene, shopScene]
 }
 const game = new Phaser.Game(config)

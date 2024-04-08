@@ -1,3 +1,4 @@
+import { Rectangle } from "phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms"
 
 var playerDirection
 export class variables
@@ -6,6 +7,7 @@ export class variables
     battle2 = false
     battle3 = false
     money = 999999999999999
+    opendoors = false
 }
 
 
@@ -34,6 +36,7 @@ export default class GameScene extends Phaser.Scene {
             frameWidth:32,
             frameHeight:32
         })
+        this.load.image("door", "src/assets/shutDoor.png")
     }
     ShopClicked()
     {
@@ -43,13 +46,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     create() {
-
-
-      
-
-
-
-        this.keys = this.input.keyboard.addKeys("w,a,s,d,f")
+        this.keys = this.input.keyboard.addKeys("w,a,s,d,f,e")
         this.add.image(0, 0, "tiles").setOrigin(0,0)
         const map = this.make.tilemap({key: 'dungeon'}) 
         map.addTilesetImage('0x72_DungeonTilesetII_v1.6', 'tiles')
@@ -58,10 +55,18 @@ export default class GameScene extends Phaser.Scene {
         const RoomCornerLayer = map.createLayer("RoomCorner", tileset, 0, 0)
         const SideTopWallLayer = map.createLayer("Side/TopWall", tileset, 0 ,0)
         const BottomWallLayer = map.createLayer("BottomWall", tileset, 0, 0)
+        const DoorLayer = map.createLayer("DoorLayer", tileset, 0, 0)
 
+      //  const Door1 = map.createFromObjects("door/chests", 1, "", true, false)
+        
         RoomCornerLayer.setCollisionBetween(322, 323)
         SideTopWallLayer.setCollisionBetween(2, 324)
         BottomWallLayer.setCollisionBetween(2, 3)
+        BottomWallLayer.setCollisionBetween(481, 482)
+        BottomWallLayer.setCollisionBetween(484, 485)
+
+        DoorLayer.setCollisionBetween(482, 484)
+
        
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
 
@@ -146,7 +151,7 @@ export default class GameScene extends Phaser.Scene {
             })
         }
 
-        this.player = this.physics.add.sprite(playerX, playerY, "player")
+        this.player = this.physics.add.sprite(0, 0, "player")
         this.player.play("idleDown",true)
         this.player.anims.msPerFrame = 100
         this.slime = this.physics.add.sprite(200,200, "slime")
@@ -159,24 +164,23 @@ export default class GameScene extends Phaser.Scene {
         this.slime.setBounce(50,50)
         this.slime.setCollideWorldBounds(true)
         this.player.setCollideWorldBounds(true)
-
         this.physics.add.collider(this.player, SideTopWallLayer)
         this.physics.add.collider(this.player, RoomCornerLayer)
         this.physics.add.collider(this.player, BottomWallLayer)
-
-
+        this.physics.add.collider(this.player, DoorLayer)
         this.slime2 = this.physics.add.sprite(400, 400, "slime2")
         this.slime2.play("idle", true)
-        this.slime.anims.msPerFrame = 150
+        this.slime2.anims.msPerFrame = 150
         this.physics.add.collider(this.player, this.slime2)
         this.slime2.body.setSize(10, 10)
         this.slime2.setImmovable(true)
         this.physics.add.overlap(this.slime, this.player, this.battle, undefined, this)
         this.physics.add.overlap(this.slime2, this.player, this.battle2, undefined, this)
-
-   
+        if(Variables.battle&&Variables.battle2&&Variables.battle3)
+        {
+            DoorLayer.destroy()
+        }
     }
-
 
     battle2()
     {
@@ -201,11 +205,23 @@ export default class GameScene extends Phaser.Scene {
             this.scene.start("scene-battle")
         }
     }
+
     update() 
     {
         this.player.setVelocity(0)
         this.player.setBodySize(16,20)
         this.player.setOffset(16,20)
+
+        Variables.battle = true
+         Variables.battle2=true
+          Variables.battle3 =true
+
+        if(Variables.battle && Variables.battle2 && Variables.battle3 && !Variables.opendoors && this.player.x > 0 && this.player.y > 0 && this.keys.e.isDown)
+        {
+            console.log("r")
+           // Variables.opendoors = true
+            //this.create()    
+        }
 
         if(this.keys.s.isDown && this.keys.a.isDown)
         {
@@ -336,6 +352,21 @@ export class GameSceneFloor2 extends Phaser.Scene {
 
     create()
     {
+        this.keys = this.input.keyboard.addKeys("w,a,s,d,f")
+        this.add.image(0, 0, "tiles").setOrigin(0,0)
+        const map = this.make.tilemap({key: 'dungeon'}) 
+        map.addTilesetImage('0x72_DungeonTilesetII_v1.6', 'tiles')
+        const tileset = map.addTilesetImage("0x72_DungeonTilesetII_v1.6", "tiles")
+        const GroundLayer =  map.createLayer("Ground", tileset, 0, 0)
+        const RoomCornerLayer = map.createLayer("RoomCorner", tileset, 0, 0)
+        const SideTopWallLayer = map.createLayer("Side/TopWall", tileset, 0 ,0)
+        const BottomWallLayer = map.createLayer("BottomWall", tileset, 0, 0)
+
+        RoomCornerLayer.setCollisionBetween(322, 323)
+        SideTopWallLayer.setCollisionBetween(2, 324)
+        BottomWallLayer.setCollisionBetween(2, 3)
+       
+        let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
 
     }
 
