@@ -374,19 +374,17 @@ export class GameSceneFloor2 extends Phaser.Scene {
     }
     preload()
     {
-
+        this.load.image('door', "./src/assets/shutDoor.png")
     }
 
     create()
     {
         Variables.currentFloor = 2
-        this.keys = this.input.keyboard.addKeys("w,a,s,d,f")
-     //   this.add.image(0, 0, "tiles").setOrigin(0,0)
+        this.keys = this.input.keyboard.addKeys("w,a,s,d,f,e")
         const map = this.make.tilemap({key: 'floor2'}) 
         map.addTilesetImage('0x72_DungeonTilesetII_v1.6', 'tiles')
         const tileset = map.addTilesetImage("0x72_DungeonTilesetII_v1.6", "tiles")
         const GroundLayer =  map.createLayer("Ground", tileset, 0, 0)
-        
         const BottomTopWallLayer = map.createLayer("Top/BottomWall", tileset, 0, 0)
         const SideWallLayer = map.createLayer("SideWall", tileset, 0 ,0)
         SideWallLayer.setCollisionBetween(322, 324)
@@ -400,6 +398,15 @@ export class GameSceneFloor2 extends Phaser.Scene {
         this.player.anims.msPerFrame = 150
         this.player.body.setSize(16,24)
         this.player.setCollideWorldBounds(true)
+        this.physics.add.collider(this.player, BottomTopWallLayer)
+        this.physics.add.collider(this.player, SideWallLayer)
+
+        this.doors = this.physics.add.sprite(592, 430, 'door').setScale(.38)
+        this.doors.setImmovable(true)
+        this.physics.add.collider(this.player, this.doors)
+        this.downFloor = new Phaser.Geom.Rectangle(784, 50, 64, 48)
+        this.upFloor = new Phaser.Geom.Rectangle(784, 500, 64, 48)
+        this.opendoor = new Phaser.Geom.Rectangle(560, 368, 60, 32)
     }
     ShopClicked()
     {
@@ -412,6 +419,71 @@ export class GameSceneFloor2 extends Phaser.Scene {
     {
 
        Movement.movement(this.player, this.keys)
-
+       if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+       {
+            console.log("1")
+            this.doors.destroy()
+       }
+        if(this.downFloor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            console.log("r")
+        }
+        else if (this.upFloor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            console.log("q")
+            this.scene.start("scene-game-floor3", this.player)
+        }
     }
+}
+
+export class GameSceneFloor3 extends Phaser.Scene{
+    constructor() {
+        super("scene-game-floor3")
+        this.player
+    }
+
+    preload()
+    {
+        this.load.image('door', "./src/assets/shutDoor.png")
+    }
+    create()
+    {
+        Variables.currentFloor = 2
+        this.keys = this.input.keyboard.addKeys("w,a,s,d,f,e")
+        const map = this.make.tilemap({key: 'floor3'}) 
+        map.addTilesetImage('0x72_DungeonTilesetII_v1.6', 'tiles')
+        const tileset = map.addTilesetImage("0x72_DungeonTilesetII_v1.6", "tiles")
+        const GroundLayer =  map.createLayer("Ground", tileset, 0, 0)
+        
+        const BottomTopWallLayer = map.createLayer("Top/BottomWall", tileset, 0, 0)
+        const SideWallLayer = map.createLayer("SideWall", tileset, 0 ,0)
+        SideWallLayer.setCollisionBetween(322, 324)
+        BottomTopWallLayer.setCollisionBetween(2, 4)
+       
+        let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
+
+
+        this.player = this.physics.add.sprite(775, 525, "player")   
+        this.player.play("idleDown",true)
+        this.player.anims.msPerFrame = 150
+        this.player.body.setSize(16,24)
+        this.player.setCollideWorldBounds(true)
+
+        this.doors = this.physics.add.sprite(336, 125, 'door').setScale(.38)
+        this.doors.setImmovable(true)
+        this.physics.add.collider(this.player, this.doors)
+    }
+
+    ShopClicked()
+    {
+        playerX = this.player.body.x
+        playerY = this.player.body.y
+        this.scene.start("scene-shop")
+    }
+
+    update()
+    {
+        Movement.movement(this.player, this.keys)
+    }
+
 }
