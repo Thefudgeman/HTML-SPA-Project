@@ -8,6 +8,8 @@ export class variables
     battle3 = false
     money = 999999999999999
     opendoors = false
+    highestFloorClear = 0
+    currentFloor = 1
 }
 
 
@@ -16,6 +18,122 @@ export var Variables = new variables()
 var createAnims = false
 var playerX = 110
 var playerY = 110
+
+
+class BaseScene extends Phaser.Scene{
+    movement(player, keys)
+    {
+        player.setVelocity(0)
+        player.setBodySize(16,20)
+        player.setOffset(16,20)
+        if(keys.s.isDown && keys.a.isDown)
+        {
+            player.setVelocityY(69.4)
+            player.setVelocityX(-69.4)
+        }
+        else if(keys.s.isDown && keys.d.isDown)
+        {
+            player.setVelocityY(69.4)
+            player.setVelocityX(69.4)
+        }
+        else if (playerDirection == "s" && keys.f.isDown)
+        {
+            player.setFlipX(false)
+            player.body.setSize(16,24)
+            player.setOffset(16,30)
+            player.play("attackDown",true)
+            player.anims.msPerFrame = 100
+        }
+        else if (keys.s.isDown)
+        {
+            playerDirection = "s",
+            player.setVelocityY(100),
+            player.setFlipX(false),
+            player.play("walkDown",true),
+            player.anims.msPerFrame = 100
+        }
+        else if(playerDirection == "s")
+        {
+            player.play("idleDown", true)
+            player.anims.msPerFrame = 100
+        }
+        if(keys.w.isDown && keys.a.isDown)
+        {
+            player.setVelocityY(-69.4)
+            player.setVelocityX(-69.4)
+        }
+        else if(keys.w.isDown && keys.d.isDown)
+        {
+            player.setVelocityY(-69.4)
+            player.setVelocityX(69.4)
+        }
+        else if (playerDirection == "w" && keys.f.isDown)
+        {
+            player.setFlipX(false)
+            player.body.setSize(16,25)
+            player.play("attackUp",true)
+            player.anims.msPerFrame = 100
+        }
+        else if (keys.w.isDown)
+        {
+            playerDirection = "w",
+            player.setVelocityY(-100),
+            player.setFlipX(false),
+            player.play("walkUp",true),
+            player.anims.msPerFrame = 100
+        }
+        else if(playerDirection == "w")
+        {
+            player.play("idleUp", true)
+            player.anims.msPerFrame = 100
+        }
+
+        if (playerDirection == "a" && keys.f.isDown)
+        {
+            player.setFlipX(true)
+            player.body.setSize(35,20)
+            player.setOffset(0,20)
+            player.play("attackRight",true)
+            player.anims.msPerFrame = 100
+        }
+        else if (keys.a.isDown)
+        {
+            playerDirection = "a",
+            player.setVelocityX(-100),
+            player.setFlipX(true),
+            player.play("walkRight",true),
+            player.anims.msPerFrame = 100 
+        }
+        else if(playerDirection == "a")
+        {
+            player.play("idleRight", true)
+            player.anims.msPerFrame = 100  
+        }
+        if (playerDirection == "d" && keys.f.isDown)
+        {
+            player.setFlipX(false)
+            player.body.setSize(35,20)
+            player.setOffset(15,20)
+            player.play("attackRight",true)
+            player.anims.msPerFrame = 100
+        }
+        else if (keys.d.isDown)
+        {
+            playerDirection = "d"
+            player.setVelocityX(100),
+            player.setFlipX(false),
+            player.play("walkRight",true),
+            player.anims.msPerFrame = 100
+        }
+        else if(playerDirection == "d")
+        {
+            player.play("idleRight", true)
+            player.anims.msPerFrame = 100
+        }
+    }
+}
+var Movement = new BaseScene()
+
 
 export default class GameScene extends Phaser.Scene {
     constructor() {
@@ -49,9 +167,9 @@ export default class GameScene extends Phaser.Scene {
 
 
 
-
+        Variables.currentFloor = 1
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f,e")
-        this.add.image(0, 0, "tiles").setOrigin(0,0)
+      //  this.add.image(0, 0, "tiles").setOrigin(0,0)
         const map = this.make.tilemap({key: 'dungeon'}) 
         map.addTilesetImage('0x72_DungeonTilesetII_v1.6', 'tiles')
         const tileset = map.addTilesetImage("0x72_DungeonTilesetII_v1.6", "tiles")
@@ -185,7 +303,7 @@ export default class GameScene extends Phaser.Scene {
 
         this.physics.add.overlap(this.slime, this.player, this.battle, undefined, this)
         this.physics.add.overlap(this.slime2, this.player, this.battle2, undefined, this)
-        this.staris = new Phaser.Geom.Rectangle(815, 60, 50, 50)
+        this.stairs = new Phaser.Geom.Rectangle(815, 60, 50, 50)
 
         this.opendoor = new Phaser.Geom.Rectangle(744, 120, 60, 32)
         
@@ -221,127 +339,21 @@ export default class GameScene extends Phaser.Scene {
 
     update() 
     {
-        this.player.setVelocity(0)
-        this.player.setBodySize(16,20)
-        this.player.setOffset(16,20)
+
 
   
-        if(this.staris.contains(this.player.x, this.player.y))
+        if(this.stairs.contains(this.player.x, this.player.y) && this.keys.e.isDown)
         {
-            console.log("r")    
+            this.scene.start("scene-game-floor2", this.player)
             
         }
 
         if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown && Variables.battle && Variables.battle2 && Variables.battle3)
         {
-            console.log("G")
             this.doors.destroy()
         }
 
-        if(this.keys.s.isDown && this.keys.a.isDown)
-        {
-            this.player.setVelocityY(69.4)
-            this.player.setVelocityX(-69.4)
-        }
-        else if(this.keys.s.isDown && this.keys.d.isDown)
-        {
-            this.player.setVelocityY(69.4)
-            this.player.setVelocityX(69.4)
-        }
-        else if (playerDirection == "s" && this.keys.f.isDown)
-        {
-            this.player.setFlipX(false)
-            this.player.body.setSize(16,24)
-            this.player.setOffset(16,30)
-            this.player.play("attackDown",true)
-            this.player.anims.msPerFrame = 100
-        }
-        else if (this.keys.s.isDown)
-        {
-            playerDirection = "s",
-            this.player.setVelocityY(100),
-            this.player.setFlipX(false),
-            this.player.play("walkDown",true),
-            this.player.anims.msPerFrame = 100
-        }
-        else if(playerDirection == "s")
-        {
-            this.player.play("idleDown", true)
-            this.player.anims.msPerFrame = 100
-        }
-        if(this.keys.w.isDown && this.keys.a.isDown)
-        {
-            this.player.setVelocityY(-69.4)
-            this.player.setVelocityX(-69.4)
-        }
-        else if(this.keys.w.isDown && this.keys.d.isDown)
-        {
-            this.player.setVelocityY(-69.4)
-            this.player.setVelocityX(69.4)
-        }
-        else if (playerDirection == "w" && this.keys.f.isDown)
-        {
-            this.player.setFlipX(false)
-            this.player.body.setSize(16,25)
-            this.player.play("attackUp",true)
-            this.player.anims.msPerFrame = 100
-        }
-        else if (this.keys.w.isDown)
-        {
-            playerDirection = "w",
-            this.player.setVelocityY(-100),
-            this.player.setFlipX(false),
-            this.player.play("walkUp",true),
-            this.player.anims.msPerFrame = 100
-        }
-        else if(playerDirection == "w")
-        {
-            this.player.play("idleUp", true)
-            this.player.anims.msPerFrame = 100
-        }
-
-        if (playerDirection == "a" && this.keys.f.isDown)
-        {
-            this.player.setFlipX(true)
-            this.player.body.setSize(35,20)
-            this.player.setOffset(0,20)
-            this.player.play("attackRight",true)
-            this.player.anims.msPerFrame = 100
-        }
-        else if (this.keys.a.isDown)
-        {
-            playerDirection = "a",
-            this.player.setVelocityX(-100),
-            this.player.setFlipX(true),
-            this.player.play("walkRight",true),
-            this.player.anims.msPerFrame = 100 
-        }
-        else if(playerDirection == "a")
-        {
-            this.player.play("idleRight", true)
-            this.player.anims.msPerFrame = 100  
-        }
-        if (playerDirection == "d" && this.keys.f.isDown)
-        {
-            this.player.setFlipX(false)
-            this.player.body.setSize(35,20)
-            this.player.setOffset(15,20)
-            this.player.play("attackRight",true)
-            this.player.anims.msPerFrame = 100
-        }
-        else if (this.keys.d.isDown)
-        {
-            playerDirection = "d"
-            this.player.setVelocityX(100),
-            this.player.setFlipX(false),
-            this.player.play("walkRight",true),
-            this.player.anims.msPerFrame = 100
-        }
-        else if(playerDirection == "d")
-        {
-            this.player.play("idleRight", true)
-            this.player.anims.msPerFrame = 100
-        }
+       Movement.movement(this.player, this.keys)
 
         if(Variables.battle == true)
         {
@@ -358,7 +370,7 @@ export default class GameScene extends Phaser.Scene {
 export class GameSceneFloor2 extends Phaser.Scene {
     constructor() {
         super("scene-game-floor2")
-
+        this.player
     }
     preload()
     {
@@ -367,26 +379,39 @@ export class GameSceneFloor2 extends Phaser.Scene {
 
     create()
     {
+        Variables.currentFloor = 2
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f")
-        this.add.image(0, 0, "tiles").setOrigin(0,0)
-        const map = this.make.tilemap({key: 'dungeon'}) 
+     //   this.add.image(0, 0, "tiles").setOrigin(0,0)
+        const map = this.make.tilemap({key: 'floor2'}) 
         map.addTilesetImage('0x72_DungeonTilesetII_v1.6', 'tiles')
         const tileset = map.addTilesetImage("0x72_DungeonTilesetII_v1.6", "tiles")
         const GroundLayer =  map.createLayer("Ground", tileset, 0, 0)
-        const RoomCornerLayer = map.createLayer("RoomCorner", tileset, 0, 0)
-        const SideTopWallLayer = map.createLayer("Side/TopWall", tileset, 0 ,0)
-        const BottomWallLayer = map.createLayer("BottomWall", tileset, 0, 0)
-
-        RoomCornerLayer.setCollisionBetween(322, 323)
-        SideTopWallLayer.setCollisionBetween(2, 324)
-        BottomWallLayer.setCollisionBetween(2, 3)
+        
+        const BottomTopWallLayer = map.createLayer("Top/BottomWall", tileset, 0, 0)
+        const SideWallLayer = map.createLayer("SideWall", tileset, 0 ,0)
+        SideWallLayer.setCollisionBetween(322, 324)
+        BottomTopWallLayer.setCollisionBetween(2, 4)
        
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
 
+
+        this.player = this.physics.add.sprite(800, 80, "player")   
+        this.player.play("idleDown",true)
+        this.player.anims.msPerFrame = 150
+        this.player.body.setSize(16,24)
+        this.player.setCollideWorldBounds(true)
+    }
+    ShopClicked()
+    {
+        playerX = this.player.body.x
+        playerY = this.player.body.y
+        this.scene.start("scene-shop")
     }
 
     update()
     {
-        
+
+       Movement.movement(this.player, this.keys)
+
     }
 }

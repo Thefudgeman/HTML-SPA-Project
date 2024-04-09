@@ -290,7 +290,15 @@ export default class shopScene extends Phaser.Scene{
     LeaveButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton)
     {   
         this.DestroyButtons(BuyButton, SellButton, LeaveButton, UpgradeButton)
-        this.scene.start("scene-game")
+        if(Variables.currentFloor == 1)
+        {
+            this.scene.start("scene-game")
+        }
+        else if (Variables.currentFloor == 2)
+        {
+            this.scene.start("scene-game-floor2")
+        }
+        
     }
 
     update()
