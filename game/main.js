@@ -1,7 +1,7 @@
 import './style.css'
 import Phaser from 'phaser'
 import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin.js"
-import Preloader from './src/scenes/Preloader.js'
+import Preloader from './src/scenes/preloader.js'
 import shopScene from './src/scenes/ShopScene.js'
 import GameScene, { GameSceneFloor2 } from './src/scenes/Maingame.js'
 import battleScene from './src/scenes/BattleScene.js'

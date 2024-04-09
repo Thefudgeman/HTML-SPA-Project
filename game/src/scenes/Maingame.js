@@ -46,6 +46,10 @@ export default class GameScene extends Phaser.Scene {
     }
 
     create() {
+
+
+
+
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f,e")
         this.add.image(0, 0, "tiles").setOrigin(0,0)
         const map = this.make.tilemap({key: 'dungeon'}) 
@@ -55,17 +59,14 @@ export default class GameScene extends Phaser.Scene {
         const RoomCornerLayer = map.createLayer("RoomCorner", tileset, 0, 0)
         const SideTopWallLayer = map.createLayer("Side/TopWall", tileset, 0 ,0)
         const BottomWallLayer = map.createLayer("BottomWall", tileset, 0, 0)
-        const DoorLayer = map.createLayer("DoorLayer", tileset, 0, 0)
-
-      //  const Door1 = map.createFromObjects("door/chests", 1, "", true, false)
-        
-        RoomCornerLayer.setCollisionBetween(322, 323)
-        SideTopWallLayer.setCollisionBetween(2, 324)
+        const Stairs = map.createLayer("StairLayer", tileset, 0, 0)
+      //  RoomCornerLayer.setCollisionBetween(322, 323)
+        //SideTopWallLayer.setCollisionBetween(2, 324)
         BottomWallLayer.setCollisionBetween(2, 3)
         BottomWallLayer.setCollisionBetween(481, 482)
         BottomWallLayer.setCollisionBetween(484, 485)
+    
 
-        DoorLayer.setCollisionBetween(482, 484)
 
        
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
@@ -151,7 +152,9 @@ export default class GameScene extends Phaser.Scene {
             })
         }
 
-        this.player = this.physics.add.sprite(0, 0, "player")
+
+        
+        this.player = this.physics.add.sprite(800, 140, "player")
         this.player.play("idleDown",true)
         this.player.anims.msPerFrame = 100
         this.slime = this.physics.add.sprite(200,200, "slime")
@@ -167,19 +170,29 @@ export default class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player, SideTopWallLayer)
         this.physics.add.collider(this.player, RoomCornerLayer)
         this.physics.add.collider(this.player, BottomWallLayer)
-        this.physics.add.collider(this.player, DoorLayer)
+        this.physics.add.collider(this.player, this.DoorLayer)
         this.slime2 = this.physics.add.sprite(400, 400, "slime2")
         this.slime2.play("idle", true)
         this.slime2.anims.msPerFrame = 150
         this.physics.add.collider(this.player, this.slime2)
         this.slime2.body.setSize(10, 10)
         this.slime2.setImmovable(true)
+
+        this.doors = this.physics.add.sprite(784,110, 'door').setScale(.38)
+        this.doors.setImmovable(true)
+        this.physics.add.collider(this.player, this.doors)
+
+
         this.physics.add.overlap(this.slime, this.player, this.battle, undefined, this)
         this.physics.add.overlap(this.slime2, this.player, this.battle2, undefined, this)
-        if(Variables.battle&&Variables.battle2&&Variables.battle3)
-        {
-            DoorLayer.destroy()
-        }
+        this.staris = new Phaser.Geom.Rectangle(815, 60, 50, 50)
+
+        this.opendoor = new Phaser.Geom.Rectangle(744, 120, 60, 32)
+        
+
+        Variables.battle = true
+        Variables.battle2=true
+        Variables.battle3 =true
     }
 
     battle2()
@@ -212,15 +225,17 @@ export default class GameScene extends Phaser.Scene {
         this.player.setBodySize(16,20)
         this.player.setOffset(16,20)
 
-        Variables.battle = true
-         Variables.battle2=true
-          Variables.battle3 =true
-
-        if(Variables.battle && Variables.battle2 && Variables.battle3 && !Variables.opendoors && this.player.x > 0 && this.player.y > 0 && this.keys.e.isDown)
+  
+        if(this.staris.contains(this.player.x, this.player.y))
         {
-            console.log("r")
-           // Variables.opendoors = true
-            //this.create()    
+            console.log("r")    
+            
+        }
+
+        if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown && Variables.battle && Variables.battle2 && Variables.battle3)
+        {
+            console.log("G")
+            this.doors.destroy()
         }
 
         if(this.keys.s.isDown && this.keys.a.isDown)
