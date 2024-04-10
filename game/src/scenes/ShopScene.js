@@ -298,6 +298,10 @@ export default class shopScene extends Phaser.Scene{
         {
             this.scene.start("scene-game-floor2")
         }
+        else if (Variables.currentFloor == 3)
+        {
+            this.scene.start("scene-game-floor3")
+        }
         
     }
 

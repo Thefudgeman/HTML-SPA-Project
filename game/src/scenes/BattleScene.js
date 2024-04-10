@@ -19,9 +19,50 @@ export default class battleScene extends Phaser.Scene{
     preload()
     {
         this.load.image("map2", "src/assets/2D Pixel Dungeon Asset Pack/character and tileset/demonstration.png")
+        this.load.spritesheet("DungeonMasterDeath", "./src/assets/Roguelike Dungeon - Asset Bundle/Dungeon Master Death.png", 
+        {
+            frameWidth:320,
+            frameHeight:160
+        })
+        this.load.spritesheet("DungeonMasterProjectile", "./src/assets/Roguelike Dungeon - Asset Bundle/Dungeon Master Projectile 1.png", 
+        {
+            frameWidth:320,
+            frameHeight:320
+        })
+        this.load.spritesheet("DungeonMasterBlast", "./src/assets/Roguelike Dungeon - Asset Bundle/Dungeon Master Blast 1.png", 
+        {
+            frameWidth:320,
+            frameHeight:320
+        })
+        this.load.spritesheet("GoblinKingDeath", "./src/assets/Roguelike Dungeon - Asset Bundle/Goblin King Death.png", 
+        {
+            frameWidth:320,
+            frameHeight:160
+        })
+        this.load.spritesheet("GoblinKingProjectile", "./src/assets/Roguelike Dungeon - Asset Bundle/Goblin King Projectile 1.png", 
+        {
+            frameWidth:320,
+            frameHeight:320
+        })
+        this.load.spritesheet("GoblinKingBlast", "./src/assets/Roguelike Dungeon - Asset Bundle/Goblin King Blast 1.png", 
+        {
+            frameWidth:320,
+            frameHeight:320
+        })
+        this.load.spritesheet("SkeletonKingDeath", "./src/assets/Roguelike Dungeon - Asset Bundle/Skeleton King Death.png", 
+        {
+            frameWidth:320,
+            frameHeight:160
+        })
+        this.load.spritesheet("SlimeKingDeath", "./src/assets/Roguelike Dungeon - Asset Bundle/Slime King Death.png", 
+        {
+            frameWidth:320,
+            frameHeight:160
+        })
     }
     create()
     {
+
       const slime = new Slime();
       const player = new Player("name", 50, 100, 50, 1);
       const sword = new Sword("Sword", "this is a sword", 20, 1)
@@ -46,9 +87,46 @@ export default class battleScene extends Phaser.Scene{
                 framerate:16,
                 repeat:0
             })
+            this.anims.create({
+                key:"Death",
+                frames:this.anims.generateFrameNumbers("DungeonMasterDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
+            })
+            this.anims.create({
+                key:"Projectile",
+                frames:this.anims.generateFrameNumbers("DungeonMasterProjectile", ),
+                repeat:-1
+            })
+            this.anims.create({
+                key:"Blast",
+                frames:this.anims.generateFrameNumbers("DungeonMasterBlast", ),
+                repeat:-1
+            })
+            this.anims.create({
+                key:"Death",
+                frames:this.anims.generateFrameNumbers("GoblinKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
+            })
+            this.anims.create({
+                key:"Projectile",
+                frames:this.anims.generateFrameNumbers("GoblinKingProjectile", ),
+                repeat:-1
+            })
+            this.anims.create({
+                key:"Blast",
+                frames:this.anims.generateFrameNumbers("GoblinKingBlast", ),
+                repeat:-1
+            })
+            this.anims.create({
+                key:"Death",
+                frames:this.anims.generateFrameNumbers("SkeletonKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
+            })
+            this.anims.create({
+                key:"Death",
+                frames:this.anims.generateFrameNumbers("SlimeKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
+            })
             created = true
         }
-
+        this.projectile = this.add.sprite(500,500, "DungeonMasterProjectile")
+        this.projectile.play("Projectile", true)
         this.slime = this.add.sprite(700,200, "slime")
         this.player = this.add.sprite(300,200, "player")
         this.player.play("idleRight", true)

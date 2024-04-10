@@ -13,6 +13,8 @@ export default class Preloader extends Phaser.Scene
         this.load.tilemapTiledJSON('dungeon', "src/assets/newmapdonet6.JSON")
         this.load.tilemapTiledJSON('floor2', "src/assets/floor 2.JSON")
         this.load.tilemapTiledJSON('floor3', "src/assets/floor 3.JSON")
+        this.load.tilemapTiledJSON('floor4', "src/assets/floor 4.JSON")
+        this.load.tilemapTiledJSON('floor5', "src/assets/floor 5.JSON")
     }
     create()
     {
