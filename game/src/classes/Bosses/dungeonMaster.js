@@ -1,6 +1,6 @@
-import {Entity} from './entity.js'
+import {Entity} from '../entity.js'
 
-export class Slime extends Entity
+export class DungeonMaster extends Entity
 {
     moneyDrop;
     xpDrop;
@@ -32,11 +32,11 @@ export class Slime extends Entity
     constructor()
     {
         super()
-        super.name = "Slime";
-        super.attack = 10;
-        super.defence = 5;
-        super.health = 50;
-        this.moneyDrop = 5;
-        this.xpDrop = 20;
+        super.name = "DungeonMaster";
+        super.attack = 1000000;
+        super.defence = 50000;
+        super.health = 50000000;
+        this.moneyDrop = 5000000;
+        this.xpDrop = 20000000;
     }
 }

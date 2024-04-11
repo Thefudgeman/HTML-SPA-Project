@@ -6,10 +6,13 @@ export class variables
     battle = false
     battle2 = false
     battle3 = false
+    boss = false
     money = 999999999999999
     opendoors = false
     highestFloorClear = 0
     currentFloor = 1
+    enemyKey = ""
+    battleNum = 0
 }
 
 
@@ -155,6 +158,13 @@ export default class GameScene extends Phaser.Scene {
             frameHeight:32
         })
         this.load.image("door", "src/assets/shutDoor.png")
+
+
+        this.load.spritesheet("tilese", "src/assets/Dungeon_tiles.png",
+        {
+            frameWidth:16,
+            frameHeight:16
+        })
     }
     ShopClicked()
     {
@@ -164,8 +174,10 @@ export default class GameScene extends Phaser.Scene {
     }
 
     create() {
-
-
+        Variables.battle = true
+        Variables.battle2 = true
+        Variables.battle3 = true
+    
 
         Variables.currentFloor = 1
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f,e")
@@ -188,10 +200,19 @@ export default class GameScene extends Phaser.Scene {
         BottomWallLayer.setCollisionBetween(484,485)
 
 
-       
+       this.anims.create({
+        key:"open",
+        frames:this.anims.generateFrameNumbers("tilese", {frames:[851,852,853]}),
+        framerate:16,
+
+       })
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
 
-
+        this.chest1 = this.physics.add.sprite(744,56,"tilese")
+        this.chest2 = this.physics.add.sprite(776,56,"tilese")
+        this.chest3 = this.physics.add.sprite(808,56,"tilese")
+       // this.chest.play("open")
+        //this.chest.anims.msPerFrame = 250
         if(createAnims == false)
         {
             createAnims = true
@@ -306,13 +327,15 @@ export default class GameScene extends Phaser.Scene {
             this.doors.destroy()
         }
         this.physics.add.overlap(this.slime, this.player, this.battle, undefined, this)
-        this.physics.add.overlap(this.slime2, this.player, this.battle2, undefined, this)
+        this.physics.add.overlap(this.slime2, this.player, this.battle, undefined, this)
         this.stairs = new Phaser.Geom.Rectangle(815, 60, 50, 50)
 
         this.opendoor = new Phaser.Geom.Rectangle(744, 120, 60, 32)
+        this.openchest1 = new Phaser.Geom.Rectangle(732, 64, 24, 16)
+        this.openchest2 = new Phaser.Geom.Rectangle(764, 64, 24, 16)
+        this.openchest3 = new Phaser.Geom.Rectangle(792, 64, 24, 16)
         
-Variables.battle = true
-Variables.battle2 = true
+
 Variables.battle3 = true
  
     }
@@ -329,16 +352,14 @@ Variables.battle3 = true
         }
     }
 
-    battle()
+    battle(enemy)
     {
         this.player.stop()
         playerX = this.player.body.x
         playerY = this.player.body.y
-        if (Variables.battle == false)
-        {
-            Variables.battle = true
-            this.scene.start("scene-battle")
-        }
+        Variables.enemyKey = enemy.texture.key
+        console.log(enemy.texture.key)
+        this.scene.start("scene-battle")
     }
 
     update() 
@@ -348,10 +369,23 @@ Variables.battle3 = true
   
         if(this.stairs.contains(this.player.x, this.player.y) && this.keys.e.isDown)
         {
-            this.scene.start("scene-game-floor2", this.player)
+            this.scene.start("scene-game-floor5", this.player)
             playerX = 800
             playerY = 80
             
+        }
+
+        if(this.openchest1.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest1.play("open")
+        }
+        if(this.openchest2.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest2.play("open")
+        }
+        if(this.openchest3.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest3.play("open")
         }
 
         if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown && Variables.battle && Variables.battle2 && Variables.battle3)
@@ -436,6 +470,14 @@ export class GameSceneFloor2 extends Phaser.Scene {
        
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
 
+        this.chest1 = this.physics.add.sprite(760,456,"tilese")
+        this.chest2 = this.physics.add.sprite(792,456,"tilese")
+        this.chest3 = this.physics.add.sprite(824,456,"tilese")
+
+        this.openchest1 = new Phaser.Geom.Rectangle(748, 464, 24, 16)
+        this.openchest2 = new Phaser.Geom.Rectangle(780, 464, 24, 16)
+        this.openchest3 = new Phaser.Geom.Rectangle(812, 464, 24, 16)
+
         this.dungeonmaster = this.physics.add.sprite(400,400, "DungeonMasterDeath")
         this.dungeonmaster.play("Death", true)
         this.dungeonmaster.anims.msPerFrame = 150
@@ -478,6 +520,18 @@ export class GameSceneFloor2 extends Phaser.Scene {
     {
 
        Movement.movement(this.player, this.keys)
+       if(this.openchest1.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+       {
+           this.chest1.play("open")
+       }
+       if(this.openchest2.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+       {
+           this.chest2.play("open")
+       }
+       if(this.openchest3.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+       {
+           this.chest3.play("open")
+       }
        if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
        {
             console.log("1")
@@ -541,14 +595,23 @@ export class GameSceneFloor3 extends Phaser.Scene{
         this.physics.add.collider(this.player, SideWallLayer)
         this.physics.add.collider(this.player, BottomTopWallLayer)
 
-        this.doors = this.physics.add.sprite(336, 125, 'door').setScale(.38)
+
+        this.chest1 = this.physics.add.sprite(312,56,"tilese")
+        this.chest2 = this.physics.add.sprite(344,56,"tilese")
+        this.chest3 = this.physics.add.sprite(376,56,"tilese")
+
+        this.openchest1 = new Phaser.Geom.Rectangle(304, 64, 24, 16)
+        this.openchest2 = new Phaser.Geom.Rectangle(334, 64, 24, 16)
+        this.openchest3 = new Phaser.Geom.Rectangle(356, 64, 24, 16)
+
+        this.doors = this.physics.add.sprite(336, 128, 'door').setScale(.38)
         this.doors.setImmovable(true)
         this.physics.add.collider(this.player, this.doors)
         if(Variables.highestFloorClear > 2)
         {
             this.doors.destroy()
         }
-        this.upFloor = new Phaser.Geom.Rectangle(276, 64, 48, 32)
+        this.upFloor = new Phaser.Geom.Rectangle(276, 80, 48, 32)
         this.downFloor = new Phaser.Geom.Rectangle(764, 504, 64, 48)
         this.opendoor = new Phaser.Geom.Rectangle(300, 128, 64, 32)
 
@@ -565,6 +628,20 @@ export class GameSceneFloor3 extends Phaser.Scene{
     update()
     {
         Movement.movement(this.player, this.keys)
+
+        if(this.openchest1.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest1.play("open")
+        }
+        if(this.openchest2.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest2.play("open")
+        }
+        if(this.openchest3.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest3.play("open")
+        }
+
                if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
        {
             console.log("1")
@@ -584,6 +661,8 @@ export class GameSceneFloor3 extends Phaser.Scene{
                 Variables.highestFloorClear = 3
             }
             console.log("q")
+            playerX = 300
+            playerY = 80
             this.scene.start("scene-game-floor4", this.player)
         }
     }
@@ -599,6 +678,11 @@ export class GameSceneFloor4 extends Phaser.Scene{
     preload()
     {
         this.load.image('door', "./src/assets/shutDoor.png")
+        this.load.spritesheet("SkeletonKingWalk", "./src/assets/Roguelike Dungeon - Asset Bundle/Skeleton King Walking.png", 
+        {
+            frameWidth:320,
+            frameHeight:320
+        })
     }
     create()
     {
@@ -615,9 +699,33 @@ export class GameSceneFloor4 extends Phaser.Scene{
         BottomTopWallLayer.setCollisionBetween(2, 4)
         BottomTopWallLayer.setCollisionBetween(481,482)
         BottomTopWallLayer.setCollisionBetween(484,485)
-       
-        let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
 
+        this.anims.create({
+            key:"SkeletonKingWalk",
+            frames:this.anims.generateFrameNumbers("SkeletonKingWalk"),
+            framerate:16,
+            repeat:-1
+        })        
+        this.skeletonKing = this.physics.add.sprite(400,400, "SkeletonKingWalk").setScale(.5)
+        this.skeletonKing.play("SkeletonKingWalk", true)
+        this.skeletonKing.anims.msPerFrame = 150
+        this.skeletonKing.setImmovable(true)
+        this.skeletonKing.setVelocityX(40)
+        this.skeletonKing.body.setSize(240,200)
+
+        let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
+        this.doors = this.physics.add.sprite(592, 480, 'door').setScale(.38)
+        this.doors.setImmovable(true)
+312
+        this.chest1 = this.physics.add.sprite(536,504,"tilese")
+        this.chest2 = this.physics.add.sprite(568,504,"tilese")
+        this.chest3 = this.physics.add.sprite(616,504,"tilese")
+        this.chest4 = this.physics.add.sprite(648,504,"tilese")
+
+        this.openchest1 = new Phaser.Geom.Rectangle(532, 508, 24, 16)
+        this.openchest2 = new Phaser.Geom.Rectangle(554, 508, 24, 16)
+        this.openchest3 = new Phaser.Geom.Rectangle(604, 508, 24, 16)
+        this.openchest4 = new Phaser.Geom.Rectangle(628, 508, 24, 16)
 
         this.player = this.physics.add.sprite(playerX, playerY, "player")   
         this.player.play("idleDown",true)
@@ -626,19 +734,13 @@ export class GameSceneFloor4 extends Phaser.Scene{
         this.player.setCollideWorldBounds(true)
         this.physics.add.collider(this.player, SideWallLayer)
         this.physics.add.collider(this.player, BottomTopWallLayer)
-
-        this.doors = this.physics.add.sprite(336, 125, 'door').setScale(.38)
-        this.doors.setImmovable(true)
         this.physics.add.collider(this.player, this.doors)
-        if(Variables.highestFloorClear > 2)
-        {
-            this.doors.destroy()
-        }
-        this.upFloor = this.add.rectangle(276, 64, 48, 32, 0xffffff)
-        this.downFloor = this.add.rectangle(764, 504, 64, 48, 0xffffff)
-        this.opendoor = this.add.rectangle(300, 128, 64, 32, 0xffffff)
 
+        this.upFloor = new Phaser.Geom.Rectangle(516, 530, 48, 32, 0xffffff)
+        this.downFloor = new Phaser.Geom.Rectangle(280, 48, 64, 48, 0xffffff)
+        this.opendoor = new Phaser.Geom.Rectangle(560, 418, 64, 32, 0xffffff)
 
+        
     }
 
     ShopClicked()
@@ -651,6 +753,59 @@ export class GameSceneFloor4 extends Phaser.Scene{
     update()
     {
         Movement.movement(this.player, this.keys)
+
+        if(this.skeletonKing.x > 800)
+        {
+            this.skeletonKing.setVelocityX(-40)
+            this.skeletonKing.setFlipX(true)
+        }
+        else if(this.skeletonKing.x < 320)
+        {
+            this.skeletonKing.setVelocityX(40)
+            this.skeletonKing.setFlipX(false)
+        }
+
+        if(this.openchest1.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest1.play("open")
+        }
+        if(this.openchest2.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest2.play("open")
+        }
+        if(this.openchest3.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest3.play("open")
+        }
+        if(this.openchest4.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest4.play("open")
+        }
+
+        if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+             console.log("1")
+             this.doors.destroy()
+        }
+         if(this.downFloor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+         {
+             console.log("r")
+             playerX =312
+             playerY = 80
+             this.scene.start("scene-game-floor3", this.player)
+         }
+         if (this.upFloor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+         {
+             if(Variables.highestFloorClear < 4)
+             {
+                 Variables.highestFloorClear = 4
+             }
+             console.log("q")
+             playerX = 552
+             playerY = 544
+             this.scene.start("scene-game-floor5", this.player)
+         }
+         
     }
 }
 
@@ -663,7 +818,7 @@ export class GameSceneFloor5 extends Phaser.Scene{
     preload()
     {
         this.load.image('door', "./src/assets/shutDoor.png")
-        this.load.spritesheet("DungeonMasterWalk", "./src/assets/Roguelike Dungeon - Asset Bundle/Dungeon Master Walk.png",
+        this.load.spritesheet("DungeonMaster", "./src/assets/Roguelike Dungeon - Asset Bundle/Dungeon Master Walk.png",
         {
             frameWidth:320,
             frameHeight:160
@@ -680,14 +835,14 @@ export class GameSceneFloor5 extends Phaser.Scene{
         
         this.anims.create({
             key:"Walk",
-                frames:this.anims.generateFrameNumbers("DungeonMasterWalk", {frames:[4,5,6,7]}),
+                frames:this.anims.generateFrameNumbers("DungeonMaster", {frames:[4,5,6,7]}),
             frameRate:16,
             repeat:-1
         })
 
         Variables.currentFloor = 5
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f,e")
-        const map = this.make.tilemap({key: 'floor3'}) 
+        const map = this.make.tilemap({key: 'floor5'}) 
         map.addTilesetImage('0x72_DungeonTilesetII_v1.6', 'tiles')
         const tileset = map.addTilesetImage("0x72_DungeonTilesetII_v1.6", "tiles")
         const GroundLayer =  map.createLayer("Ground", tileset, 0, 0)
@@ -701,6 +856,19 @@ export class GameSceneFloor5 extends Phaser.Scene{
        
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
 
+        this.chest1 = this.physics.add.sprite(520, 56,"tilese")
+        this.chest2 = this.physics.add.sprite(552, 56,"tilese")
+        this.chest3 = this.physics.add.sprite(584, 56,"tilese")
+        this.chest4 = this.physics.add.sprite(616, 56,"tilese")
+        this.chest5 = this.physics.add.sprite(648, 56,"tilese")
+        this.chest6 = this.physics.add.sprite(680, 56,"tilese")
+        
+        this.openchest1 = new Phaser.Geom.Rectangle(508, 64, 24, 16)
+        this.openchest2 = new Phaser.Geom.Rectangle(540, 64, 24, 16)
+        this.openchest3 = new Phaser.Geom.Rectangle(564, 64, 24, 16)
+        this.openchest4 = new Phaser.Geom.Rectangle(604, 64, 24, 16)
+        this.openchest5 = new Phaser.Geom.Rectangle(636, 64, 24, 16)
+        this.openchest6 = new Phaser.Geom.Rectangle(668, 64, 24, 16)
 
         this.player = this.physics.add.sprite(playerX, playerY, "player")   
         this.player.play("idleDown",true)
@@ -709,25 +877,28 @@ export class GameSceneFloor5 extends Phaser.Scene{
         this.player.setCollideWorldBounds(true)
         this.physics.add.collider(this.player, SideWallLayer)
         this.physics.add.collider(this.player, BottomTopWallLayer)
+        this.doors = this.physics.add.sprite(592, 144, 'door').setScale(.38)
+        this.doors.setImmovable(true)
+        this.physics.add.collider(this.player, this.doors)
 
+        this.opendoor = new Phaser.Geom.Rectangle(556, 152, 64, 32, 0xffffff)
+        this.downFloor = new Phaser.Geom.Rectangle(540, 510, 64, 48, 0xffffff)
 
-        this.DungeonMaster = this.physics.add.sprite(500, 300, "DungeonMasterWalk").setScale(.666667)
+        this.DungeonMaster = this.physics.add.sprite(510, 200, "DungeonMaster").setScale(.666667)
         this.DungeonMaster.play("Walk", true)
         this.DungeonMaster.anims.msPerFrame = 250
         this.DungeonMaster.setSize(80,160)
-        this.DungeonMaster.setVelocityX(10)
-        this.DungeonMaster.setVelocityY(10)
-
-        this.doors = this.physics.add.sprite(336, 125, 'door').setScale(.38)
-        this.doors.setImmovable(true)
-        this.physics.add.collider(this.player, this.doors)
-        if(Variables.highestFloorClear > 2)
-        {
-            this.doors.destroy()
-        }
+        this.DungeonMaster.setImmovable(true)
+        this.DungeonMaster.setVelocityX(40)
+        this.DungeonMaster.setBounce(1)
 
 
+        this.physics.add.collider(this.DungeonMaster, SideWallLayer)
+        this.physics.add.collider(this.DungeonMaster, BottomTopWallLayer)
+        this.physics.add.collider(this.DungeonMaster, this.doors)
+        this.physics.add.collider(this.player, this.DungeonMaster)
 
+        this.physics.add.overlap(this.DungeonMaster, this.player, this.battle, undefined, this)
     }
 
     ShopClicked()
@@ -737,9 +908,68 @@ export class GameSceneFloor5 extends Phaser.Scene{
         this.scene.start("scene-shop")
     }
 
+    battle(enemy)
+    {
+        this.player.stop()
+        playerX = this.player.body.x
+        playerY = this.player.body.y
+        Variables.enemyKey = enemy.texture.key
+        console.log(enemy.texture.key)
+        this.scene.start("scene-battle")
+    }
+    
     update()
     {
         Movement.movement(this.player, this.keys)
+        
+        if(this.DungeonMaster.x > 800)
+        {
+            this.DungeonMaster.setVelocityX(-40)
+            this.DungeonMaster.setFlipX(true)
+        }
+        else if(this.DungeonMaster.x < 320)
+        {
+            this.DungeonMaster.setVelocityX(40)
+            this.DungeonMaster.setFlipX(false)
+        }
+
+        if(this.openchest1.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest1.play("open")
+        }
+        if(this.openchest2.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest2.play("open")
+        }
+        if(this.openchest3.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest3.play("open")
+        }
+        if(this.openchest4.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest4.play("open")
+        }
+        if(this.openchest5.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest5.play("open")
+        }
+        if(this.openchest6.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            this.chest6.play("open")
+        }
+        if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+             console.log("1")
+             this.doors.destroy()
+        }
+        if(this.downFloor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+        {
+            console.log("r")
+            playerX = 552
+            playerY = 80
+            this.scene.start("scene-game-floor4", this.player)
+        }
+
     }
 
 }

@@ -1,13 +1,19 @@
-import { Player } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/player.js'
-import { Entity } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/entity.js'
-import {Slime} from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/slime.js'
-import { Weapon } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/items/Weapons/weapon.js'
-import { Sword } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/items/Weapons/Sword.js'
-import { WarriorArmour } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/items/Armour/WarriorArmour.js'
-import { Variables }from '/Users/theob/dev/HTML-SPA-Project/game/src/scenes/Maingame.js'
+import { Player } from '../classes/player.js'
+import { Entity } from '../classes/entity.js'
+import {Slime} from '../classes/enemies/slime.js'
+import { Weapon } from '../classes/items/Weapons/weapon.js'
+import { Sword } from '../classes/items/Weapons/Sword.js'
+import { WarriorArmour } from '../classes/items/Armour/WarriorArmour.js'
+import { Variables }from '../scenes/Maingame.js'
 import { SmallHealthPotion } from '../classes/items/Potions/smallHealthPotion.js'
 import { HealthPotion } from '../classes/items/Potions/healthPotion.js'
 import { LargeHealthPotion } from '../classes/items/Potions/largeHealthPotion.js'
+import { DungeonMaster } from '../classes/Bosses/dungeonMaster.js'
+import { SkeletonKing } from '../classes/Bosses/skeletonKing.js'
+import { GoblinKing } from '../classes/Bosses/goblinKing.js'
+import { SlimeKing } from '../classes/Bosses/slimeKing.js'
+import { Skeleton } from '../classes/enemies/skeleton.js'
+import { Orc } from '../classes/enemies/orc.js'
 
 var created = false
 
@@ -15,7 +21,6 @@ export default class battleScene extends Phaser.Scene{
     constructor(){
         super("scene-battle")
     }
-    
     preload()
     {
         this.load.image("map2", "src/assets/2D Pixel Dungeon Asset Pack/character and tileset/demonstration.png")
@@ -39,12 +44,12 @@ export default class battleScene extends Phaser.Scene{
             frameWidth:320,
             frameHeight:160
         })
-        this.load.spritesheet("GoblinKingProjectile", "./src/assets/Roguelike Dungeon - Asset Bundle/Goblin King Projectile 1.png", 
+        this.load.spritesheet("GoblinKingProjectile", "./src/assets/Roguelike Dungeon - Asset Bundle/Goblin King Projectile.png", 
         {
             frameWidth:320,
             frameHeight:320
         })
-        this.load.spritesheet("GoblinKingBlast", "./src/assets/Roguelike Dungeon - Asset Bundle/Goblin King Blast 1.png", 
+        this.load.spritesheet("GoblinKingBlast", "./src/assets/Roguelike Dungeon - Asset Bundle/Goblin King Blast.png", 
         {
             frameWidth:320,
             frameHeight:320
@@ -59,11 +64,21 @@ export default class battleScene extends Phaser.Scene{
             frameWidth:320,
             frameHeight:160
         })
+        this.load.spritesheet("Skeleton", "./src/assets/Monster RPG pack/Skeleton1 64x48.png",
+        {
+            frameWidth:64,
+            frameHeight:48
+        })
+        this.load.spritesheet("Orc", "./src/assets/Monster RPG pack/Orc1 64x48.png",
+        {
+            frameWidth:64,
+            frameHeight:48
+        })
     }
     create()
     {
 
-      const slime = new Slime();
+      var senemy = new Slime();
       const player = new Player("name", 50, 100, 50, 1);
       const sword = new Sword("Sword", "this is a sword", 20, 1)
       const armour = new WarriorArmour("Armour", "this is armour", 10, 1)
@@ -71,14 +86,38 @@ export default class battleScene extends Phaser.Scene{
       const healthPotions = new HealthPotion("Restores 50% of your health", 15, "Health Potion")
       const largeHealthPotions = new LargeHealthPotion("Restores 75% of your health", 15, "Large Health Potion")
       this.map = this.add.image(0,0,"map2").setOrigin(0,0)
+      if(Variables.enemyKey == "DungeonMaster")
+      {
+        enemy = new DungeonMaster()
+      }
+      else if (Variables.enemyKey == "SkeletonKing")
+      {
+        enemy = new SkeletonKing()
+      }
+      else if (Variables.enemyKey == "GoblinKing")
+      {
+        enemy = new GoblinKing()
+      }
+      else if(Variables.enemyKey == "SlimeKing")
+      {
+        enemy = new SlimeKing()
+      }
+      else if(Variables.enemyKey.includes("Skeleton") && Variables.enemyKey != "SkeletonKing")
+      {
+        enemy = new Skeleton()
+      }
+      else if (Variables.enemyKey.includes("Orc"))
+      {
+        enemy = new Orc()
+      }
       
-      let AttackButton = this.add.text(430,300,"Attack").setInteractive().on('pointerdown', () => this.AttackButtonClicked(slime, player, AttackButton, ItemButton, RunButton, sword, armour))
+      let AttackButton = this.add.text(430,300,"Attack").setInteractive().on('pointerdown', () => this.AttackButtonClicked(enemy, player, AttackButton, ItemButton, RunButton, sword, armour))
 
       
       let ItemButton = this.add.text(498,300,"Item").setInteractive().on('pointerdown', () => this.ItemButtonClicked(player, smallHealthPotions, healthPotions, largeHealthPotions))
 
       
-        let RunButton = this.add.text(550,300,"Run").setInteractive().on('pointerdown', () => this.RunButtonClicked(slime, player))
+        let RunButton = this.add.text(550,300,"Run").setInteractive().on('pointerdown', () => this.RunButtonClicked(enemy, player))
         if(created == false)
         {
             this.anims.create({
@@ -88,80 +127,96 @@ export default class battleScene extends Phaser.Scene{
                 repeat:0
             })
             this.anims.create({
-                key:"Death",
+                key:"DungeonMasterDeath",
                 frames:this.anims.generateFrameNumbers("DungeonMasterDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
             })
             this.anims.create({
-                key:"Projectile",
+                key:"DungeonMasterProjectile",
                 frames:this.anims.generateFrameNumbers("DungeonMasterProjectile", ),
                 repeat:-1
             })
             this.anims.create({
-                key:"Blast",
+                key:"DungeonMasterBlast",
                 frames:this.anims.generateFrameNumbers("DungeonMasterBlast", ),
                 repeat:-1
             })
             this.anims.create({
-                key:"Death",
+                key:"GoblinKingDeath",
                 frames:this.anims.generateFrameNumbers("GoblinKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
             })
             this.anims.create({
-                key:"Projectile",
+                key:"GoblinKingProjectile",
                 frames:this.anims.generateFrameNumbers("GoblinKingProjectile", ),
                 repeat:-1
             })
             this.anims.create({
-                key:"Blast",
+                key:"GoblinKingBlast",
                 frames:this.anims.generateFrameNumbers("GoblinKingBlast", ),
                 repeat:-1
             })
             this.anims.create({
-                key:"Death",
+                key:"SkeletonKingDeath",
                 frames:this.anims.generateFrameNumbers("SkeletonKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
             })
             this.anims.create({
-                key:"Death",
+                key:"SlimeKingDeath",
                 frames:this.anims.generateFrameNumbers("SlimeKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
+            })
+            this.anims.create({
+                key:"SkeletonAttack",
+                frames:this.anims.generateFrameNumbers("Skeleton", {frames:[5,6,7,8]})
+            })
+            this.anims.create({
+                key:"SkeletonHit",
+                frames:this.anims.generateFrameNumbers("Skeleton", {frames:[32,33,34,35]})
+            })
+            this.anims.create({
+                key:"OrcAttack",
+                frames:this.anims.generateFrameNumbers("Orc", {frames:[5,6,7,8]})
+            })
+            this.anims.create({
+                key:"OrcHit",
+                frames:this.anims.generateFrameNumbers("Orc", {frames:[32,33,34,35]})
             })
             created = true
         }
         this.projectile = this.add.sprite(500,500, "DungeonMasterProjectile")
         this.projectile.play("Projectile", true)
-        this.slime = this.add.sprite(700,200, "slime")
+        this.enemy = this.add.sprite(700,200, "slime")
         this.player = this.add.sprite(300,200, "player")
         this.player.play("idleRight", true)
         this.player.anims.msPerFrame = 100
-        this.slime.setFlipX(true)
-        this.slime.play("idle", true)
-        this.slime.anims.msPerFrame = 100
+        this.enemy.setFlipX(true)
+        this.enemy.play("idle", true)
+        this.enemy.anims.msPerFrame = 100
     }
 
-    AttackButtonClicked(slime, player, AttackButton, ItemButton, RunButton, sword, armour)
+    AttackButtonClicked(enemy, player, AttackButton, ItemButton, RunButton, sword, armour)
     {
-        slime.health = slime.health - player.attack - sword.damage;
+        enemy.health = enemy.health - player.attack - sword.damage;
         this.player.play("attackRight", 4,false)
         this.player.anims.msPerFrame = 100
-        if(slime.health <= 0)
+        if(enemy.health <= 0)
         {
-            slime.health = 0
-            this.slime.play("slimeDie", false)
-            this.slime.anims.msPerFrame = 200
+            enemy.health = 0
+            this.enemy.play("slimeDie", false)
+            this.enemy.anims.msPerFrame = 200
             AttackButton.destroy()
             ItemButton.destroy()
             RunButton.destroy()
-            Variables.money += slime.moneyDrop
+            Variables.money += enemy.moneyDrop
             this.add.text(500,200,"You Won The Battle");
             this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
         }
         else
         {
-            if(player.defence + armour.defence > slime.attack)
+            if(player.defence + armour.defence > enemy.attack)
             {
                 player.health = player.health
             }
             else
             {
-                player.health = player.health - slime.attack + player.defence + armour.defence
+                player.health = player.health - enemy.attack + player.defence + armour.defence
             }
         }
         if(player.health <= 0)
@@ -226,7 +281,7 @@ export default class battleScene extends Phaser.Scene{
 
     }
 
-    RunButtonClicked(slime, player)
+    RunButtonClicked(enemy, player)
     {
         var random = Math.floor(Math.random() * 4);
         console.log(random)
@@ -238,12 +293,49 @@ export default class battleScene extends Phaser.Scene{
         {
             window.confirm("Failed To Run")
         }
-        player.health -= slime.attack
+        player.health -= enemy.attack
     }
 
     leaveScene()
     {
-        this.scene.start("scene-game")
+
+        if(Variables.enemyKey.includes("1"))
+        {
+            Variables.battle = true
+        }
+        else if(Variables.enemyKey.includes("2"))
+        {
+            Variables.battle2 = true
+        }
+        else if(Variables.enemyKry.includes("3"))
+        {
+            Variables.battle3 = true
+        }
+        else if(Variables.enemyKey == "SlimeKing" || Variables.enemyKey == "GoblinKing" || Variables.enemyKey == "SkeletonKing" || Variables.enemyKey == "DungeonMaster")
+        {
+            Variables.boss = true
+        }
+
+        if(Variables.currentFloor == 1)
+        {
+            this.scene.start("scene-game")
+        }
+        else if (Variables.currentFloor == 2)
+        {
+            this.scene.start("scene-game-floor2")
+        }
+        else if (Variables.currentFloor == 3)
+        {
+            this.scene.start("scene-game-floor3")
+        }
+        else if (Variables.currentFloor == 4)
+        {
+            this.scene.start("scene-game-floor4")
+        }
+        else if (Variables.currentFloor == 5)
+        {
+            this.scene.start("scene-game-floor5")
+        }
         this.scene.stop()
     }
     update()
