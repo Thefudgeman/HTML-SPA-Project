@@ -566,6 +566,11 @@ export class GameSceneFloor3 extends Phaser.Scene{
     preload()
     {
         this.load.image('door', "./src/assets/shutDoor.png")
+        this.load.spritesheet('Orc', "./src/assets/Monster RPG pack/Orc1 64x48.png",
+        {
+            frameWidth:64,
+            frameHeight:48
+        })
     }
     create()
     {
@@ -584,6 +589,21 @@ export class GameSceneFloor3 extends Phaser.Scene{
         BottomTopWallLayer.setCollisionBetween(484,485)
        
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
+
+
+        this.anims.create({
+            key:"OrcIdle",
+            frames:this.anims.generateFrameNumbers("Orc", {frames:[9,10,11,12]}),
+            frameRate:16,
+            repeat:-1
+        })
+        this.anims.create({
+            key:"OrcWalk",
+            frames:this.anims.generateFrameNumbers("Orc", {frames:[18,19,20,21]}),
+            frameRate:16,
+            repaet:-1
+        })
+
 
 
         this.player = this.physics.add.sprite(playerX, playerY, "player")   
@@ -682,6 +702,11 @@ export class GameSceneFloor4 extends Phaser.Scene{
             frameWidth:320,
             frameHeight:320
         })
+        this.load.spritesheet('Skeleton', "./src/assets/Monster RPG pack/Skeleton1 64x48.png",
+        {
+            frameWidth:64,
+            frameHeight:48
+        })
     }
     create()
     {
@@ -702,6 +727,18 @@ export class GameSceneFloor4 extends Phaser.Scene{
         this.anims.create({
             key:"SkeletonKingWalk",
             frames:this.anims.generateFrameNumbers("SkeletonKingWalk"),
+            framerate:16,
+            repeat:-1
+        })        
+        this.anims.create({
+            key:"SkeletonIdle",
+            frames:this.anims.generateFrameNumbers("Skeleton", {frames: [9,10,11,12]}),
+            framerate:16,
+            repeat:-1
+        })        
+        this.anims.create({
+            key:"SkeletonWalk",
+            frames:this.anims.generateFrameNumbers("Skeleton", {frames:[18,19,20,21]}),
             framerate:16,
             repeat:-1
         })        

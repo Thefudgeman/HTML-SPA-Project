@@ -23,6 +23,13 @@ export default class battleScene extends Phaser.Scene{
     }
     preload()
     {
+        this.load.image('left-cap', './src/assets/PNG/barHorizontal_green_left.png')
+        this.load.image('middle', './src/assets/PNG/barHorizontal_green_mid.png')
+        this.load.image('right-cap', './src/assets/PNG/barHorizontal_green_right.png')
+    
+        this.load.image('left-cap-shadow', './src/assets/PNG/barHorizontal_shadow_left.png')
+        this.load.image('middle-shadow', './src/assets/PNG/barHorizontal_shadow_mid.png')
+        this.load.image('right-cap-shadow', './src/assets/PNG/barHorizontal_shadow_right.png')
         this.load.image("map2", "src/assets/2D Pixel Dungeon Asset Pack/character and tileset/demonstration.png")
         this.load.spritesheet("DungeonMasterDeath", "./src/assets/Roguelike Dungeon - Asset Bundle/Dungeon Master Death.png", 
         {
@@ -75,8 +82,57 @@ export default class battleScene extends Phaser.Scene{
             frameHeight:48
         })
     }
+    setMeterPercentage(percent = 1)
+{
+	const width = 300 * percent
+
+	this.middle.displayWidth = width
+	this.rightCap.x = this.middle.x + this.middle.displayWidth
+}
+setMeterPercentageAnimated(percent = 1, duration = 1000)
+{
+	const width = 300 * percent
+
+	this.tweens.add({
+		targets: this.middle,
+		displayWidth: width,
+		duration,
+		ease: Phaser.Math.Easing.Sine.Out,
+		onUpdate: () => {
+			this.rightCap.x = this.middle.x + this.middle.displayWidth
+
+			this.leftCap.visible = this.middle.displayWidth > 0
+			this.middle.visible = this.middle.displayWidth > 0
+			this.rightCap.visible = this.middle.displayWidth > 0
+		}
+	})
+}
     create()
     {
+
+
+        const leftShadowCap = this.add.image(300, 240, 'left-cap-shadow')
+		.setOrigin(0, 0.5)
+
+	const middleShaddowCap = this.add.image(leftShadowCap.x + leftShadowCap.width, 240, 'middle-shadow')
+		.setOrigin(0, 0.5)
+	middleShaddowCap.displayWidth = 300
+
+	this.add.image(middleShaddowCap.x + middleShaddowCap.displayWidth, 240, 'right-cap-shadow')
+		.setOrigin(0, 0.5)
+
+        this.leftCap = this.add.image(300, 240, 'left-cap')
+		.setOrigin(0, 0.5)
+
+	this.middle = this.add.image(this.leftCap.x + this.leftCap.width, 240, 'middle')
+		.setOrigin(0, 0.5)
+
+	this.rightCap = this.add.image(this.middle.x + this.middle.displayWidth, 240, 'right-cap')
+		.setOrigin(0, 0.5)
+
+        this.setMeterPercentage(1)
+        this.setMeterPercentageAnimated(0)
+
 
       var enemy = new Slime();
       const player = new Player("name", 50, 100, 50, 1);
