@@ -82,16 +82,16 @@ export default class battleScene extends Phaser.Scene{
             frameHeight:48
         })
     }
-    setMeterPercentage(percent = 1)
+    setMeterPercentage(percent = 1, middle, rightCap)
 {
-	const width = 300 * percent
+	const width = 120 * percent
 
-	this.middle.displayWidth = width
-	this.rightCap.x = this.middle.x + this.middle.displayWidth
+	middle.displayWidth = width
+	rightCap.x = middle.x + middle.displayWidth
 }
 setMeterPercentageAnimated(percent = 1, duration = 1000)
 {
-	const width = 300 * percent
+	const width = 120 * percent
 
 	this.tweens.add({
 		targets: this.middle,
@@ -107,37 +107,79 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
 		}
 	})
 }
+    setMeterPercentageAnimatedE(percent = 1, duration = 1000)
+{
+	const width = 120 * percent
+
+	this.tweens.add({
+		targets: this.enemyMiddle,
+		displayWidth: width,
+		duration,
+		ease: Phaser.Math.Easing.Sine.Out,
+		onUpdate: () => {
+			this.enemyRightCap.x = this.enemyMiddle.x + this.enemyMiddle.displayWidth
+
+			this.enemyLeftCap.visible = this.enemyMiddle.displayWidth > 0
+			this.enemyMiddle.visible = this.enemyMiddle.displayWidth > 0
+			this.enemyRightCap.visible = this.enemyMiddle.displayWidth > 0
+		}
+	})
+}
     create()
     {
 
 
         const leftShadowCap = this.add.image(300, 240, 'left-cap-shadow')
-		.setOrigin(0, 0.5)
+		.setOrigin(0, 0.5).setScale(1, 0.5)
 
 	const middleShaddowCap = this.add.image(leftShadowCap.x + leftShadowCap.width, 240, 'middle-shadow')
-		.setOrigin(0, 0.5)
-	middleShaddowCap.displayWidth = 300
+		.setOrigin(0, 0.5).setScale(1, 0.5)
+	middleShaddowCap.displayWidth =120
 
 	this.add.image(middleShaddowCap.x + middleShaddowCap.displayWidth, 240, 'right-cap-shadow')
-		.setOrigin(0, 0.5)
+		.setOrigin(0, 0.5).setScale(1, 0.5)
 
         this.leftCap = this.add.image(300, 240, 'left-cap')
-		.setOrigin(0, 0.5)
+		.setOrigin(0, 0.5).setScale(1, 0.5)
 
 	this.middle = this.add.image(this.leftCap.x + this.leftCap.width, 240, 'middle')
-		.setOrigin(0, 0.5)
+		.setOrigin(0, 0.5).setScale(1, 0.5)
 
 	this.rightCap = this.add.image(this.middle.x + this.middle.displayWidth, 240, 'right-cap')
-		.setOrigin(0, 0.5)
+		.setOrigin(0, 0.5).setScale(1, 0.5)
 
-        this.setMeterPercentage(1)
-        this.setMeterPercentageAnimated(0)
+        this.setMeterPercentage(1, this.middle, this.rightCap)
+
+
+
+
+
+        const enemyLeftShadowCap = this.add.image(600, 240, 'left-cap-shadow')
+		.setOrigin(0, 0.5).setScale(1, 0.5)
+
+	const enemyMiddleShaddowCap = this.add.image(enemyLeftShadowCap.x + enemyLeftShadowCap.width, 240, 'middle-shadow')
+		.setOrigin(0, 0.5).setScale(1, 0.5)
+	enemyMiddleShaddowCap.displayWidth =120
+
+	this.add.image(enemyLeftShadowCap.x + enemyLeftShadowCap.displayWidth, 240, 'right-cap-shadow')
+		.setOrigin(0, 0.5).setScale(1, 0.5)
+
+        this.enemyLeftCap = this.add.image(600, 240, 'left-cap')
+		.setOrigin(0, 0.5).setScale(1, 0.5)
+
+	this.enemyMiddle = this.add.image(this.enemyLeftCap.x + this.enemyLeftCap.width, 240, 'middle')
+		.setOrigin(0, 0.5).setScale(1, 0.5)
+
+	this.enemyRightCap = this.add.image(this.enemyMiddle.x + this.enemyMiddle.displayWidth, 240, 'right-cap')
+		.setOrigin(0, 0.5).setScale(1, 0.5)
+
+        this.setMeterPercentage(1, this.enemyMiddle, this.enemyRightCap)
 
 
       var enemy = new Slime();
-      const player = new Player("name", 50, 100, 50, 1);
+      const player = new Player("name", 150, 10, 5, 1);
       const sword = new Sword("Sword", "this is a sword", 20, 1)
-      const armour = new WarriorArmour("Armour", "this is armour", 10, 1)
+      const armour = new WarriorArmour("Armour", "this is armour", 0, 1)
       const smallHealthPotions = new SmallHealthPotion("Restores 25% of your health", 15, "Small Health Potion")
       const healthPotions = new HealthPotion("Restores 50% of your health", 15, "Health Potion")
       const largeHealthPotions = new LargeHealthPotion("Restores 75% of your health", 15, "Large Health Potion")
@@ -250,44 +292,68 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
 
     AttackButtonClicked(enemy, player, AttackButton, ItemButton, RunButton, sword, armour)
     {
-        enemy.health = enemy.health - player.attack - sword.damage;
-        this.player.play("attackRight", 4,false)
-        this.player.anims.msPerFrame = 100
-        if(enemy.health <= 0)
-        {
-            enemy.health = 0
-            this.enemy.play("Death", true)
-            this.enemy.anims.msPerFrame = 200
-            AttackButton.destroy()
-            ItemButton.destroy()
-            RunButton.destroy()
-            Variables.money += enemy.moneyDrop
-            this.add.text(500,200,"You Won The Battle");
-            this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
-        }
-        else
-        {
-            if(player.defence + armour.defence > enemy.attack)
-            {
-                player.health = player.health
+        this.time.addEvent({
+            delay:300,
+            callback: ()=>{
+                enemy.health = enemy.health - player.attack - sword.damage;
+                this.player.play("attackRight", 4,false)
+                 this.player.anims.msPerFrame = 100
+                  if(enemy.health/enemy.maxHealth >= 0)
+                 {
+                    this.setMeterPercentageAnimatedE(enemy.health/enemy.maxHealth)
+                }
+         
+        
+                if(enemy.health <= 0)
+                {
+                    enemy.health = 0
+                    this.setMeterPercentageAnimatedE(0)
+                    this.enemy.play("Death", true)
+                    this.enemy.anims.msPerFrame = 200
+                    AttackButton.destroy()
+                    ItemButton.destroy()
+                    RunButton.destroy()
+                    Variables.money += enemy.moneyDrop
+                    this.add.text(500,200,"You Won The Battle");
+                    this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
+                }
+                else
+                {
+        
+                     if(player.defence + armour.defence > enemy.attack)
+                      {
+                          player.health = player.health
+                      }
+                      else
+                     {
+                         player.health = player.health - enemy.attack + player.defence + armour.defence
+                     }
+                      if(player.health/player.maxHealth >= 0)
+                     {
+                         this.setMeterPercentageAnimated(player.health/player.maxHealth)
+                     }
+                     else
+                     {
+                         this.setMeterPercentageAnimated(0)
+                    }
+           
+                    
+                }
+                if(player.health <= 0)
+                {
+                    Variables.battle = false
+                    Variables.battle2 = false
+                    Variables.battle3 = false
+                    this.add.text(500,200, "You Lost The Battle")
+                    this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
+                    AttackButton.destroy()
+                    ItemButton.destroy()
+                    RunButton.destroy()
+                    
+                }
             }
-            else
-            {
-                player.health = player.health - enemy.attack + player.defence + armour.defence
-            }
-        }
-        if(player.health <= 0)
-        {
-            Variables.battle = false
-            Variables.battle2 = false
-            Variables.battle3 = false
-            this.add.text(500,200, "You Lost The Battle")
-            this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
-            AttackButton.destroy()
-            ItemButton.destroy()
-            RunButton.destroy()
-            
-        }
+        })
+        
     }
 
     ItemButtonClicked(player, smallHealthPotions, healthPotions, largeHealthPotions)
