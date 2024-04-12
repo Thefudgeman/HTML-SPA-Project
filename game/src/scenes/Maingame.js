@@ -3,9 +3,7 @@ import { Rectangle } from "phaser3-rex-plugins/plugins/gameobjects/shape/shapes/
 var playerDirection
 export class variables
 {
-    battle = false
-    battle2 = false
-    battle3 = false
+    Victory = false
     boss = false
     money = 999999999999999
     opendoors = false
@@ -296,26 +294,31 @@ export default class GameScene extends Phaser.Scene {
         this.player = this.physics.add.sprite(playerX, playerY, "player")
         this.player.play("idleDown",true)
         this.player.anims.msPerFrame = 100
-        this.slime = this.physics.add.sprite(200,200, "Slime")
+        this.slime = this.physics.add.sprite(600,200, "Slime1")
         this.slime.play("idle", true)
         this.slime.anims.msPerFrame = 150
         this.physics.add.collider(this.player, this.slime)
         this.slime.body.setSize(10,10)
         this.player.body.setSize(16,24)
-        this.slime.setImmovable(false)
-        this.slime.setBounce(50,50)
+        this.slime.setImmovable(true)
         this.slime.setCollideWorldBounds(true)
         this.player.setCollideWorldBounds(true)
         this.physics.add.collider(this.player, SideTopWallLayer)
         this.physics.add.collider(this.player, RoomCornerLayer)
         this.physics.add.collider(this.player, BottomWallLayer)
         this.physics.add.collider(this.player, this.DoorLayer)
-        this.slime2 = this.physics.add.sprite(400, 400, "Slime2")
+        this.slime2 = this.physics.add.sprite(400, 450, "Slime2")
         this.slime2.play("idle", true)
         this.slime2.anims.msPerFrame = 150
         this.physics.add.collider(this.player, this.slime2)
         this.slime2.body.setSize(10, 10)
         this.slime2.setImmovable(true)
+        this.slime3 = this.physics.add.sprite(500, 300, "Slime3")
+        this.slime3.play("idle", true)
+        this.slime3.anims.msPerFrame = 150
+        this.physics.add.collider(this.player, this.slime3)
+        this.slime3.body.setSize(10, 10)
+        this.slime3.setImmovable(true)
         this.doors = this.physics.add.sprite(784,110, 'door').setScale(.38)
         this.doors.setImmovable(true)
         this.physics.add.collider(this.player, this.doors)
@@ -326,39 +329,30 @@ export default class GameScene extends Phaser.Scene {
         }
         this.physics.add.overlap(this.slime, this.player, this.battle, undefined, this)
         this.physics.add.overlap(this.slime2, this.player, this.battle, undefined, this)
+        this.physics.add.overlap(this.slime3, this.player, this.battle, undefined, this)
         this.stairs = new Phaser.Geom.Rectangle(815, 60, 50, 50)
 
         this.opendoor = new Phaser.Geom.Rectangle(744, 120, 60, 32)
         this.openchest1 = new Phaser.Geom.Rectangle(732, 64, 24, 16)
         this.openchest2 = new Phaser.Geom.Rectangle(764, 64, 24, 16)
         this.openchest3 = new Phaser.Geom.Rectangle(792, 64, 24, 16)
-        
-
-Variables.battle3 = true
  
     }
 
-    battle2()
-    {
-        this.player.stop()
-        playerX = this.player.body.x
-        playerY = this.player.body.y
-        if(Variables.battle2 == false)
-        {
-            Variables.battle2 = true
-            this.scene.start("scene-battle")
-        }
-    }
 
     battle(enemy)
     {
-        this.player.stop()
+        this.player.body.setSize(16, 24)
         playerX = this.player.body.x
         playerY = this.player.body.y
         Variables.enemyKey = enemy.texture.key
-        console.log(Variables.enemyKey.includes("Slime"))
-        console.log(enemy.texture.key)
-        this.scene.start("scene-battle")
+        this.scene.switch("scene-battle")
+        if(Variables.Victory)
+        {
+            enemy.destroy()
+            Variables.battleNum++
+            Variables.Victory = false
+        }
     }
 
     update() 
@@ -368,7 +362,7 @@ Variables.battle3 = true
   
         if(this.stairs.contains(this.player.x, this.player.y) && this.keys.e.isDown)
         {
-            this.scene.start("scene-game-floor5", this.player)
+            this.scene.start("scene-game-floor2", this.player)
             playerX = 800
             playerY = 80
             
@@ -387,7 +381,7 @@ Variables.battle3 = true
             this.chest3.play("open")
         }
 
-        if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown && Variables.battle && Variables.battle2 && Variables.battle3)
+        if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown && Variables.battleNum > 2)
         {
             if(Variables.highestFloorClear < 1)
             {
@@ -398,14 +392,6 @@ Variables.battle3 = true
 
        Movement.movement(this.player, this.keys)
 
-        if(Variables.battle == true)
-        {
-            this.slime.destroy(true)
-        }
-        if(Variables.battle2 == true)
-        {
-            this.slime2.destroy(true)
-        }
  
     }
 }
@@ -418,17 +404,12 @@ export class GameSceneFloor2 extends Phaser.Scene {
     preload()
     {
         this.load.image('door', "./src/assets/shutDoor.png")
-        this.load.spritesheet("DungeonMasterDeath", "./src/assets/Roguelike Dungeon - Asset Bundle/Dungeon Master Death.png", 
+        this.load.spritesheet("Orc", "./src/assets/Monster RPG pack/Orc1 64x48",
         {
-            frameWidth:320,
-            frameHeight:160
+            frameWidth:64,
+            frameHeight:48
         })
-        this.load.spritesheet("SlimeKingWalk", "./src/assets/Roguelike Dungeon - Asset Bundle/Slime King Walk.png", 
-        {
-            frameWidth:320,
-            frameHeight:320
-        })
-        this.load.spritesheet("SkeletonKingWalk", "./src/assets/Roguelike Dungeon - Asset Bundle/Skeleton King Walking.png", 
+        this.load.spritesheet("SlimeKingWalk", "./src/assets/Roguelike Dungeon - Asset Bundle/Slime King Walk.png",
         {
             frameWidth:320,
             frameHeight:320
@@ -439,20 +420,14 @@ export class GameSceneFloor2 extends Phaser.Scene {
     {
 
         this.anims.create({
-            key:"Death",
-            frames:this.anims.generateFrameNumbers("DungeonMasterDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
-        })
-        this.anims.create({
-            key:"SlimeKingWalk",
-            frames:this.anims.generateFrameNumbers("SlimeKingWalk"),
-            framerate:16,
+            key:"OrcWalk",
+            frames:this.anims.generateFrameNumbers("Orc", {frames:[18,19,20,21]}),
+            frameRate:16,
             repeat:-1
         })
         this.anims.create({
-            key:"SkeletonKingWalk",
-            frames:this.anims.generateFrameNumbers("SkeletonKingWalk"),
-            framerate:16,
-            repeat:-1
+            key:"SlimeKingWalke",
+            frames:this.anims.generateFrameNumbers("SlimeKingWalk", {frames:[0,1,2,3]})
         })
         Variables.currentFloor = 2
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f,e")
@@ -477,17 +452,21 @@ export class GameSceneFloor2 extends Phaser.Scene {
         this.openchest2 = new Phaser.Geom.Rectangle(780, 464, 24, 16)
         this.openchest3 = new Phaser.Geom.Rectangle(812, 464, 24, 16)
 
-        this.dungeonmaster = this.physics.add.sprite(400,400, "DungeonMasterDeath")
-        this.dungeonmaster.play("Death", true)
-        this.dungeonmaster.anims.msPerFrame = 150
-        
-        this.slimeKing = this.physics.add.sprite(200,200, "SlimeKingWalk").setScale(.5)
-        this.slimeKing.play("SlimeKingWalk", true)
-        this.slimeKing.anims.msPerFrame = 150
+        this.slime = this.physics.add.sprite(600,200, "Slime")
+        this.slime.play("idle", true)
+        this.slime.anims.msPerFrame = 150
 
-        this.skeletonKing = this.physics.add.sprite(300,300, "SkeletonKingWalk").setScale(.5)
-        this.skeletonKing.play("SkeletonKingWalk", true)
-        this.skeletonKing.anims.msPerFrame = 150
+        this.slime2= this.physics.add.sprite(400,200, "Slime2")
+        this.slime2.play("idle", true)
+        this.slime2.anims.msPerFrame = 150
+
+        this.orc = this.physics.add.sprite(600,300, "Orc")
+        this.orc.play("OrcWalk", true)
+        this.orc.anims.msPerFrame = 150
+
+        this.slimeKing= this.physics.add.sprite(400,200, "slimeKing")
+        this.slimeKing.play("SlimeKingWalke", true)
+        this.slimeKing.anims.msPerFrame = 150
 
         this.player = this.physics.add.sprite(playerX, playerY, "player")   
         this.player.play("idleDown",true)
@@ -500,6 +479,10 @@ export class GameSceneFloor2 extends Phaser.Scene {
         this.doors = this.physics.add.sprite(592, 430, 'door').setScale(.38)
         this.doors.setImmovable(true)
         this.physics.add.collider(this.player, this.doors)
+        this.physics.add.overlap(this.slime, this.player, this.battle, undefined, this)
+        this.physics.add.overlap(this.slime2, this.player, this.battle, undefined, this)
+        this.physics.add.overlap(this.orc, this.player, this.battle, undefined, this)
+        this.physics.add.overlap(this.slimeKing, this.player, this.battle, undefined, this)
         if(Variables.highestFloorClear > 1)
         {
             this.doors.destroy()
@@ -514,6 +497,22 @@ export class GameSceneFloor2 extends Phaser.Scene {
         playerY = this.player.body.y
         this.scene.start("scene-shop")
     }
+    battle(enemy)
+    {
+        this.player.body.setSize(16, 24)
+        playerX = this.player.body.x
+        playerY = this.player.body.y
+        Variables.enemyKey = enemy.texture.key
+        console.log(Variables.enemyKey)
+        this.scene.switch("scene-battle")
+        if(Variables.Victory)
+        {
+            enemy.destroy()
+            Variables.battleNum++
+            Variables.Victory = false
+        }
+    }
+
 
     update()
     {
@@ -531,10 +530,13 @@ export class GameSceneFloor2 extends Phaser.Scene {
        {
            this.chest3.play("open")
        }
-       if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
+       if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown && Variables.boss)
        {
-            console.log("1")
-            this.doors.destroy()
+           if(Variables.highestFloorClear < 2)
+           {
+               Variables.highestFloorClear = 2
+           }
+           this.doors.destroy()
        }
         if(this.downFloor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
         {
@@ -571,9 +573,15 @@ export class GameSceneFloor3 extends Phaser.Scene{
             frameWidth:64,
             frameHeight:48
         })
+        this.load.spritesheet('Skeleton', "./src/assets/Monster RPG pack/Skeleton1 64x48.png",
+        {
+            frameWidth:64,
+            frameHeight:48
+        })
     }
     create()
     {
+
         Variables.currentFloor = 3
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f,e")
         const map = this.make.tilemap({key: 'floor3'}) 
@@ -603,8 +611,31 @@ export class GameSceneFloor3 extends Phaser.Scene{
             frameRate:16,
             repaet:-1
         })
+        this.anims.create({
+            key:"SkeletonIdle",
+            frames:this.anims.generateFrameNumbers("Skeleton", {frames:[9,10,11,12]}),
+            frameRate:16,
+            repeat:-1
+        })
+        this.anims.create({
+            key:"SkeletonWalk",
+            frames:this.anims.generateFrameNumbers("Skeleton", {frames:[18,19,20,21]}),
+            frameRate:16,
+            repaet:-1
+        })
 
 
+        this.orc = this.physics.add.sprite(600,300, "Orc1")
+        this.orc.play("OrcWalk", true)
+        this.orc.anims.msPerFrame = 150
+
+        this.orc2 = this.physics.add.sprite(400,300, "Orc2")
+        this.orc2.play("OrcWalk", true)
+        this.orc2.anims.msPerFrame = 150
+
+        this.skeleton = this.physics.add.sprite(550,500, "Skeleton")
+        this.skeleton.play("SkeletonWalk", true)
+        this.skeleton.anims.msPerFrame = 150
 
         this.player = this.physics.add.sprite(playerX, playerY, "player")   
         this.player.play("idleDown",true)
@@ -626,6 +657,10 @@ export class GameSceneFloor3 extends Phaser.Scene{
         this.doors = this.physics.add.sprite(336, 128, 'door').setScale(.38)
         this.doors.setImmovable(true)
         this.physics.add.collider(this.player, this.doors)
+        this.physics.add.overlap(this.orc, this.player, this.battle, undefined, this)
+        this.physics.add.overlap(this.orc2, this.player, this.battle, undefined, this)
+        this.physics.add.overlap(this.skeleton, this.player, this.battle, undefined, this)
+
         if(Variables.highestFloorClear > 2)
         {
             this.doors.destroy()
@@ -642,6 +677,20 @@ export class GameSceneFloor3 extends Phaser.Scene{
         playerX = this.player.body.x
         playerY = this.player.body.y
         this.scene.start("scene-shop")
+    }
+
+    battle(enemy)
+    {
+        this.player.body.setSize(16, 24)
+        playerX = this.player.body.x
+        playerY = this.player.body.y
+        Variables.enemyKey = enemy.texture.key
+        this.scene.switch("scene-battle")
+        if(Variables.Victory)
+        {
+            enemy.destroy()
+            Variables.battleNum++
+        }
     }
 
     update()
@@ -661,11 +710,14 @@ export class GameSceneFloor3 extends Phaser.Scene{
             this.chest3.play("open")
         }
 
-               if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
-       {
-            console.log("1")
+        if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown && Variables.boss)
+        {
+            if(Variables.highestFloorClear < 3)
+            {
+                Variables.highestFloorClear = 3
+            }
             this.doors.destroy()
-       }
+        }
         if(this.downFloor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
         {
             console.log("r")
@@ -742,6 +794,18 @@ export class GameSceneFloor4 extends Phaser.Scene{
             framerate:16,
             repeat:-1
         })        
+        this.skeleton = this.physics.add.sprite(350,250, "Skeleton1")
+        this.skeleton.play("SkeletonWalk", true)
+        this.skeleton.anims.msPerFrame = 150
+
+        this.skeleton2 = this.physics.add.sprite(300,470, "Skeleton2")
+        this.skeleton2.play("SkeletonWalk", true)
+        this.skeleton2.anims.msPerFrame = 150
+
+        this.skeleton3 = this.physics.add.sprite(800,300, "Skeleton3")
+        this.skeleton3.play("SkeletonWalk", true)
+        this.skeleton3.anims.msPerFrame = 150
+
         this.skeletonKing = this.physics.add.sprite(400,400, "SkeletonKingWalk").setScale(.5)
         this.skeletonKing.play("SkeletonKingWalk", true)
         this.skeletonKing.anims.msPerFrame = 150
@@ -771,6 +835,15 @@ export class GameSceneFloor4 extends Phaser.Scene{
         this.physics.add.collider(this.player, SideWallLayer)
         this.physics.add.collider(this.player, BottomTopWallLayer)
         this.physics.add.collider(this.player, this.doors)
+        this.physics.add.overlap(this.skeleton, this.player, this.battle, undefined, this)
+        this.physics.add.overlap(this.skeleton2, this.player, this.battle, undefined, this)
+        this.physics.add.overlap(this.skeleton3, this.player, this.battle, undefined, this)
+
+
+        if(Variables.highestFloorClear > 3)
+        {
+            this.doors.destroy()
+        }
 
         this.upFloor = new Phaser.Geom.Rectangle(516, 530, 48, 32, 0xffffff)
         this.downFloor = new Phaser.Geom.Rectangle(280, 48, 64, 48, 0xffffff)
@@ -784,6 +857,20 @@ export class GameSceneFloor4 extends Phaser.Scene{
         playerX = this.player.body.x
         playerY = this.player.body.y
         this.scene.start("scene-shop")
+    }
+
+    battle(enemy)
+    {
+        this.player.body.setSize(16, 24)
+        playerX = this.player.body.x
+        playerY = this.player.body.y
+        Variables.enemyKey = enemy.texture.key
+        this.scene.switch("scene-battle")
+        if(Variables.Victory)
+        {
+            enemy.destroy()
+            Variables.battleNum++
+        }
     }
 
     update()
@@ -818,11 +905,14 @@ export class GameSceneFloor4 extends Phaser.Scene{
             this.chest4.play("open")
         }
 
-        if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
-        {
-             console.log("1")
-             this.doors.destroy()
-        }
+        if(this.opendoor.contains(this.player.x, this.player.y) && this.keys.e.isDown && Variables.boss)
+       {
+           if(Variables.highestFloorClear < 4)
+           {
+               Variables.highestFloorClear = 4
+           }
+           this.doors.destroy()
+       }
          if(this.downFloor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
          {
              console.log("r")
@@ -946,12 +1036,16 @@ export class GameSceneFloor5 extends Phaser.Scene{
 
     battle(enemy)
     {
-        this.player.stop()
+        this.player.body.setSize(16, 24)
         playerX = this.player.body.x
         playerY = this.player.body.y
         Variables.enemyKey = enemy.texture.key
-        console.log(enemy.texture.key)
-        this.scene.start("scene-battle")
+        this.scene.switch("scene-battle")
+        if(Variables.Victory)
+        {
+            enemy.destroy()
+            Variables.battleNum++
+        }
     }
     
     update()

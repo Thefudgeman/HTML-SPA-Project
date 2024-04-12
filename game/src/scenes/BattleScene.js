@@ -177,7 +177,7 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
 
 
       var enemy = new Slime();
-      const player = new Player("name", 150, 10, 5, 1);
+      const player = new Player("name", 150, 99999999999999999999999999999, 5, 1);
       const sword = new Sword("Sword", "this is a sword", 20, 1)
       const armour = new WarriorArmour("Armour", "this is armour", 0, 1)
       const smallHealthPotions = new SmallHealthPotion("Restores 25% of your health", 15, "Small Health Potion")
@@ -421,43 +421,36 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
 
     leaveScene()
     {
+        Variables.Victory = true
 
-        if(Variables.enemyKey.includes("1"))
-        {
-            Variables.battle = true
-        }
-        else if(Variables.enemyKey.includes("2"))
-        {
-            Variables.battle2 = true
-        }
-        else if(Variables.enemyKey.includes("3"))
-        {
-            Variables.battle3 = true
-        }
-        else if(Variables.enemyKey == "SlimeKing" || Variables.enemyKey == "GoblinKing" || Variables.enemyKey == "SkeletonKing" || Variables.enemyKey == "DungeonMaster")
+        if(Variables.enemyKey == "SlimeKingWalk" || Variables.enemyKey == "GoblinKingWalk" || Variables.enemyKey == "SkeletonKingWalk" || Variables.enemyKey == "DungeonMasterWalk")
         {
             Variables.boss = true
         }
 
+        console.log(Variables.battle)
+        console.log(Variables.battle2)
+        console.log(Variables.battle3)
+
         if(Variables.currentFloor == 1)
         {
-            this.scene.start("scene-game")
+            this.scene.switch("scene-game")
         }
         else if (Variables.currentFloor == 2)
         {
-            this.scene.start("scene-game-floor2")
+            this.scene.switch("scene-game-floor2")
         }
         else if (Variables.currentFloor == 3)
         {
-            this.scene.start("scene-game-floor3")
+            this.scene.switch("scene-game-floor3")
         }
         else if (Variables.currentFloor == 4)
         {
-            this.scene.start("scene-game-floor4")
+            this.scene.switch("scene-game-floor4")
         }
         else if (Variables.currentFloor == 5)
         {
-            this.scene.start("scene-game-floor5")
+            this.scene.switch("scene-game-floor5")
         }
         this.scene.stop()
     }
