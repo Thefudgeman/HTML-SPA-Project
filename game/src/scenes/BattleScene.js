@@ -78,7 +78,7 @@ export default class battleScene extends Phaser.Scene{
     create()
     {
 
-      var senemy = new Slime();
+      var enemy = new Slime();
       const player = new Player("name", 50, 100, 50, 1);
       const sword = new Sword("Sword", "this is a sword", 20, 1)
       const armour = new WarriorArmour("Armour", "this is armour", 10, 1)
@@ -89,27 +89,89 @@ export default class battleScene extends Phaser.Scene{
       if(Variables.enemyKey == "DungeonMaster")
       {
         enemy = new DungeonMaster()
+        this.anims.create({
+            key:"Death",
+            frames:this.anims.generateFrameNumbers("DungeonMasterDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
+        })
+        this.anims.create({
+            key:"Projectile",
+            frames:this.anims.generateFrameNumbers("DungeonMasterProjectile", ),
+            repeat:-1
+        })
+        this.anims.create({
+            key:"Blast",
+            frames:this.anims.generateFrameNumbers("DungeonMasterBlast", ),
+            repeat:-1
+        })
       }
       else if (Variables.enemyKey == "SkeletonKing")
       {
         enemy = new SkeletonKing()
+        this.anims.create({
+            key:"Death",
+            frames:this.anims.generateFrameNumbers("SkeletonKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
+        })
       }
       else if (Variables.enemyKey == "GoblinKing")
       {
         enemy = new GoblinKing()
+        this.anims.create({
+            key:"Death",
+            frames:this.anims.generateFrameNumbers("GoblinKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
+        })
+        this.anims.create({
+            key:"Projectile",
+            frames:this.anims.generateFrameNumbers("GoblinKingProjectile", ),
+            repeat:-1
+        })
+        this.anims.create({
+            key:"Blast",
+            frames:this.anims.generateFrameNumbers("GoblinKingBlast", ),
+            repeat:-1
+        })
       }
       else if(Variables.enemyKey == "SlimeKing")
       {
         enemy = new SlimeKing()
+        this.anims.create({
+            key:"Death",
+            frames:this.anims.generateFrameNumbers("SlimeKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
+        })
       }
       else if(Variables.enemyKey.includes("Skeleton") && Variables.enemyKey != "SkeletonKing")
       {
         enemy = new Skeleton()
+        this.anims.create({
+            key:"EnemyAttack",
+            frames:this.anims.generateFrameNumbers("Skeleton", {frames:[5,6,7,8]})
+        })
+        this.anims.create({
+            key:"EnemyHit",
+            frames:this.anims.generateFrameNumbers("Skeleton", {frames:[32,33,34,35]})
+        })
       }
       else if (Variables.enemyKey.includes("Orc"))
       {
         enemy = new Orc()
+        this.anims.create({
+            key:"EnemyAttack",
+            frames:this.anims.generateFrameNumbers("Orc", {frames:[5,6,7,8]})
+        })
+        this.anims.create({
+            key:"EnemyHit",
+            frames:this.anims.generateFrameNumbers("Orc", {frames:[32,33,34,35]})
+        })
       }
+      else if(Variables.enemyKey.includes("Slime"))
+      {
+        this.anims.create({
+            key:"Death",
+            frames:this.anims.generateFrameNumbers("Slime", {frames:[28,29,30,31, 32]}),
+            framerate:16,
+            repeat:0
+        })
+      }
+
       
       let AttackButton = this.add.text(430,300,"Attack").setInteractive().on('pointerdown', () => this.AttackButtonClicked(enemy, player, AttackButton, ItemButton, RunButton, sword, armour))
 
@@ -118,68 +180,7 @@ export default class battleScene extends Phaser.Scene{
 
       
         let RunButton = this.add.text(550,300,"Run").setInteractive().on('pointerdown', () => this.RunButtonClicked(enemy, player))
-        if(created == false)
-        {
-            this.anims.create({
-                key:"slimeDie",
-                frames:this.anims.generateFrameNumbers("slime", {frames:[28,29,30,31, 32]}),
-                framerate:16,
-                repeat:0
-            })
-            this.anims.create({
-                key:"DungeonMasterDeath",
-                frames:this.anims.generateFrameNumbers("DungeonMasterDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
-            })
-            this.anims.create({
-                key:"DungeonMasterProjectile",
-                frames:this.anims.generateFrameNumbers("DungeonMasterProjectile", ),
-                repeat:-1
-            })
-            this.anims.create({
-                key:"DungeonMasterBlast",
-                frames:this.anims.generateFrameNumbers("DungeonMasterBlast", ),
-                repeat:-1
-            })
-            this.anims.create({
-                key:"GoblinKingDeath",
-                frames:this.anims.generateFrameNumbers("GoblinKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
-            })
-            this.anims.create({
-                key:"GoblinKingProjectile",
-                frames:this.anims.generateFrameNumbers("GoblinKingProjectile", ),
-                repeat:-1
-            })
-            this.anims.create({
-                key:"GoblinKingBlast",
-                frames:this.anims.generateFrameNumbers("GoblinKingBlast", ),
-                repeat:-1
-            })
-            this.anims.create({
-                key:"SkeletonKingDeath",
-                frames:this.anims.generateFrameNumbers("SkeletonKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
-            })
-            this.anims.create({
-                key:"SlimeKingDeath",
-                frames:this.anims.generateFrameNumbers("SlimeKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
-            })
-            this.anims.create({
-                key:"SkeletonAttack",
-                frames:this.anims.generateFrameNumbers("Skeleton", {frames:[5,6,7,8]})
-            })
-            this.anims.create({
-                key:"SkeletonHit",
-                frames:this.anims.generateFrameNumbers("Skeleton", {frames:[32,33,34,35]})
-            })
-            this.anims.create({
-                key:"OrcAttack",
-                frames:this.anims.generateFrameNumbers("Orc", {frames:[5,6,7,8]})
-            })
-            this.anims.create({
-                key:"OrcHit",
-                frames:this.anims.generateFrameNumbers("Orc", {frames:[32,33,34,35]})
-            })
-            created = true
-        }
+
         this.projectile = this.add.sprite(500,500, "DungeonMasterProjectile")
         this.projectile.play("Projectile", true)
         this.enemy = this.add.sprite(700,200, "slime")
@@ -199,7 +200,7 @@ export default class battleScene extends Phaser.Scene{
         if(enemy.health <= 0)
         {
             enemy.health = 0
-            this.enemy.play("slimeDie", false)
+            this.enemy.play("Death", true)
             this.enemy.anims.msPerFrame = 200
             AttackButton.destroy()
             ItemButton.destroy()
@@ -307,7 +308,7 @@ export default class battleScene extends Phaser.Scene{
         {
             Variables.battle2 = true
         }
-        else if(Variables.enemyKry.includes("3"))
+        else if(Variables.enemyKey.includes("3"))
         {
             Variables.battle3 = true
         }

@@ -152,7 +152,7 @@ export default class GameScene extends Phaser.Scene {
         frameWidth:48,
         frameHeight:48
         })
-        this.load.spritesheet("slime", "src/assets/sprites/characters/slime.png",
+        this.load.spritesheet("Slime", "src/assets/sprites/characters/slime.png",
         {
             frameWidth:32,
             frameHeight:32
@@ -174,9 +174,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     create() {
-        Variables.battle = true
-        Variables.battle2 = true
-        Variables.battle3 = true
+
     
 
         Variables.currentFloor = 1
@@ -218,25 +216,25 @@ export default class GameScene extends Phaser.Scene {
             createAnims = true
             this.anims.create({
                 key:"idle",
-                frames:this.anims.generateFrameNumbers("slime", {frames:[0,1,2,3]}),
+                frames:this.anims.generateFrameNumbers("Slime", {frames:[0,1,2,3]}),
                 frameRate:16,
                 repeat:-1
             })
             this.anims.create({
                 key:"mediumJump",
-                frames:this.anims.generateFrameNumbers("slime", {frames:[7,8,9,10,11,12]}),
+                frames:this.anims.generateFrameNumbers("Slime", {frames:[7,8,9,10,11,12]}),
                 framerate:16,
                 repeat:-1
             })
             this.anims.create({
                 key:"longJump",
-                frames:this.anims.generateFrameNumbers("slime", {frames:[14,15,16,17,18,19,20]}),
+                frames:this.anims.generateFrameNumbers("Slime", {frames:[14,15,16,17,18,19,20]}),
                 framerate:16,
                 repeat:-1
             })
             this.anims.create({
                 key:"shortJump",
-                frames:this.anims.generateFrameNumbers("slime", {frames:[21,22,23]}),
+                frames:this.anims.generateFrameNumbers("Slime", {frames:[21,22,23]}),
                 framerate:16,
                 repeat:-1
             })
@@ -298,7 +296,7 @@ export default class GameScene extends Phaser.Scene {
         this.player = this.physics.add.sprite(playerX, playerY, "player")
         this.player.play("idleDown",true)
         this.player.anims.msPerFrame = 100
-        this.slime = this.physics.add.sprite(200,200, "slime")
+        this.slime = this.physics.add.sprite(200,200, "Slime")
         this.slime.play("idle", true)
         this.slime.anims.msPerFrame = 150
         this.physics.add.collider(this.player, this.slime)
@@ -312,7 +310,7 @@ export default class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player, RoomCornerLayer)
         this.physics.add.collider(this.player, BottomWallLayer)
         this.physics.add.collider(this.player, this.DoorLayer)
-        this.slime2 = this.physics.add.sprite(400, 400, "slime2")
+        this.slime2 = this.physics.add.sprite(400, 400, "Slime2")
         this.slime2.play("idle", true)
         this.slime2.anims.msPerFrame = 150
         this.physics.add.collider(this.player, this.slime2)
@@ -358,6 +356,7 @@ Variables.battle3 = true
         playerX = this.player.body.x
         playerY = this.player.body.y
         Variables.enemyKey = enemy.texture.key
+        console.log(Variables.enemyKey.includes("Slime"))
         console.log(enemy.texture.key)
         this.scene.start("scene-battle")
     }
