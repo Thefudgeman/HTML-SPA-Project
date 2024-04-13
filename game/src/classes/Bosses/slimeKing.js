@@ -35,7 +35,7 @@ export class SlimeKing extends Entity
         super.name = "SlimeKing";
         super.attack = 1000000;
         super.defence = 50000;
-        super.health = 50000000;
+        super.health = 999;
         this.moneyDrop = 5000000;
         this.xpDrop = 20000000;
     }

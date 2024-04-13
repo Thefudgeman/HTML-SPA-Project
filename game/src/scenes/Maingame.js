@@ -1,4 +1,11 @@
-import { Rectangle } from "phaser3-rex-plugins/plugins/gameobjects/shape/shapes/geoms"
+import { Sword } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/items/Weapons/Sword.js'
+import { WarriorArmour } from './../classes/items/Armour/WarriorArmour';
+import { iron } from '../classes/items/upgrade materials/iron';
+import { steel } from '../classes/items/upgrade materials/steel'
+import { titanium } from '../classes/items/upgrade materials/titanium'
+import { SmallHealthPotion } from '../classes/items/Potions/smallHealthPotion';
+import { HealthPotion } from '../classes/items/Potions/healthPotion';
+import { LargeHealthPotion } from '../classes/items/Potions/largeHealthPotion';
 
 var playerDirection
 export class variables
@@ -11,6 +18,15 @@ export class variables
     currentFloor = 1
     enemyKey = ""
     battleNum = 0
+    moneyButton = false
+    weapon = new Sword("sword", "description", 50, 1)
+    armour = new WarriorArmour("armour", "description", 30, 1)
+    materialIron = new iron ("description", 20)
+    materialSteel = new steel ("description", 20)
+    materialTitanium = new titanium ("description", 20)
+    smallHealthPotion = new SmallHealthPotion ("description", 20, "Small Health Potion")
+    healthPotion= new HealthPotion ("description", 20, "Health Potion")
+    largeHealthPotion = new LargeHealthPotion ("description", 20, "Large Health Potion")
 }
 
 
@@ -168,7 +184,7 @@ export default class GameScene extends Phaser.Scene {
     {
         playerX = this.player.body.x
         playerY = this.player.body.y
-        this.scene.start("scene-shop")
+        this.scene.switch("scene-shop")
     }
 
     create() {
@@ -509,7 +525,7 @@ export class GameSceneFloor2 extends Phaser.Scene {
     {
         playerX = this.player.body.x
         playerY = this.player.body.y
-        this.scene.start("scene-shop")
+        this.scene.switch("scene-shop")
     }
     battle(enemy)
     {
@@ -706,7 +722,7 @@ export class GameSceneFloor3 extends Phaser.Scene{
     {
         playerX = this.player.body.x
         playerY = this.player.body.y
-        this.scene.start("scene-shop")
+        this.scene.switch("scene-shop")
     }
 
     battle(enemy)
@@ -906,7 +922,7 @@ export class GameSceneFloor4 extends Phaser.Scene{
     {
         playerX = this.player.body.x
         playerY = this.player.body.y
-        this.scene.start("scene-shop")
+        this.scene.switch("scene-shop")
     }
 
     battle(enemy)
@@ -1081,7 +1097,7 @@ export class GameSceneFloor5 extends Phaser.Scene{
     {
         playerX = this.player.body.x
         playerY = this.player.body.y
-        this.scene.start("scene-shop")
+        this.scene.switch("scene-shop")
     }
 
     battle(enemy)

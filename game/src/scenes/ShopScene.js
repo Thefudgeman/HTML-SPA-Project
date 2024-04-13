@@ -4,7 +4,9 @@ import { WarriorArmour } from './../classes/items/Armour/WarriorArmour';
 import { iron } from '../classes/items/upgrade materials/iron';
 import { steel } from '../classes/items/upgrade materials/steel'
 import { titanium } from '../classes/items/upgrade materials/titanium'
-
+import { SmallHealthPotion } from '../classes/items/Potions/smallHealthPotion';
+import { HealthPotion } from '../classes/items/Potions/healthPotion';
+import { LargeHealthPotion } from '../classes/items/Potions/largeHealthPotion';
 
 export default class shopScene extends Phaser.Scene{
     constructor(){
@@ -18,21 +20,21 @@ export default class shopScene extends Phaser.Scene{
     create()
     {
         this.add.image(0,0,"shop").setOrigin(0,0)
-
-
-        let weapon = new Sword("sword", "description", 50, 1)
-        let armour = new WarriorArmour("armour", "description", 30, 1)
-        let materialIron = new iron ("Iron", "description", 20)
-        let materialSteel = new steel ("Steel", "description", 20)
-        let materialTitanium = new titanium ("Titanium", "description", 20)
-
-        console.log(materialIron.ItemName)
-
-        let BuyButton = this.add.text(230,300,"Buy").setInteractive().on('pointerdown', () => this.BuyButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, materialIron, materialSteel, materialTitanium))
-        let SellButton = this.add.text(430,300,"Sell").setInteractive().on('pointerdown', () => this.SellButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, materialIron, materialSteel, materialTitanium))
+        if(Variables.moneyButton == false)
+        {
+            this.moneyText = this.add.text(230, 50, "Money: "+Variables.money)
+            Variables.moneyButton = true
+        }
+        let BuyButton = this.add.text(230,300,"Buy").setInteractive().on('pointerdown', () => this.BuyButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, Variables.materialIron, Variables.materialSteel, Variables.materialTitanium, Variables.smallHealthPotion, Variables.healthPotion, Variables.largeHealthPotion))
+        let SellButton = this.add.text(430,300,"Sell").setInteractive().on('pointerdown', () => this.SellButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, Variables.materialIron, Variables.materialSteel, Variables.materialTitanium, Variables.smallHealthPotion, Variables.healthPotion, Variables.largeHealthPotion))
         let LeaveButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton))
         let UpgradeButton = this.add.text(430,350,"Upgrade").setInteractive().on('pointerdown', () => this.UpgradeButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, weapon, armour))
 
+    }
+
+    updateMoney()
+    {
+        this.moneyText.text =  "Money: "+Variables.money
     }
 
     DestroyButtons(BuyButton, SellButton, LeaveButton, UpgradeButton)
@@ -116,7 +118,7 @@ export default class shopScene extends Phaser.Scene{
                 break upgrade 
             }
 
-            console.log(Variables.money)
+            this.updateMoney()
         }
         else
         {
@@ -181,9 +183,8 @@ export default class shopScene extends Phaser.Scene{
                 console.log("Not enough ", ironUpgrade.ItemName)
                 break upgrade 
             }
-
-            console.log(Variables.money)
-        }
+            this.updateMoney()
+            }
         else
         {
             console.log("you don't have enough money")
@@ -193,14 +194,18 @@ export default class shopScene extends Phaser.Scene{
     }
 
 
-    BuyButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, buyIron, buySteel, buyTitanium)
+    BuyButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, buyIron, buySteel, buyTitanium, buySmallHealthPotion, buyHealthPotion, buyLargeHealthPotion)
     {   
         this.DestroyButtons(BuyButton, SellButton, LeaveButton, UpgradeButton)
 
-        let Buy1 = this.add.text(230,100,"iron      Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buyIron))
-        let Buy2 = this.add.text(230,150,"steel     Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buySteel))
-        let Buy3 = this.add.text(230,200,"titanium  Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buyTitanium))
-        let LeaveBuyButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveBuyButtonClicked(Buy1, Buy2, Buy3, LeaveBuyButton))
+        let Buy1 = this.add.text(230,100,"iron                  Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buyIron))
+        let Buy2 = this.add.text(230,150,"steel                 Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buySteel))
+        let Buy3 = this.add.text(230,200,"titanium              Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buyTitanium))
+        let Buy4 = this.add.text(230,250,"Small health potion   Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buySmallHealthPotion))
+        let Buy5 = this.add.text(230,300,"Health potion         Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buyHealthPotion))
+        let Buy6 = this.add.text(230,350,"Large health potion   Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buyLargeHealthPotion))
+        console.log(buyLargeHealthPotion.NumberOwned)
+        let LeaveBuyButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveBuyButtonClicked(Buy1, Buy2, Buy3, Buy4, Buy5, Buy6, LeaveBuyButton))
 
 
     }
@@ -209,23 +214,11 @@ export default class shopScene extends Phaser.Scene{
     {
 
         console.log(material.ItemName)
-        if(material.ItemName == "Iron" && Variables.money >= 20)
+        if(Variables.money >= material.cost)
         {
-            Variables.money -= 20
+            Variables.money -=material.cost
             material.NumberOwned++
-            console.log(material.NumberOwned)
-        }
-        else if(material.ItemName == "Steel" && Variables.money >= 40)
-        {
-            Variables.money -= 40
-            material.NumberOwned++
-            console.log(material.NumberOwned)
-        }
-        else if(material.ItemName == "Titanium" && Variables.money >= 80)
-        {
-            Variables.money -= 80
-            material.NumberOwned++
-            console.log(material.NumberOwned)
+            this.updateMoney()
         }
         else
         {
@@ -235,72 +228,71 @@ export default class shopScene extends Phaser.Scene{
 
     sellMaterial(material)
     {
-        if(material.ItemName == "Iron" && material.NumberOwned > 0)
+        if(material.NumberOwned > 0)
         {
-            Variables.money += 15
+            Variables.money += material.cost
             material.NumberOwned--
-            console.log(material.NumberOwned)
-            console.log(Variables.money)
-        }
-        else if(material.ItemName == "Steel" && material.NumberOwned > 0)
-        {
-            Variables.money += 30
-            material.NumberOwned--
-            console.log(material.NumberOwned)
-            console.log(Variables.money)
-        }
-        else if(material.ItemName == "Titanium" && material.NumberOwned > 0)
-        {
-            Variables.money += 60
-            material.NumberOwned--
-            console.log(material.NumberOwned)
-            console.log(Variables.money)
+            this.updateMoney()
         }
         else
         {
-            console.log("You don't have enough of tht material to sell")
+            console.log("You don't have enough " + material.ItemName)
         }
     }
 
 
 
-    LeaveBuyButtonClicked(Buy1, Buy2, Buy3, LeaveBuyButton)
+    LeaveBuyButtonClicked(Buy1, Buy2, Buy3, Buy4, Buy5, Buy6, LeaveBuyButton)
     {
         Buy1.destroy()
         Buy2.destroy()
         Buy3.destroy()
+        Buy4.destroy()
+        Buy5.destroy()
+        Buy6.destroy()
         LeaveBuyButton.destroy()
 
         this.create()
 
     }
 
-    SellButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, materialIron, materialSteel, materialTitanium)
+    SellButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, materialIron, materialSteel, materialTitanium, smallHealthPotion, healthPotion, largeHealthPotion)
     {   
         this.DestroyButtons(BuyButton, SellButton, LeaveButton, UpgradeButton)
 
-        let Sell1 = this.add.text(230,100,"Iron      Sell").setInteractive().on('pointerdown', () => this.sellMaterial(materialIron))
-        let Sell2 = this.add.text(230,150,"Steel     Sell").setInteractive().on('pointerdown', () => this.sellMaterial(materialSteel))
-        let Sell3 = this.add.text(230,200,"Titanium  Sell").setInteractive().on('pointerdown', () => this.sellMaterial(materialTitanium))
-        let LeaveBuyButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveBuyButtonClicked(Sell1, Sell2, Sell3, LeaveBuyButton))
+        let Sell1 = this.add.text(230,100,"Iron                  Sell").setInteractive().on('pointerdown', () => this.sellMaterial(materialIron))
+        let Sell2 = this.add.text(230,150,"Steel                 Sell").setInteractive().on('pointerdown', () => this.sellMaterial(materialSteel))
+        let Sell3 = this.add.text(230,200,"Titanium              Sell").setInteractive().on('pointerdown', () => this.sellMaterial(materialTitanium))
+        let Sell4 = this.add.text(230,250,"Small health potion   Sell").setInteractive().on('pointerdown', () => this.sellMaterial(smallHealthPotion))
+        let Sell5 = this.add.text(230,300,"Health potion         Sell").setInteractive().on('pointerdown', () => this.sellMaterial(healthPotion))
+        let Sell6 = this.add.text(230,350,"Large health potion   Sell").setInteractive().on('pointerdown', () => this.sellMaterial(largeHealthPotion))
+        console.log(largeHealthPotion.NumberOwned)
+        let LeaveBuyButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveBuyButtonClicked(Sell1, Sell2, Sell3, Sell4, Sell5, Sell6, LeaveBuyButton))
 
 
     }
 
     LeaveButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton)
     {   
-        this.DestroyButtons(BuyButton, SellButton, LeaveButton, UpgradeButton)
         if(Variables.currentFloor == 1)
         {
-            this.scene.start("scene-game")
+            this.scene.switch("scene-game")
         }
         else if (Variables.currentFloor == 2)
         {
-            this.scene.start("scene-game-floor2")
+            this.scene.switch("scene-game-floor2")
         }
         else if (Variables.currentFloor == 3)
         {
-            this.scene.start("scene-game-floor3")
+            this.scene.switch("scene-game-floor3")
+        }
+        else if(Variables.currentFloor == 4)
+        {
+            this.scene.switch("scene-game-floor4")
+        }
+        else if(Variables.currentFloor == 5)
+        {
+            this.scene.switch("scene-game-floor5")
         }
         
     }

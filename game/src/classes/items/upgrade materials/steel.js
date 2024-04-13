@@ -1,7 +1,7 @@
 import { Item } from '../item'
 
 export class steel extends Item{
-
+    cost = 0
     set NumberOwned(value)
     {
         super.numberOwned = value
@@ -22,11 +22,22 @@ export class steel extends Item{
         super.itemName = value
     }
 
-    constructor(ItemName, ItemDescription, NumberOwned)
+    get cost()
+    {
+        return this.cost
+    }
+
+    set cost(value)
+    {
+        this.cost = value
+    }
+
+    constructor(ItemDescription, NumberOwned)
     {
         super()
-        super.itemName = ItemName
+        super.itemName = "Steel"
         super.itemDescription = ItemDescription
         super.numberOwned = NumberOwned
+        this.cost = 40
     }
 }

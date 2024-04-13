@@ -228,9 +228,6 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
       const player = new Player("name", 150, 99999, 5, 1);
       const sword = new Sword("Sword", "this is a sword", 20, 1)
       const armour = new WarriorArmour("Armour", "this is armour", 0, 1)
-      const smallHealthPotions = new SmallHealthPotion("Restores 25% of your health", 15, "Small Health Potion")
-      const healthPotions = new HealthPotion("Restores 50% of your health", 15, "Health Potion")
-      const largeHealthPotions = new LargeHealthPotion("Restores 75% of your health", 15, "Large Health Potion")
       this.map = this.add.image(0,0,"map2").setOrigin(0,0)
       if(Variables.enemyKey == "DungeonMaster")
       {
@@ -362,7 +359,7 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
       
         let AttackButton = this.add.text(430,300,"Attack").setInteractive().on('pointerdown', () => this.AttackButtonClicked(enemy, player, AttackButton, ItemButton, RunButton, sword, armour, Attack, Item, Run))
 
-        let ItemButton = this.add.text(498,300,"Item").setInteractive().on('pointerdown', () => this.ItemButtonClicked(player, smallHealthPotions, healthPotions, largeHealthPotions))
+        let ItemButton = this.add.text(498,300,"Item").setInteractive().on('pointerdown', () => this.ItemButtonClicked(player, Variables.smallHealthPotion, Variables.healthPotion, Variables.largeHealthPotion))
       
         let RunButton = this.add.text(550,300,"Run").setInteractive().on('pointerdown', () => this.RunButtonClicked(enemy, player))
 
@@ -504,18 +501,20 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
         var ItemBox = this.add.rectangle(505, 420, 300, 150, 0)
         ItemBox.setStrokeStyle(2, 0xffffff);
         let SmallHealthPotionT = this.add.text(357, 355,"Small Health Potion x " + smallHealthPotions.NumberOwned)
-        let useSmallHealthPotion = this.add.text(610, 355, "Use").setInteractive().on('pointerdown', () => this.usePotion(smallHealthPotions, player, smallHealthPotions, healthPotions, largeHealthPotions))
+        let useSmallHealthPotion = this.add.text(610, 355, "Use").setInteractive().on('pointerdown', () => this.usePotion(smallHealthPotions, player, smallHealthPotions, healthPotions, largeHealthPotions, SmallHealthPotionT, HealthPotionT, LargeHealthPotionT))
         
         let HealthPotionT = this.add.text(357, 395,"Health Potion x " + healthPotions.NumberOwned)
-        let useHealthPotion = this.add.text(610, 395, "Use").setInteractive().on('pointerdown', () => this.usePotion(healthPotions, player, smallHealthPotions, healthPotions, largeHealthPotions))
+        let useHealthPotion = this.add.text(610, 395, "Use").setInteractive().on('pointerdown', () => this.usePotion(healthPotions, player, smallHealthPotions, healthPotions, largeHealthPotions, SmallHealthPotionT, HealthPotionT, LargeHealthPotionT))
 
         let LargeHealthPotionT = this.add.text(357, 435,"Large Health Potion x " + largeHealthPotions.NumberOwned)
-        let useLargeHealthPotion = this.add.text(610, 435, "Use").setInteractive().on('pointerdown', () => this.usePotion(largeHealthPotions, player, smallHealthPotions, healthPotions, largeHealthPotions))
+        let useLargeHealthPotion = this.add.text(610, 435, "Use").setInteractive().on('pointerdown', () => this.usePotion(largeHealthPotions, player, smallHealthPotions, healthPotions, largeHealthPotions, SmallHealthPotionT, HealthPotionT, LargeHealthPotionT))
 
         let LeaveButton = this.add.text(600, 480, "Close").setInteractive().on('pointerdown', () => this.leaveItemSelect(ItemBox, SmallHealthPotionT, useSmallHealthPotion, HealthPotionT, useHealthPotion, LargeHealthPotionT, useLargeHealthPotion, LeaveButton))
     }
 
-    usePotion(Potion, player, smallHealthPotions, healthPotions, largeHealthPotions)
+
+
+    usePotion(Potion, player, smallHealthPotions, healthPotions, largeHealthPotions, smallHealthPotionT, healthPotionT, largeHealthPotionT)
     {
         if(Potion.NumberOwned > 0)
         {
@@ -531,7 +530,9 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
             player.Health = player.maxHealth
         }
         console.log(player.health)
-        this.ItemButtonClicked(player, smallHealthPotions, healthPotions, largeHealthPotions)
+        smallHealthPotionT.text = "Small Health Potion x " + smallHealthPotions.NumberOwned
+        healthPotionT.text = "Health Potion x " + healthPotions.NumberOwned
+        largeHealthPotionT.text = "Large Health Potion x " + largeHealthPotions.NumberOwned
     }
 
     leaveItemSelect(ItemBox, SmallHealthPotionT, useSmallHealthPotion, HealthPotionT, useHealthPotion, LargeHealthPotionT, useLargeHealthPotion, LeaveButton)

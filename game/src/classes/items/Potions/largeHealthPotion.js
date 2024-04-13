@@ -3,7 +3,7 @@ import {Item} from "../item"
 export class LargeHealthPotion extends Item{
 
     healthRecovery = 0
-
+    cost = 0
     get HealthRecovery()
     {
         return this.healthRecovery
@@ -22,6 +22,25 @@ export class LargeHealthPotion extends Item{
         super.numberOwned = value
     }
 
+    get cost()
+    {
+        return this.cost
+    }
+
+    set cost(value)
+    {
+        this.cost = value
+    }
+
+    get ItemName()
+    {
+        return super.itemName
+    }
+    set ItemName(value)
+    {
+        super.itemName = value
+    }
+
     constructor(Description, NumberOwned, PotionName)
     {
         super()
@@ -29,5 +48,6 @@ export class LargeHealthPotion extends Item{
         super.itemDescription = Description
         super.numberOwned = NumberOwned
         super.itemName = PotionName
+        this.cost = 60
     }
 }
