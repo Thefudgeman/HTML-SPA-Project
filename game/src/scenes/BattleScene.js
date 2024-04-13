@@ -212,7 +212,7 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
       const healthPotions = new HealthPotion("Restores 50% of your health", 15, "Health Potion")
       const largeHealthPotions = new LargeHealthPotion("Restores 75% of your health", 15, "Large Health Potion")
       this.map = this.add.image(0,0,"map2").setOrigin(0,0)
-      if(Variables.enemyKey == "DungeonMaster")
+      if(Variables.enemyKey == "DungeonMasterWalk")
       {
         enemy = new DungeonMaster()
         this.anims.create({
@@ -230,7 +230,7 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
             repeat:-1
         })
       }
-      else if (Variables.enemyKey == "SkeletonKing")
+      else if (Variables.enemyKey == "SkeletonKingWalk")
       {
         enemy = new SkeletonKing()
         this.anims.create({
@@ -238,7 +238,7 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
             frames:this.anims.generateFrameNumbers("SkeletonKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
         })
       }
-      else if (Variables.enemyKey == "GoblinKing")
+      else if (Variables.enemyKey == "GoblinKingWalk")
       {
         enemy = new GoblinKing()
         this.anims.create({
@@ -256,7 +256,7 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
             repeat:-1
         })
       }
-      else if(Variables.enemyKey == "SlimeKing")
+      else if(Variables.enemyKey == "SlimeKingWalk")
       {
         enemy = new SlimeKing()
         this.anims.create({
@@ -414,7 +414,9 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
                          {
                              this.setMeterPercentageAnimated(0)
                         }
-                        
+                        AttackButton.text = "Attack"
+                        ItemButton.text = "Item"
+                        RunButton.text = "Run"
                         
                     }
                     if(player.health <= 0)
@@ -429,9 +431,6 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
                 })
          
                 this.enemy.anims.msPerFrame = 400
-                AttackButton.text = "Attack"
-                ItemButton.text = "Item"
-                RunButton.text = "Run"
         
             }
         })
