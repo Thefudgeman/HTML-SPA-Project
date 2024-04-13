@@ -174,7 +174,6 @@ export default class GameScene extends Phaser.Scene {
     create() {
 
     
-
         Variables.currentFloor = 1
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f,e")
       //  this.add.image(0, 0, "tiles").setOrigin(0,0)
@@ -427,7 +426,9 @@ export class GameSceneFloor2 extends Phaser.Scene {
         })
         this.anims.create({
             key:"SlimeKingWalke",
-            frames:this.anims.generateFrameNumbers("SlimeKingWalk", {frames:[0,1,2,3]})
+            frames:this.anims.generateFrameNumbers("SlimeKingWalk", {frames:[0,1,2,3]}),
+            framerate:16,
+            repeat:-1
         })
         Variables.currentFloor = 2
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f,e")
@@ -461,6 +462,8 @@ export class GameSceneFloor2 extends Phaser.Scene {
         this.slime2.anims.msPerFrame = 150
 
         this.orc = this.physics.add.sprite(600,300, "Orc")
+        this.orc.body.setSize(16,24)
+        this.orc.body.setOffset(24,14)
         this.orc.play("OrcWalk", true)
         this.orc.anims.msPerFrame = 150
 
@@ -540,14 +543,12 @@ export class GameSceneFloor2 extends Phaser.Scene {
        }
         if(this.downFloor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
         {
-            console.log("r")
             playerX = 825   
             playerY = 80
             this.scene.start("scene-game", this.player)
         }
         else if (this.upFloor.contains(this.player.x, this.player.y) && this.keys.e.isDown)
         {
-            console.log("q")
             playerX =775
             playerY = 525
             if(Variables.highestFloorClear < 2)
@@ -568,15 +569,14 @@ export class GameSceneFloor3 extends Phaser.Scene{
     preload()
     {
         this.load.image('door', "./src/assets/shutDoor.png")
-        this.load.spritesheet('Orc', "./src/assets/Monster RPG pack/Orc1 64x48.png",
-        {
-            frameWidth:64,
-            frameHeight:48
-        })
         this.load.spritesheet('Skeleton', "./src/assets/Monster RPG pack/Skeleton1 64x48.png",
         {
             frameWidth:64,
             frameHeight:48
+        })
+        this.load.spritesheet('GoblinKingWalk', "./src/assets/Rouglike Dungeon - Asset Bundle/GoblinKingWalk.png",{
+            frameHeight:320,
+            frameWidth:320
         })
     }
     create()
@@ -599,18 +599,7 @@ export class GameSceneFloor3 extends Phaser.Scene{
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
 
 
-        this.anims.create({
-            key:"OrcIdle",
-            frames:this.anims.generateFrameNumbers("Orc", {frames:[9,10,11,12]}),
-            frameRate:16,
-            repeat:-1
-        })
-        this.anims.create({
-            key:"OrcWalk",
-            frames:this.anims.generateFrameNumbers("Orc", {frames:[18,19,20,21]}),
-            frameRate:16,
-            repaet:-1
-        })
+        
         this.anims.create({
             key:"SkeletonIdle",
             frames:this.anims.generateFrameNumbers("Skeleton", {frames:[9,10,11,12]}),
@@ -618,24 +607,40 @@ export class GameSceneFloor3 extends Phaser.Scene{
             repeat:-1
         })
         this.anims.create({
-            key:"SkeletonWalk",
+            key:"SkeletonWalke",
             frames:this.anims.generateFrameNumbers("Skeleton", {frames:[18,19,20,21]}),
             frameRate:16,
             repaet:-1
         })
+        this.anims.create({
+            key:"GoblinKingWalk",
+            frames:this.anims.generateFrameNumbers("GoblinKingWalk", {frames:[0,1,2,3]}),
+            frameRate:16,
+            repeat:-1
+        })
 
 
-        this.orc = this.physics.add.sprite(600,300, "Orc1")
+        this.orc = this.physics.add.sprite(570,300, "Orc1")
+        this.orc.body.setSize(16,24)
+        this.orc.body.setOffset(24,14)
         this.orc.play("OrcWalk", true)
         this.orc.anims.msPerFrame = 150
 
-        this.orc2 = this.physics.add.sprite(400,300, "Orc2")
+        this.orc2 = this.physics.add.sprite(370,300, "Orc2")
+        this.orc2.body.setSize(16,24)
+        this.orc2.body.setOffset(24,14)
         this.orc2.play("OrcWalk", true)
         this.orc2.anims.msPerFrame = 150
 
         this.skeleton = this.physics.add.sprite(550,500, "Skeleton")
+        this.skeleton.body.setSize(16,24)
+        this.skeleton.body.setOffset(24,14)
         this.skeleton.play("SkeletonWalk", true)
         this.skeleton.anims.msPerFrame = 150
+
+        this.goblinKing = this.physics.add.sprite(370, 220, "GoblinKingWalk")
+        this.goblinKing.play("GoblinKingWalke")
+        this.goblinKing.anims.msPerFrame = 150
 
         this.player = this.physics.add.sprite(playerX, playerY, "player")   
         this.player.play("idleDown",true)
@@ -795,14 +800,20 @@ export class GameSceneFloor4 extends Phaser.Scene{
             repeat:-1
         })        
         this.skeleton = this.physics.add.sprite(350,250, "Skeleton1")
+        this.skeleton.body.setSize(16,24)
+        this.skeleton.body.setOffset(24,14)
         this.skeleton.play("SkeletonWalk", true)
         this.skeleton.anims.msPerFrame = 150
 
         this.skeleton2 = this.physics.add.sprite(300,470, "Skeleton2")
+        this.skeleton2.body.setSize(16,24)
+        this.skeleton2.body.setOffset(24,14)
         this.skeleton2.play("SkeletonWalk", true)
         this.skeleton2.anims.msPerFrame = 150
 
         this.skeleton3 = this.physics.add.sprite(800,300, "Skeleton3")
+        this.skeleton3.body.setSize(16,24)
+        this.skeleton3.body.setOffset(24,14)
         this.skeleton3.play("SkeletonWalk", true)
         this.skeleton3.anims.msPerFrame = 150
 

@@ -4,6 +4,11 @@ export class Orc extends Entity
 {
     moneyDrop;
     xpDrop;
+    maxHealth;
+    get maxHealth()
+    {
+        return this.maxHealth;
+    }
     set xpDrop(value)
     {
         this.xpDrop = value
@@ -33,9 +38,10 @@ export class Orc extends Entity
     {
         super()
         super.name = "Orc";
-        super.attack = 10;
+        super.attack = 20;
         super.defence = 5;
-        super.health = 50;
+        super.health = 100;
+        this.maxHealth = 100;
         this.moneyDrop = 5;
         this.xpDrop = 20;
     }

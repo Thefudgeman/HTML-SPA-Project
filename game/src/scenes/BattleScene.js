@@ -81,6 +81,10 @@ export default class battleScene extends Phaser.Scene{
             frameWidth:64,
             frameHeight:48
         })
+        this.load.spritesheet("SlimeNew", "./src/assets/Monster RPG pack/Slime 32x32.png",{
+            frameHeight:32,
+            frameWidth:32
+        })
     }
     setMeterPercentage(percent = 1, middle, rightCap)
 {
@@ -175,9 +179,33 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
 
         this.setMeterPercentage(1, this.enemyMiddle, this.enemyRightCap)
 
-
+        this.DeleteAnims()
       var enemy = new Slime();
-      const player = new Player("name", 150, 99999999999999999999999999999, 5, 1);
+      this.anims.create({
+        key:"EnemyIdle",
+        frames:this.anims.generateFrameNumbers("SlimeNew", {frames:[0,1,2,3]}),
+        frameRate:16,
+        repeat:-1
+    })
+    this.anims.create({
+        key:"EnemyAttack",
+        frames:this.anims.generateFrameNumbers("SlimeNew", {frames:[4,5,6,7,8]}),
+        frameRate:16,
+    })
+    this.anims.create({
+        key:"EnemyHit",
+        frames:this.anims.generateFrameNumbers("SlimeNew", {frames:[9,10,11]}),
+        frameRate:16,
+    })
+    this.anims.create({
+        key:"Death",
+        frames:this.anims.generateFrameNumbers("SlimeNew", {frames:[10, 11, 10]}),
+        frameRate:16,
+    })
+    this.enemy = this.add.sprite(700,200, "enemy")
+    this.player = this.add.sprite(300,200, "player")
+    this
+      const player = new Player("name", 150, 10, 5, 1);
       const sword = new Sword("Sword", "this is a sword", 20, 1)
       const armour = new WarriorArmour("Armour", "this is armour", 0, 1)
       const smallHealthPotions = new SmallHealthPotion("Restores 25% of your health", 15, "Small Health Potion")
@@ -239,6 +267,7 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
       else if(Variables.enemyKey.includes("Skeleton") && Variables.enemyKey != "SkeletonKing")
       {
         enemy = new Skeleton()
+        this.DeleteAnims()
         this.anims.create({
             key:"EnemyAttack",
             frames:this.anims.generateFrameNumbers("Skeleton", {frames:[5,6,7,8]})
@@ -247,10 +276,18 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
             key:"EnemyHit",
             frames:this.anims.generateFrameNumbers("Skeleton", {frames:[32,33,34,35]})
         })
+        this.anims.create({
+            key:"EnemyIdle",
+            frames:this.anims.generateFrameNumbers("Skeleton", {frames:[9,10,11,12]}),
+            frameRate:16,
+            repeat:-1
+        })
+
       }
-      else if (Variables.enemyKey.includes("Orc"))
+      else if (Variables.enemyKey == "Orc")
       {
         enemy = new Orc()
+        this.DeleteAnims()
         this.anims.create({
             key:"EnemyAttack",
             frames:this.anims.generateFrameNumbers("Orc", {frames:[5,6,7,8]})
@@ -258,6 +295,16 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
         this.anims.create({
             key:"EnemyHit",
             frames:this.anims.generateFrameNumbers("Orc", {frames:[32,33,34,35]})
+        })
+        this.anims.create({
+            key:"Death",
+            frames:this.anims.generateFrameNumbers("Orc", {frames:[32,33,34]})
+        })
+        this.anims.create({
+            key:"EnemyIdle",
+            frames:this.anims.generateFrameNumbers("Orc", {frames:[9,10,11,12]}),
+            frameRate:16,
+            repeat:-1
         })
       }
       else if(Variables.enemyKey.includes("Slime"))
@@ -271,89 +318,132 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
       }
 
       
-      let AttackButton = this.add.text(430,300,"Attack").setInteractive().on('pointerdown', () => this.AttackButtonClicked(enemy, player, AttackButton, ItemButton, RunButton, sword, armour))
+        let AttackButton = this.add.text(430,300,"Attack").setInteractive().on('pointerdown', () => this.AttackButtonClicked(enemy, player, AttackButton, ItemButton, RunButton, sword, armour, Attack, Item, Run))
 
-      
-      let ItemButton = this.add.text(498,300,"Item").setInteractive().on('pointerdown', () => this.ItemButtonClicked(player, smallHealthPotions, healthPotions, largeHealthPotions))
-
+        let ItemButton = this.add.text(498,300,"Item").setInteractive().on('pointerdown', () => this.ItemButtonClicked(player, smallHealthPotions, healthPotions, largeHealthPotions))
       
         let RunButton = this.add.text(550,300,"Run").setInteractive().on('pointerdown', () => this.RunButtonClicked(enemy, player))
 
+        let Attack = this.add.text(430,300,"Attack")
+        let Item = this.add.text(498,300,"Item")
+        let Run = this.add.text(550,300,"Run")
+
         this.projectile = this.add.sprite(500,500, "DungeonMasterProjectile")
         this.projectile.play("Projectile", true)
-        this.enemy = this.add.sprite(700,200, "slime")
-        this.player = this.add.sprite(300,200, "player")
+ 
         this.player.play("idleRight", true)
         this.player.anims.msPerFrame = 100
         this.enemy.setFlipX(true)
-        this.enemy.play("idle", true)
-        this.enemy.anims.msPerFrame = 100
+        this.enemy.play("EnemyIdle", true)
+        this.enemy.anims.msPerFrame = 150
     }
 
-    AttackButtonClicked(enemy, player, AttackButton, ItemButton, RunButton, sword, armour)
+    AttackButtonClicked(enemy, player, AttackButton, ItemButton, RunButton, sword, armour, Attack, Item, Run)
     {
+        AttackButton.text = ""
+        ItemButton.text = ""
+        RunButton.text = ""
+
         this.time.addEvent({
             delay:300,
             callback: ()=>{
                 enemy.health = enemy.health - player.attack - sword.damage;
-                this.player.play("attackRight", 4,false)
+                this.player.play("attackRight", 4,false).once("animationcompelte", ()=>{
+                    this.player.play("idleRight")
+                })
                  this.player.anims.msPerFrame = 100
-                  if(enemy.health/enemy.maxHealth >= 0)
+                 if(enemy.health/enemy.maxHealth >= 0)
                  {
                     this.setMeterPercentageAnimatedE(enemy.health/enemy.maxHealth)
                 }
-         
-        
-                if(enemy.health <= 0)
-                {
-                    enemy.health = 0
-                    this.setMeterPercentageAnimatedE(0)
-                    this.enemy.play("Death", true)
-                    this.enemy.anims.msPerFrame = 200
-                    AttackButton.destroy()
-                    ItemButton.destroy()
-                    RunButton.destroy()
-                    Variables.money += enemy.moneyDrop
-                    this.add.text(500,200,"You Won The Battle");
-                    this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
-                }
-                else
-                {
-        
-                     if(player.defence + armour.defence > enemy.attack)
-                      {
-                          player.health = player.health
-                      }
-                      else
-                     {
-                         player.health = player.health - enemy.attack + player.defence + armour.defence
-                     }
-                      if(player.health/player.maxHealth >= 0)
-                     {
-                         this.setMeterPercentageAnimated(player.health/player.maxHealth)
-                     }
-                     else
-                     {
-                         this.setMeterPercentageAnimated(0)
+                 this.enemy.play("EnemyHit").once('animationcomplete', () =>{
+                
+                    if(enemy.health <= 0)
+                    {
+                        Variables.Victory = true
+                        enemy.health = 0
+                        this.setMeterPercentageAnimatedE(0)
+                        this.enemy.play("Death", true)
+                        this.enemy.anims.msPerFrame = 400
+                        AttackButton.destroy()
+                        ItemButton.destroy()
+                        RunButton.destroy()
+                        Attack.destroy()
+                        Item.destroy()
+                        Run.destroy()
+                        Variables.money += enemy.moneyDrop
+                        this.add.text(500,200,"You Won The Battle");
+                        this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
                     }
-           
-                    
-                }
-                if(player.health <= 0)
-                {
-                    Variables.battle = false
-                    Variables.battle2 = false
-                    Variables.battle3 = false
-                    this.add.text(500,200, "You Lost The Battle")
-                    this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
-                    AttackButton.destroy()
-                    ItemButton.destroy()
-                    RunButton.destroy()
-                    
-                }
+                    else
+                    {
+
+                        
+                        if(Variables.enemyKey == "GoblinKingWalk" || Variables.enemyKey == "DungeonMasterWalk")
+                        {
+                            this.projectile.flipX(true)
+                            this.projectile.play("Projectile").once('animationcomplete', ()=>{
+                                this.projectile.play("Blast")
+                                this.projectile.anims.msPerFrame = 150
+                            })
+                            this.projectile.anims.msPerFrame = 150
+                        }
+                        else
+                        {
+                            this.enemy.play("EnemyAttack", 4, false).once('animationcomplete', () =>{
+                                this.enemy.play("EnemyIdle")
+                                this.enemy.anims.msPerFrame = 150
+                            })
+                        }
+                        
+
+                        this.enemy.anims.msPerFrame = 150
+                         if(player.defence + armour.defence > enemy.attack)
+                          {
+                              player.health = player.health
+                          }
+                          else
+                         {
+                             player.health = player.health - enemy.attack + player.defence + armour.defence
+                         }
+                          if(player.health/player.maxHealth >= 0)
+                         {
+                             this.setMeterPercentageAnimated(player.health/player.maxHealth)
+                         }
+                         else
+                         {
+                             this.setMeterPercentageAnimated(0)
+                        }
+                        
+                        
+                    }
+                    if(player.health <= 0)
+                    {
+                        this.add.text(500,200, "You Lost The Battle")
+                        this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
+                        AttackButton.destroy()
+                        ItemButton.destroy()
+                        RunButton.destroy()
+                        
+                    }
+                })
+         
+                this.enemy.anims.msPerFrame = 400
+                AttackButton.text = "Attack"
+                ItemButton.text = "Item"
+                RunButton.text = "Run"
+        
             }
         })
         
+    }
+
+    DeleteAnims()
+    {
+        this.anims.remove("EnemyAttack")
+        this.anims.remove("EnemyIdle")
+        this.anims.remove("EnemyHit")
+        this.anims.remove("Death")
     }
 
     ItemButtonClicked(player, smallHealthPotions, healthPotions, largeHealthPotions)
@@ -421,16 +511,12 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
 
     leaveScene()
     {
-        Variables.Victory = true
 
         if(Variables.enemyKey == "SlimeKingWalk" || Variables.enemyKey == "GoblinKingWalk" || Variables.enemyKey == "SkeletonKingWalk" || Variables.enemyKey == "DungeonMasterWalk")
         {
             Variables.boss = true
         }
 
-        console.log(Variables.battle)
-        console.log(Variables.battle2)
-        console.log(Variables.battle3)
 
         if(Variables.currentFloor == 1)
         {
