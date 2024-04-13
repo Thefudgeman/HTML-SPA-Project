@@ -396,7 +396,26 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
                 
                     if(enemy.health <= 0)
                     {
-                        Variables.Victory = true
+                        if(Variables.enemyID == "1")
+                        {
+                            Variables.battle1 = true
+                        }
+                        else if(Variables.enemyID == "2")
+                        {
+                            Variables.battle2 = true
+                        }
+                        else if(Variables.enemyID == "3")
+                        {
+                            Variables.battle3 = true
+                        }
+                        else if(Variables.enemyID == "Boss")
+                        {
+                            Variables.boss = true
+                        }
+                        if(Variables.enemyKey == "SlimeKingWalk" || Variables.enemyKey == "GoblinKingWalk" || Variables.enemyKey == "SkeletonKingWalk" || Variables.enemyKey == "DungeonMasterWalk")
+                        {
+                            Variables.boss = true
+                        }
                         enemy.health = 0
                         this.setMeterPercentageAnimatedE(0)
                         this.enemy.play("Death", true)
@@ -439,7 +458,18 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
                                     else
                                     {
                                         this.setMeterPercentageAnimated(0)
-                                   }
+                                    }
+                                    if(player.health <= 0)
+                                    {
+                                        Variables.Victory = false
+                                        this.add.text(500,200, "You Lost The Battle")
+                                        this.add.text(500, 250, "Respawn").setInteractive().on('pointerdown', () => this.leaveScene())
+                                        Variables.money = Variables.money/1.5
+                                        AttackButton.destroy()
+                                        ItemButton.destroy()
+                                        RunButton.destroy()
+                                        
+                                    }
                                 })
                                 this.projectile.anims.msPerFrame = 150
                             })
@@ -458,6 +488,17 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
                                 {
                                     this.setMeterPercentageAnimated(0)
                                }
+                               if(player.health <= 0)
+                               {
+                                   Variables.Victory = false
+                                   this.add.text(500,200, "You Lost The Battle")
+                                   this.add.text(500, 250, "Respawn").setInteractive().on('pointerdown', () => this.leaveScene())
+                                   Variables.money = Variables.money/1.5
+                                   AttackButton.destroy()
+                                   ItemButton.destroy()
+                                   RunButton.destroy()
+                                   
+                               }
                             })
                         }
                         
@@ -467,16 +508,6 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
                         AttackButton.text = "Attack"
                         ItemButton.text = "Item"
                         RunButton.text = "Run"
-                        
-                    }
-                    if(player.health <= 0)
-                    {
-                        this.add.text(500,200, "You Lost The Battle")
-                        this.add.text(500, 250, "Respawn").setInteractive().on('pointerdown', () => this.leaveScene())
-                        Variables.money = Variables.money/1.5
-                        AttackButton.destroy()
-                        ItemButton.destroy()
-                        RunButton.destroy()
                         
                     }
                 })
@@ -566,11 +597,6 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
 
     leaveScene()
     {
-
-        if(Variables.enemyKey == "SlimeKingWalk" || Variables.enemyKey == "GoblinKingWalk" || Variables.enemyKey == "SkeletonKingWalk" || Variables.enemyKey == "DungeonMasterWalk")
-        {
-            Variables.boss = true
-        }
 
         if(Variables.currentFloor == 1)
         {
