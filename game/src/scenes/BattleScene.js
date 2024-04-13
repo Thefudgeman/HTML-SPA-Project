@@ -36,6 +36,11 @@ export default class battleScene extends Phaser.Scene{
             frameWidth:320,
             frameHeight:160
         })
+        this.load.spritesheet("DungeonMasterWalk", "./src/assets/Roguelike Dungeon - Asset Bundle/Dungeon Master Walk.png", 
+        {
+            frameWidth:320,
+            frameHeight:160
+        })
         this.load.spritesheet("DungeonMasterProjectile", "./src/assets/Roguelike Dungeon - Asset Bundle/Dungeon Master Projectile 1.png", 
         {
             frameWidth:320,
@@ -47,6 +52,11 @@ export default class battleScene extends Phaser.Scene{
             frameHeight:320
         })
         this.load.spritesheet("GoblinKingDeath", "./src/assets/Roguelike Dungeon - Asset Bundle/Goblin King Death.png", 
+        {
+            frameWidth:320,
+            frameHeight:160
+        })
+        this.load.spritesheet("GoblinKingWalk", "./src/assets/Roguelike Dungeon - Asset Bundle/Goblin King Walk.png", 
         {
             frameWidth:320,
             frameHeight:160
@@ -64,12 +74,22 @@ export default class battleScene extends Phaser.Scene{
         this.load.spritesheet("SkeletonKingDeath", "./src/assets/Roguelike Dungeon - Asset Bundle/Skeleton King Death.png", 
         {
             frameWidth:320,
-            frameHeight:160
+            frameHeight:320
+        })
+        this.load.spritesheet("SkeletonKingWalk", "./src/assets/Roguelike Dungeon - Asset Bundle/Skeleton King Walk.png", 
+        {
+            frameWidth:320,
+            frameHeight:320
         })
         this.load.spritesheet("SlimeKingDeath", "./src/assets/Roguelike Dungeon - Asset Bundle/Slime King Death.png", 
         {
             frameWidth:320,
-            frameHeight:160
+            frameHeight:320
+        })
+        this.load.spritesheet("SlimeKingWalk", "./src/assets/Roguelike Dungeon - Asset Bundle/Slime King Walk.png", 
+        {
+            frameWidth:320,
+            frameHeight:320
         })
         this.load.spritesheet("Skeleton", "./src/assets/Monster RPG pack/Skeleton1 64x48.png",
         {
@@ -204,20 +224,25 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
     })
     this.enemy = this.add.sprite(700,200, "enemy")
     this.player = this.add.sprite(300,200, "player")
-    this
-      const player = new Player("name", 150, 10, 5, 1);
+
+      const player = new Player("name", 150, 99999, 5, 1);
       const sword = new Sword("Sword", "this is a sword", 20, 1)
       const armour = new WarriorArmour("Armour", "this is armour", 0, 1)
       const smallHealthPotions = new SmallHealthPotion("Restores 25% of your health", 15, "Small Health Potion")
       const healthPotions = new HealthPotion("Restores 50% of your health", 15, "Health Potion")
       const largeHealthPotions = new LargeHealthPotion("Restores 75% of your health", 15, "Large Health Potion")
       this.map = this.add.image(0,0,"map2").setOrigin(0,0)
-      if(Variables.enemyKey == "DungeonMasterWalk")
+      if(Variables.enemyKey == "DungeonMaster")
       {
         enemy = new DungeonMaster()
+        this.DeleteAnims()
         this.anims.create({
             key:"Death",
             frames:this.anims.generateFrameNumbers("DungeonMasterDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
+        })
+        this.anims.create({
+            key:"EnemyIdle",
+            frames:this.anims.generateFrameNumbers("DungeonMasterWalk", {frames:[4]})
         })
         this.anims.create({
             key:"Projectile",
@@ -233,35 +258,48 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
       else if (Variables.enemyKey == "SkeletonKingWalk")
       {
         enemy = new SkeletonKing()
+        this.DeleteAnims()
         this.anims.create({
             key:"Death",
-            frames:this.anims.generateFrameNumbers("SkeletonKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
+            frames:this.anims.generateFrameNumbers("SkeletonKingDeath", {frames:[0,1,2,3]})
+        })
+        this.anims.create({
+            key:"EnemyIdle",
+            frames:this.anims.generateFrameNumbers("SkeletonKingWalk", {frames:[0]})
         })
       }
       else if (Variables.enemyKey == "GoblinKingWalk")
       {
         enemy = new GoblinKing()
+        this.DeleteAnims()
         this.anims.create({
             key:"Death",
-            frames:this.anims.generateFrameNumbers("GoblinKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
+            frames:this.anims.generateFrameNumbers("GoblinKingDeath", {frames:[4,5,6,7]})
+        })
+        this.anims.create({
+            key:"EnemyIdle",
+            frames:this.anims.generateFrameNumbers("GoblinKingWalk", {frames:[4]})
         })
         this.anims.create({
             key:"Projectile",
-            frames:this.anims.generateFrameNumbers("GoblinKingProjectile", ),
-            repeat:-1
+            frames:this.anims.generateFrameNumbers("GoblinKingProjectile", {frames:[0,1,2,3,0,1,2,3]}),
         })
         this.anims.create({
             key:"Blast",
             frames:this.anims.generateFrameNumbers("GoblinKingBlast", ),
-            repeat:-1
         })
       }
       else if(Variables.enemyKey == "SlimeKingWalk")
       {
         enemy = new SlimeKing()
+        this.DeleteAnims()
         this.anims.create({
             key:"Death",
-            frames:this.anims.generateFrameNumbers("SlimeKingDeath", {frames:[12,13,14,15,16,17,18,19,20,21,22,23]})
+            frames:this.anims.generateFrameNumbers("SlimeKingDeath", {frames:[0,1,2,3]})
+        })
+        this.anims.create({
+            key:"EnemyIdle",
+            frames:this.anims.generateFrameNumbers("SlimeKingWalk", {frames:[0]})
         })
       }
       else if(Variables.enemyKey.includes("Skeleton") && Variables.enemyKey != "SkeletonKing")
@@ -275,6 +313,10 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
         this.anims.create({
             key:"EnemyHit",
             frames:this.anims.generateFrameNumbers("Skeleton", {frames:[32,33,34,35]})
+        })
+        this.anims.create({
+            key:"Death",
+            frames:this.anims.generateFrameNumbers("Skeleton", {frames:[32,33,34]})
         })
         this.anims.create({
             key:"EnemyIdle",
@@ -327,9 +369,6 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
         let Attack = this.add.text(430,300,"Attack")
         let Item = this.add.text(498,300,"Item")
         let Run = this.add.text(550,300,"Run")
-
-        this.projectile = this.add.sprite(500,500, "DungeonMasterProjectile")
-        this.projectile.play("Projectile", true)
  
         this.player.play("idleRight", true)
         this.player.anims.msPerFrame = 100
@@ -373,17 +412,38 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
                         Run.destroy()
                         Variables.money += enemy.moneyDrop
                         this.add.text(500,200,"You Won The Battle");
-                        this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
+                        let leaveButton = this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
                     }
                     else
                     {
-
+                        if(player.defence + armour.defence > enemy.attack)
+                        {
+                            player.health = player.health
+                        }
+                        else
+                       {
+                           player.health = player.health - enemy.attack + player.defence + armour.defence
+                       }
                         
                         if(Variables.enemyKey == "GoblinKingWalk" || Variables.enemyKey == "DungeonMasterWalk")
                         {
-                            this.projectile.flipX(true)
+                            this.projectile = this.physics.add.sprite(680,200, "DungeonMasterProjectile")
+                            this.projectile.setFlipX(true)
+                            this.projectile.play("Projectile", true)
+                            this.projectile.setVelocityX(-350)
                             this.projectile.play("Projectile").once('animationcomplete', ()=>{
-                                this.projectile.play("Blast")
+                                this.projectile.setVelocity(0)
+                                this.projectile.play("Blast").once('animationcomplete', ()=>{
+                                    this.projectile.destroy()
+                                    if(player.health/player.maxHealth >= 0)
+                                    {
+                                        this.setMeterPercentageAnimated(player.health/player.maxHealth)
+                                    }
+                                    else
+                                    {
+                                        this.setMeterPercentageAnimated(0)
+                                   }
+                                })
                                 this.projectile.anims.msPerFrame = 150
                             })
                             this.projectile.anims.msPerFrame = 150
@@ -393,27 +453,20 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
                             this.enemy.play("EnemyAttack", 4, false).once('animationcomplete', () =>{
                                 this.enemy.play("EnemyIdle")
                                 this.enemy.anims.msPerFrame = 150
+                                if(player.health/player.maxHealth >= 0)
+                                {
+                                    this.setMeterPercentageAnimated(player.health/player.maxHealth)
+                                }
+                                else
+                                {
+                                    this.setMeterPercentageAnimated(0)
+                               }
                             })
                         }
                         
 
                         this.enemy.anims.msPerFrame = 150
-                         if(player.defence + armour.defence > enemy.attack)
-                          {
-                              player.health = player.health
-                          }
-                          else
-                         {
-                             player.health = player.health - enemy.attack + player.defence + armour.defence
-                         }
-                          if(player.health/player.maxHealth >= 0)
-                         {
-                             this.setMeterPercentageAnimated(player.health/player.maxHealth)
-                         }
-                         else
-                         {
-                             this.setMeterPercentageAnimated(0)
-                        }
+
                         AttackButton.text = "Attack"
                         ItemButton.text = "Item"
                         RunButton.text = "Run"
@@ -422,7 +475,8 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
                     if(player.health <= 0)
                     {
                         this.add.text(500,200, "You Lost The Battle")
-                        this.add.text(500, 250, "Leave").setInteractive().on('pointerdown', () => this.leaveScene())
+                        this.add.text(500, 250, "Respawn").setInteractive().on('pointerdown', () => this.leaveScene())
+                        Variables.money = Variables.money/1.5
                         AttackButton.destroy()
                         ItemButton.destroy()
                         RunButton.destroy()
@@ -499,6 +553,7 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
         console.log(random)
         if(random != 1)
         {
+            let leaveButton = ""
             this.leaveScene()
         }
         else
@@ -515,7 +570,6 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
         {
             Variables.boss = true
         }
-
 
         if(Variables.currentFloor == 1)
         {

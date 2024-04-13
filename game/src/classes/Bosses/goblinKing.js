@@ -33,7 +33,7 @@ export class GoblinKing extends Entity
     {
         super()
         super.name = "GoblinKing";
-        super.attack = 1000000;
+        super.attack = 9999;
         super.defence = 50000;
         super.health = 50000000;
         this.moneyDrop = 5000000;
