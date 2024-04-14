@@ -11,6 +11,7 @@ import { Player } from '../classes/player.js';
 var playerDirection
 export class variables
 {
+    enemyKilled = false
     battle1 = false
     battle2 = false
     battle3 = false
@@ -134,6 +135,8 @@ class BaseScene extends Phaser.Scene{
         else if (playerDirection == "s" && keys.f.isDown)
         {
             player.setFlipX(false)
+            player.setVelocityX(0)
+            player.setVelocityY(0)
             player.body.setSize(16,24)
             player.setOffset(16,30)
             player.play("attackDown",true)
@@ -165,6 +168,8 @@ class BaseScene extends Phaser.Scene{
         else if (playerDirection == "w" && keys.f.isDown)
         {
             player.setFlipX(false)
+            player.setVelocityX(0)
+            player.setVelocityY(0)
             player.body.setSize(16,25)
             player.play("attackUp",true)
             player.anims.msPerFrame = 100
@@ -186,6 +191,8 @@ class BaseScene extends Phaser.Scene{
         if (playerDirection == "a" && keys.f.isDown)
         {
             player.setFlipX(true)
+            player.setVelocityX(0)
+            player.setVelocityY(0)
             player.body.setSize(35,20)
             player.setOffset(0,20)
             player.play("attackRight",true)
@@ -207,6 +214,8 @@ class BaseScene extends Phaser.Scene{
         if (playerDirection == "d" && keys.f.isDown)
         {
             player.setFlipX(false)
+            player.setVelocityX(0)
+            player.setVelocityY(0)
             player.body.setSize(35,20)
             player.setOffset(15,20)
             player.play("attackRight",true)
@@ -442,15 +451,12 @@ export default class GameScene extends Phaser.Scene {
 
     battle(enemy)
     {
-        this.player.body.setSize(16, 24)
-        playerX = this.player.body.x
-        playerY = this.player.body.y
-        Variables.enemyKey = enemy.texture.key
-        this.scene.switch("scene-battle")
-        console.log(Variables.enemyKey)
-        Variables.enemyID = enemy.id
-        this.player.x+=16
-        this.player.y+=16
+        if(Variables.enemyKilled == false)
+        {
+            Variables.enemyKey = enemy.texture.key
+            this.scene.switch("scene-battle")
+            Variables.enemyID = enemy.id
+        }
     }
 
     update() 
@@ -461,18 +467,23 @@ export default class GameScene extends Phaser.Scene {
             this.slime.destroy()
             Variables.battleNum++
             Variables.battle1 = false
+            Variables.enemyKilled = false
         }
         if(Variables.battle2 == true)
         {
             this.slime2.destroy()
             Variables.battleNum++
             Variables.battle2 = false
+            Variables.enemyKilled = false
+
         }
         if(Variables.battle3 == true)
         {
             this.slime3.destroy()
             Variables.battleNum++
             Variables.battle3 = false
+            Variables.enemyKilled = false
+
         }
   
         if(this.stairs.contains(this.player.x, this.player.y) && this.keys.e.isDown)
@@ -646,14 +657,12 @@ export class GameSceneFloor2 extends Phaser.Scene {
     }
     battle(enemy)
     {
-        this.player.body.setSize(16, 24)
-        playerX = this.player.body.x
-        playerY = this.player.body.y
-        Variables.enemyKey = enemy.texture.key
-        this.scene.switch("scene-battle")
-        Variables.enemyID = enemy.id
-      //  this.player.x+=16
-       // this.player.y+=16
+        if(Variables.enemyKilled == false)
+        {
+            Variables.enemyKey = enemy.texture.key
+            this.scene.switch("scene-battle")
+            Variables.enemyID = enemy.id
+        }
     }
 
 
@@ -666,20 +675,27 @@ export class GameSceneFloor2 extends Phaser.Scene {
        {
            this.slime.destroy()
            Variables.battle1 = false
+           Variables.enemyKilled = false
        }
        if(Variables.battle2 == true)
        {
            this.slime2.destroy()
            Variables.battle2 = false
+           Variables.enemyKilled = false
+
        }
        if(Variables.battle3 == true)
        {
            this.orc.destroy()
            Variables.battle3 = false
+           Variables.enemyKilled = false
+
        }
        if(Variables.boss == true || Variables.highestFloorClear >= 2)
        {
         this.slimeKing.destroy()
+        Variables.enemyKilled = false
+
        }
        else
        {
@@ -898,12 +914,12 @@ export class GameSceneFloor3 extends Phaser.Scene{
 
     battle(enemy)
     {
-        this.player.body.setSize(16, 24)
-        Variables.enemyKey = enemy.texture.key
-        this.scene.switch("scene-battle")
-        Variables.enemyID = enemy.id
-        this.player.x+=16
-        this.player.y+=16
+        if(Variables.enemyKilled == false)
+        {
+            Variables.enemyKey = enemy.texture.key
+            this.scene.switch("scene-battle")
+            Variables.enemyID = enemy.id
+        }
 
     }
 
@@ -914,20 +930,27 @@ export class GameSceneFloor3 extends Phaser.Scene{
         {
             this.skeleton.destroy()
             Variables.battle1 = false
+            Variables.enemyKilled = false
         }
         if(Variables.battle2 == true)
         {
             this.orc.destroy()
             Variables.battle2 = false
+            Variables.enemyKilled = false
+
         }
         if(Variables.battle3 == true)
         {
             this.orc2.destroy()
             Variables.battle3 = false
+            Variables.enemyKilled = false
+
         }
         if(Variables.boss == true || Variables.highestFloorClear >= 3)
         {
             this.goblinKing.destroy()
+            Variables.enemyKilled = false
+
         }
         if(this.skeleton.x < 311)
         {
@@ -1110,6 +1133,8 @@ export class GameSceneFloor4 extends Phaser.Scene{
 
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
         let SaveButton = this.add.text(50,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
+        let InventoryButton = this.add.text(100,0,"Inventory").setInteractive().on('pointerdown', () => this.OpenInventory())
+
         this.doors = this.physics.add.sprite(592, 480, 'door').setScale(.38)
         this.doors.setImmovable(true)
 312
@@ -1167,16 +1192,40 @@ export class GameSceneFloor4 extends Phaser.Scene{
         this.scene.switch("scene-shop")
     }
 
+    OpenInventory()
+    {
+        const InventoryBox = this.add.rectangle(825,270,250,350,0x000000)
+        InventoryBox.setStrokeStyle(2, 0xffffff)
+        const Iron = this.add.text(710, 110, "Iron x"+Variables.iron.NumberOwned)
+        const Steel = this.add.text(710, 160, "Steel x"+Variables.steel.NumberOwned)
+        const Titanium = this.add.text(710, 210, "Titanium x"+Variables.titanium.NumberOwned)
+        const SmallHealthPotions = this.add.text(710, 260, "Samll Health Potions x"+Variables.smallHealthPotion.NumberOwned)
+        const HealthPotions = this.add.text(710, 310, "Health Potions x"+Variables.healthPotion.NumberOwned)
+        const LargeHealthPotions = this.add.text(710, 360, "Large Health Potions x"+Variables.largeHealthPotion.NumberOwned)
+        const Close = this.add.text(710, 410, "Close").setInteractive().on('pointerdown', ()=> this.closeInventory(InventoryBox, Iron, Steel, Titanium, SmallHealthPotions, HealthPotions, LargeHealthPotions, Close))
+
+    }
+
+    closeInventory(InventoryBox, Iron, Steel, Titanium, SmallHealthPotions, HealthPotions, LargeHealthPotions, Close)
+    {
+        InventoryBox.destroy()
+        Iron.destroy()
+        Steel.destroy()
+        Titanium.destroy()
+        SmallHealthPotions.destroy()
+        HealthPotions.destroy()
+        LargeHealthPotions.destroy()
+        Close.destroy()
+    }
+
     battle(enemy)
     {
-        this.player.body.setSize(16, 24)
-        playerX = this.player.body.x
-        playerY = this.player.body.y
-        Variables.enemyKey = enemy.texture.key
-        this.scene.switch("scene-battle")
-        Variables.enemyID = enemy.id
-        this.player.x+=16
-        this.player.y+=16
+        if(Variables.enemyKilled == false)
+        {
+            Variables.enemyKey = enemy.texture.key
+            this.scene.switch("scene-battle")
+            Variables.enemyID = enemy.id
+        }
     }
 
     update()
@@ -1187,20 +1236,24 @@ export class GameSceneFloor4 extends Phaser.Scene{
         {
             this.skeleton.destroy()
             Variables.battle1 = false
+            Variables.enemyKilled = false
         }
         if(Variables.battle2 == true)
         {
             this.skeleton2.destroy()
             Variables.battle2 = false
+            Variables.enemyKilled = false
         }
         if(Variables.battle3 == true)
         {
             this.skeleton3.destroy()
             Variables.battle3 = false
+            Variables.enemyKilled = false
         }
         if(Variables.boss == true || Variables.highestFloorClear >=4)
         {
             this.skeletonKing.destroy()
+            Variables.enemyKilled = false
         }
         if(this.skeletonKing.x > 800)
         {
@@ -1408,14 +1461,12 @@ export class GameSceneFloor5 extends Phaser.Scene{
 
     battle(enemy)
     {
-        this.player.body.setSize(16, 24)
-        playerX = this.player.body.x
-        playerY = this.player.body.y
-        Variables.enemyKey = enemy.texture.key
-        this.scene.switch("scene-battle")
-        Variables.enemyID = enemy.id
-        this.player.x+=16
-        this.player.y+=16
+        if(Variables.enemyKilled == false)
+        {
+            Variables.enemyKey = enemy.texture.key
+            this.scene.switch("scene-battle")
+            Variables.enemyID = enemy.id
+        }
     }
     
     update()
@@ -1435,6 +1486,7 @@ export class GameSceneFloor5 extends Phaser.Scene{
         if(Variables.boss == true || Variables.highestFloorClear >=5)
         {
             this.DungeonMaster.destroy()
+            Variables.enemyKilled = false
         }
 
         if(this.openchest1.contains(this.player.x, this.player.y) && this.keys.e.isDown)

@@ -396,6 +396,7 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
                 
                     if(enemy.health <= 0)
                     {
+                        Variables.enemyKilled = true
                         if(Variables.enemyID == "1")
                         {
                             Variables.battle1 = true
