@@ -225,9 +225,9 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
     this.enemy = this.add.sprite(700,200, "enemy")
     this.player = this.add.sprite(300,200, "player")
 
-      const player = new Player("name", 150, 99999, 5, 1);
-      const sword = new Sword("Sword", "this is a sword", 20, 1)
-      const armour = new WarriorArmour("Armour", "this is armour", 0, 1)
+      const player = Variables.player
+      const sword = Variables.weapon
+      const armour = Variables.armour
       this.map = this.add.image(0,0,"map2").setOrigin(0,0)
       if(Variables.enemyKey == "DungeonMaster")
       {

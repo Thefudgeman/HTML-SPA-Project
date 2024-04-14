@@ -1,11 +1,12 @@
 import { Sword } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/items/Weapons/Sword.js'
 import { WarriorArmour } from './../classes/items/Armour/WarriorArmour';
-import { iron } from '../classes/items/upgrade materials/iron';
-import { steel } from '../classes/items/upgrade materials/steel'
-import { titanium } from '../classes/items/upgrade materials/titanium'
+import { Iron } from '../classes/items/upgrade materials/iron';
+import { Steel } from '../classes/items/upgrade materials/steel'
+import { Titanium } from '../classes/items/upgrade materials/titanium'
 import { SmallHealthPotion } from '../classes/items/Potions/smallHealthPotion';
 import { HealthPotion } from '../classes/items/Potions/healthPotion';
 import { LargeHealthPotion } from '../classes/items/Potions/largeHealthPotion';
+import { Player } from '../classes/player.js';
 
 var playerDirection
 export class variables
@@ -23,14 +24,86 @@ export class variables
     enemyKey = ""
     battleNum = 0
     moneyButton = false
+    player = new Player("name", 150, 999999999999999999999999999, 5, 1);
     weapon = new Sword("sword", "description", 50, 1)
     armour = new WarriorArmour("armour", "description", 30, 1)
-    iron = new iron ("description", 20)
-    steel = new steel ("description", 20)
-    titanium = new titanium ("description", 20)
+    iron = new Iron ("description", 20)
+    steel = new Steel ("description", 20)
+    titanium = new Titanium ("description", 20)
     smallHealthPotion = new SmallHealthPotion ("description", 20, "Small Health Potion")
     healthPotion= new HealthPotion ("description", 20, "Health Potion")
     largeHealthPotion = new LargeHealthPotion ("description", 20, "Large Health Potion")
+
+    SaveData() 
+    {
+        var file = {
+            playerLevel:Variables.player.level,
+            weaponLevel:Variables.weapon.level,
+            armourLevel:Variables.armour.level,
+            ironOwned:Variables.iron.NumberOwned,
+            steelOwned:Variables.steel.NumberOwned,
+            titaniumOwned:Variables.titanium.NumberOwned,
+            smallHealthPotionOwned:Variables.smallHealthPotion.NumberOwned,
+            healthPotionOwned:Variables.healthPotion.NumberOwned,
+            largeHealthPotionOwned:Variables.largeHealthPotion.NumberOwned,
+            playerCurrentFloor:Variables.currentFloor,
+            playerHighestFloorClear:Variables.highestFloorClear,
+            playerMoney:Variables.money
+
+        }
+        localStorage.setItem('saveFile', JSON.stringify(file))
+    }
+
+    LoadData(scene)
+    {
+        var file = JSON.parse(localStorage.getItem('saveFile'))
+        if(file != null)
+        {
+            Variables.player.level = file.playerLevel
+            Variables.weapon.level = file.weaponLevel
+            Variables.armour.level = file.armourLevel
+            Variables.iron.NumberOwned = file.ironOwned
+            Variables.steel.NumberOwned = file.steelOwned
+            Variables.titanium.NumberOwned = file.titaniumOwned
+            Variables.smallHealthPotion.NumberOwned = file.smallHealthPotionOwned
+            Variables.healthPotion.NumberOwned = file.healthPotionOwned
+            Variables.largeHealthPotion.NumberOwned = file.largeHealthPotionOwned
+            Variables.currentFloor = file.playerCurrentFloor
+            Variables.highestFloorClear = file.playerHighestFloorClear
+            Variables.money = file.playerMoney
+    
+            if(Variables.currentFloor == 1)
+            {
+                playerX = 500
+                playerY = 620
+                scene.start("scene-game")
+            }
+            else if(Variables.currentFloor == 2)
+            {
+                playerX = 800
+                playerY = 80
+                scene.start("scene-game-floor2")
+            }
+            else if(Variables.currentFloor == 3)
+            {
+                playerX =775
+                playerY = 525
+                scene.start("scene-game-floor3")
+            }
+            else if(Variables.currentFloor == 4)
+            {
+                playerX = 300
+                playerY = 80
+                scene.start("scene-game-floor4")
+            }
+            else if(Variables.currentFloor == 5)
+            {
+                playerX = 552
+                playerY = 544
+                scene.start("scene-game-floor5")
+            }
+        }
+    }
 }
 
 
@@ -40,8 +113,9 @@ var createAnims = false
 var playerX = 800
 var playerY = 140
 
-
 class BaseScene extends Phaser.Scene{
+
+
     movement(player, keys)
     {
         player.setVelocity(0)
@@ -192,9 +266,6 @@ export default class GameScene extends Phaser.Scene {
     }
 
     create() {
-
-    
-        Variables.currentFloor = 1
         this.keys = this.input.keyboard.addKeys("w,a,s,d,f,e")
       //  this.add.image(0, 0, "tiles").setOrigin(0,0)
         const map = this.make.tilemap({key: 'dungeon'}) 
@@ -222,6 +293,7 @@ export default class GameScene extends Phaser.Scene {
 
        })
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
+        let SaveButton = this.add.text(50,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
 
         this.chest1 = this.physics.add.sprite(744,56,"tilese")
         this.chest2 = this.physics.add.sprite(776,56,"tilese")
@@ -364,6 +436,7 @@ export default class GameScene extends Phaser.Scene {
             this.openchest2.width = 0
             this.openchest3.width = 0   
         }
+        Variables.LoadData(this.scene)
     }
 
 
@@ -404,10 +477,9 @@ export default class GameScene extends Phaser.Scene {
   
         if(this.stairs.contains(this.player.x, this.player.y) && this.keys.e.isDown)
         {
-            this.scene.start("scene-game-floor2", this.player)
             playerX = 800
             playerY = 80
-            
+            this.scene.start("scene-game-floor2", this.player)
         }
 
         if(this.openchest1.contains(this.player.x, this.player.y) && this.keys.e.isDown)
@@ -495,6 +567,7 @@ export class GameSceneFloor2 extends Phaser.Scene {
         BottomTopWallLayer.setCollisionBetween(484,485)
        
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
+        let SaveButton = this.add.text(50,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
 
         this.chest1 = this.physics.add.sprite(760,456,"tilese")
         this.chest2 = this.physics.add.sprite(792,456,"tilese")
@@ -608,6 +681,19 @@ export class GameSceneFloor2 extends Phaser.Scene {
        {
         this.slimeKing.destroy()
        }
+       else
+       {
+        if(this.slimeKing.x < 531)
+        {
+         this.slimeKing.setVelocityX(60)
+         this.slimeKing.setFlipX(false)
+        }
+        else if (this.slimeKing.x > 750)
+        {
+         this.slimeKing.setVelocityX(-60)
+         this.slimeKing.setFlipX(true)
+        }
+       }
        if(this.orc.x < 731)
        {
         this.orc.setVelocityX(50)
@@ -617,16 +703,6 @@ export class GameSceneFloor2 extends Phaser.Scene {
        {
         this.orc.setVelocityX(-50)
         this.orc.setFlipX(true)
-       }
-       if(this.slimeKing.x < 531)
-       {
-        this.slimeKing.setVelocityX(60)
-        this.slimeKing.setFlipX(false)
-       }
-       else if (this.slimeKing.x > 750)
-       {
-        this.slimeKing.setVelocityX(-60)
-        this.slimeKing.setFlipX(true)
        }
        if(this.openchest1.contains(this.player.x, this.player.y) && this.keys.e.isDown)
        {
@@ -689,7 +765,7 @@ export class GameSceneFloor3 extends Phaser.Scene{
             frameWidth:64,
             frameHeight:48
         })
-        this.load.spritesheet('GoblinKingWalk', "./src/assets/Rouglike Dungeon - Asset Bundle/GoblinKingWalk.png",{
+        this.load.spritesheet('GoblinKingWalk', "./src/assets/Roguelike Dungeon - Asset Bundle/Goblin King Walk.png",{
             frameHeight:160,
             frameWidth:320
         })
@@ -712,6 +788,7 @@ export class GameSceneFloor3 extends Phaser.Scene{
         BottomTopWallLayer.setCollisionBetween(484,485)
        
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
+        let SaveButton = this.add.text(50,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
 
 
         
@@ -850,7 +927,7 @@ export class GameSceneFloor3 extends Phaser.Scene{
         }
         if(Variables.boss == true || Variables.highestFloorClear >= 3)
         {
-            this.gobliKing.destroy()
+            this.goblinKing.destroy()
         }
         if(this.skeleton.x < 311)
         {
@@ -952,7 +1029,7 @@ export class GameSceneFloor4 extends Phaser.Scene{
     preload()
     {
         this.load.image('door', "./src/assets/shutDoor.png")
-        this.load.spritesheet("SkeletonKingWalk", "./src/assets/Roguelike Dungeon - Asset Bundle/Skeleton King Walking.png", 
+        this.load.spritesheet("SkeletonKingWalk", "./src/assets/Roguelike Dungeon - Asset Bundle/Skeleton King Walk.png", 
         {
             frameWidth:320,
             frameHeight:320
@@ -1032,6 +1109,7 @@ export class GameSceneFloor4 extends Phaser.Scene{
         this.skeletonKing.setImmovable(true)
 
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
+        let SaveButton = this.add.text(50,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
         this.doors = this.physics.add.sprite(592, 480, 'door').setScale(.38)
         this.doors.setImmovable(true)
 312
@@ -1044,7 +1122,7 @@ export class GameSceneFloor4 extends Phaser.Scene{
         this.openchest2 = new Phaser.Geom.Rectangle(554, 508, 24, 16)
         this.openchest3 = new Phaser.Geom.Rectangle(604, 508, 24, 16)
         this.openchest4 = new Phaser.Geom.Rectangle(628, 508, 24, 16)
-        if(Variables.highestFloorClear > 0)
+        if(Variables.highestFloorClear > 3)
         {
             this.openchest1.width = 0
             this.openchest2.width = 0
@@ -1265,6 +1343,7 @@ export class GameSceneFloor5 extends Phaser.Scene{
         BottomTopWallLayer.setCollisionBetween(484,485)
        
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
+        let SaveButton = this.add.text(50,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
 
         this.chest1 = this.physics.add.sprite(520, 56,"tilese")
         this.chest2 = this.physics.add.sprite(552, 56,"tilese")
@@ -1279,7 +1358,7 @@ export class GameSceneFloor5 extends Phaser.Scene{
         this.openchest4 = new Phaser.Geom.Rectangle(604, 64, 24, 16)
         this.openchest5 = new Phaser.Geom.Rectangle(636, 64, 24, 16)
         this.openchest6 = new Phaser.Geom.Rectangle(668, 64, 24, 16)
-        if(Variables.highestFloorClear > 0)
+        if(Variables.highestFloorClear > 4)
         {
             this.openchest1.width = 0
             this.openchest2.width = 0

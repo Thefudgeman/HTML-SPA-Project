@@ -1,9 +1,7 @@
 import { Sword } from '/Users/theob/dev/HTML-SPA-Project/game/src/classes/items/Weapons/Sword.js'
 import {Variables} from '/Users/theob/dev/HTML-SPA-Project/game/src/scenes/Maingame.js'
 import { WarriorArmour } from './../classes/items/Armour/WarriorArmour';
-import { iron } from '../classes/items/upgrade materials/iron';
-import { steel } from '../classes/items/upgrade materials/steel'
-import { titanium } from '../classes/items/upgrade materials/titanium'
+
 import { SmallHealthPotion } from '../classes/items/Potions/smallHealthPotion';
 import { HealthPotion } from '../classes/items/Potions/healthPotion';
 import { LargeHealthPotion } from '../classes/items/Potions/largeHealthPotion';
@@ -25,10 +23,10 @@ export default class shopScene extends Phaser.Scene{
             this.moneyText = this.add.text(230, 50, "Money: "+Variables.money)
             Variables.moneyButton = true
         }
-        let BuyButton = this.add.text(230,300,"Buy").setInteractive().on('pointerdown', () => this.BuyButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, Variables.materialIron, Variables.materialSteel, Variables.materialTitanium, Variables.smallHealthPotion, Variables.healthPotion, Variables.largeHealthPotion))
-        let SellButton = this.add.text(430,300,"Sell").setInteractive().on('pointerdown', () => this.SellButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, Variables.materialIron, Variables.materialSteel, Variables.materialTitanium, Variables.smallHealthPotion, Variables.healthPotion, Variables.largeHealthPotion))
+        let BuyButton = this.add.text(230,300,"Buy").setInteractive().on('pointerdown', () => this.BuyButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, Variables.iron, Variables.steel, Variables.titanium, Variables.smallHealthPotion, Variables.healthPotion, Variables.largeHealthPotion))
+        let SellButton = this.add.text(430,300,"Sell").setInteractive().on('pointerdown', () => this.SellButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, Variables.iron, Variables.steel, Variables.titanium, Variables.smallHealthPotion, Variables.healthPotion, Variables.largeHealthPotion))
         let LeaveButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton))
-        let UpgradeButton = this.add.text(430,350,"Upgrade").setInteractive().on('pointerdown', () => this.UpgradeButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, weapon, armour))
+        let UpgradeButton = this.add.text(430,350,"Upgrade").setInteractive().on('pointerdown', () => this.UpgradeButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, Variables.weapon, Variables.armour))
 
     }
 
@@ -69,52 +67,48 @@ export default class shopScene extends Phaser.Scene{
 
         var MaterialNeeded = armour.level
 
-        let ironUpgrade = new iron("Iron", "description", 20)
-        let steelUpgrade = new iron("Steel", "description", 20)
-        let titaniumUpgrade = new iron("Titanium", "description", 20)
-
 
         upgrade : if(Variables.money >= MoneyNeeded)
         {
-            if(armour.level < 11 && MaterialNeeded <= ironUpgrade.NumberOwned)
+            if(Variables.armour.level < 11 && MaterialNeeded <= Variables.iron.NumberOwned)
             {
-                ironUpgrade.NumberOwned -= MaterialNeeded
-                armour.level++
+                Variables.iron.NumberOwned -= MaterialNeeded
+                Variables.armour.level++
                 Variables.money -= MoneyNeeded
             }
-            else if(10 < armour.level && armour.level < 21)
+            else if(10 < Variables.armour.level && Variables.armour.level < 21)
             {
                 MaterialNeeded -= 10
-                if (steelUpgrade.NumberOwned >= MaterialNeeded)
+                if (Variables.steel.NumberOwned >= MaterialNeeded)
                 {
-                    steelUpgrade.NumberOwned -= MaterialNeeded
-                    armour.level++
+                    Variables.steel.NumberOwned -= MaterialNeeded
+                    Variables.armour.level++
                     Variables.money -= MoneyNeeded
                 }  
                 else
                 {
-                    console.log("Not enough", steelUpgrade.ItemName)
+                    console.log("Not enough", Variables.steel.ItemName)
                     break upgrade 
                 }
             }
-            else if(armour.level > 20)
+            else if(Variables.armour.level > 20)
             {
                 MaterialNeeded -= 20
-                if (titaniumUpgrade.NumberOwned >= MaterialNeeded)
+                if (Variables.titanium.NumberOwned >= MaterialNeeded)
                 {
-                    titaniumUpgrade.NumberOwned -= MaterialNeeded
-                    armour.level++
+                    Variables.titanium.NumberOwned -= MaterialNeeded
+                    Variables.armour.level++
                     Variables.money -= MoneyNeeded
                 }  
                 else
                 {
-                    console.log("Not enough", titaniumUpgrade.ItemName)
+                    console.log("Not enough", Variables.titanium.ItemName)
                     break upgrade 
                 }
             }
             else
             {
-                console.log("Not enough ", ironUpgrade.ItemName)
+                console.log("Not enough ", Variables.iron.ItemName)
                 break upgrade 
             }
 
@@ -125,7 +119,7 @@ export default class shopScene extends Phaser.Scene{
             console.log("you don't have enough money")
         }
 
-        console.log(armour.level)
+        console.log(Variables.armour.level)
     }
 
     upgradeWeapon(weapon)
@@ -136,51 +130,49 @@ export default class shopScene extends Phaser.Scene{
 
         var MaterialNeeded = weapon.level
 
-        let ironUpgrade = new iron("material1", "description", 20)
-
 
         upgrade : if(Variables.money >= MoneyNeeded)
         {
 
-            if(weapon.level < 11 && MaterialNeeded <= ironUpgrade.NumberOwned)
+            if(weapon.level < 11 && MaterialNeeded <= Variables.iron.NumberOwned)
             {
-                ironUpgrade.NumberOwned -= MaterialNeeded
+                Variables.iron.NumberOwned -= MaterialNeeded
                 weapon.level++
                 Variables.money -= MoneyNeeded
             }
             else if(10 < weapon.level && weapon.level < 21)
             {
                 MaterialNeeded -= 10
-                if (steelUpgrade.NumberOwned >= MaterialNeeded)
+                if (Variables.steel.NumberOwned >= MaterialNeeded)
                 {
-                    steelUpgrade.NumberOwned -= MaterialNeeded
+                    Variables.steel.NumberOwned -= MaterialNeeded
                     weapon.level++
                     Variables.money -= MoneyNeeded
                 }  
                 else
                 {
-                    console.log("Not enough", steelUpgrade.ItemName)
+                    console.log("Not enough", Variables.steel.ItemName)
                     break upgrade 
                 }
             }
             else if(weapon.level > 20)
             {
                 MaterialNeeded -= 20
-                if (titaniumUpgrade.NumberOwned >= MaterialNeeded)
+                if (Variables.titanium.NumberOwned >= MaterialNeeded)
                 {
-                    titaniumUpgrade.NumberOwned -= MaterialNeeded
+                    Variablestitanium.NumberOwned -= MaterialNeeded
                     weapon.level++
                     Variables.money -= MoneyNeeded
                 }  
                 else
                 {
-                    console.log("Not enough", titaniumUpgrade.ItemName)
+                    console.log("Not enough", Variables.titanium.ItemName)
                     break upgrade 
                 }
             }
             else
             {
-                console.log("Not enough ", ironUpgrade.ItemName)
+                console.log("Not enough ", Variables.iron.ItemName)
                 break upgrade 
             }
             this.updateMoney()
@@ -197,7 +189,6 @@ export default class shopScene extends Phaser.Scene{
     BuyButtonClicked(BuyButton, SellButton, LeaveButton, UpgradeButton, buyIron, buySteel, buyTitanium, buySmallHealthPotion, buyHealthPotion, buyLargeHealthPotion)
     {   
         this.DestroyButtons(BuyButton, SellButton, LeaveButton, UpgradeButton)
-
         let Buy1 = this.add.text(230,100,"iron                  Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buyIron))
         let Buy2 = this.add.text(230,150,"steel                 Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buySteel))
         let Buy3 = this.add.text(230,200,"titanium              Buy").setInteractive().on('pointerdown', () => this.buyMaterial(buyTitanium))

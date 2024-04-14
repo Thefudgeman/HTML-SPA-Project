@@ -1,6 +1,6 @@
 import { Item } from '../item'
 
-export class iron extends Item{
+export class Iron extends Item{
     cost = 0
     get NumberOwned()
     {

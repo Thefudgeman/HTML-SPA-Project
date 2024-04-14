@@ -1,6 +1,6 @@
 import { Item } from '../item'
 
-export class steel extends Item{
+export class Steel extends Item{
     cost = 0
     set NumberOwned(value)
     {
