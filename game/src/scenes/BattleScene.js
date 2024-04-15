@@ -30,7 +30,7 @@ export default class battleScene extends Phaser.Scene{
         this.load.image('left-cap-shadow', './src/assets/PNG/barHorizontal_shadow_left.png')
         this.load.image('middle-shadow', './src/assets/PNG/barHorizontal_shadow_mid.png')
         this.load.image('right-cap-shadow', './src/assets/PNG/barHorizontal_shadow_right.png')
-        this.load.image("map2", "src/assets/2D Pixel Dungeon Asset Pack/character and tileset/demonstration.png")
+        this.load.image("map2", "src/assets/battle background.png")
         this.load.spritesheet("DungeonMasterDeath", "./src/assets/Roguelike Dungeon - Asset Bundle/Dungeon Master Death.png", 
         {
             frameWidth:320,
@@ -152,7 +152,7 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
     create()
     {
 
-
+        this.map = this.add.image(0,0,"map2").setOrigin(0,0).setScale(1.3)
         const leftShadowCap = this.add.image(300, 240, 'left-cap-shadow')
 		.setOrigin(0, 0.5).setScale(1, 0.5)
 
@@ -224,11 +224,14 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
     })
     this.enemy = this.add.sprite(700,200, "enemy")
     this.player = this.add.sprite(300,200, "player")
+    if(Variables.enemyKey == "SlimeKingWalk" || Variables.enemyKey == "GoblinKingWalk" || Variables.enemyKey == "SkeletonKingWalk" || Variables.enemyKey == "DungeonMaster")
+    {
+        this.enemy.y -= 80
+    }
 
       const player = Variables.player
       const sword = Variables.weapon
       const armour = Variables.armour
-      this.map = this.add.image(0,0,"map2").setOrigin(0,0)
       if(Variables.enemyKey == "DungeonMaster")
       {
         enemy = new DungeonMaster()
