@@ -25,7 +25,7 @@ export class variables
     enemyKey = ""
     battleNum = 0
     moneyButton = false
-    player = new Player("name", 150, 999, 5, 1);
+    player = new Player("name", 150, 20, 5, 1);
     weapon = new Sword("sword", "description", 50, 1)
     armour = new WarriorArmour("armour", "description", 30, 1)
     iron = new Iron ("description", 20)
@@ -34,7 +34,6 @@ export class variables
     smallHealthPotion = new SmallHealthPotion ("description", 20, "Small Health Potion")
     healthPotion= new HealthPotion ("description", 20, "Health Potion")
     largeHealthPotion = new LargeHealthPotion ("description", 20, "Large Health Potion")
-
     SaveData() 
     {
         var file = {
@@ -55,6 +54,11 @@ export class variables
         localStorage.setItem('saveFile', JSON.stringify(file))
     }
 
+    deleteSave()
+    {
+        localStorage.removeItem('saveFile')
+    }
+
     LoadData(scene)
     {
         var file = JSON.parse(localStorage.getItem('saveFile'))
@@ -72,7 +76,9 @@ export class variables
             Variables.currentFloor = file.playerCurrentFloor
             Variables.highestFloorClear = file.playerHighestFloorClear
             Variables.money = file.playerMoney
-    
+            Variables.player.Attack = 20 +Variables.player.level*21
+            Variables.player.Defence = 5 +Variables.player.level*7
+            Variables.player.Health = 20 +Variables.player.level*100
             if(Variables.currentFloor == 1)
             {
                 playerX = 500
@@ -302,7 +308,10 @@ export default class GameScene extends Phaser.Scene {
 
        })
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
-        let SaveButton = this.add.text(50,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
+        let SaveButton = this.add.text(150,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
+        let DeleteSaveButton = this.add.text(200,0,"Delete Save").setInteractive().on('pointerdown', () => Variables.deleteSave())
+
+        let InventoryButton = this.add.text(50,0,"Inventory").setInteractive().on('pointerdown', () => this.OpenInventory())
 
         this.chest1 = this.physics.add.sprite(744,56,"tilese")
         this.chest2 = this.physics.add.sprite(776,56,"tilese")
@@ -447,7 +456,31 @@ export default class GameScene extends Phaser.Scene {
         }
         Variables.LoadData(this.scene)
     }
+    OpenInventory()
+    {
+        const InventoryBox = this.add.rectangle(825,270,250,350,0x000000)
+        InventoryBox.setStrokeStyle(2, 0xffffff)
+        const Iron = this.add.text(710, 110, "Iron x"+Variables.iron.NumberOwned)
+        const Steel = this.add.text(710, 160, "Steel x"+Variables.steel.NumberOwned)
+        const Titanium = this.add.text(710, 210, "Titanium x"+Variables.titanium.NumberOwned)
+        const SmallHealthPotions = this.add.text(710, 260, "Samll Health Potions x"+Variables.smallHealthPotion.NumberOwned)
+        const HealthPotions = this.add.text(710, 310, "Health Potions x"+Variables.healthPotion.NumberOwned)
+        const LargeHealthPotions = this.add.text(710, 360, "Large Health Potions x"+Variables.largeHealthPotion.NumberOwned)
+        const Close = this.add.text(710, 410, "Close").setInteractive().on('pointerdown', ()=> this.closeInventory(InventoryBox, Iron, Steel, Titanium, SmallHealthPotions, HealthPotions, LargeHealthPotions, Close))
 
+    }
+
+    closeInventory(InventoryBox, Iron, Steel, Titanium, SmallHealthPotions, HealthPotions, LargeHealthPotions, Close)
+    {
+        InventoryBox.destroy()
+        Iron.destroy()
+        Steel.destroy()
+        Titanium.destroy()
+        SmallHealthPotions.destroy()
+        HealthPotions.destroy()
+        LargeHealthPotions.destroy()
+        Close.destroy()
+    }
 
     battle(enemy)
     {
@@ -578,7 +611,10 @@ export class GameSceneFloor2 extends Phaser.Scene {
         BottomTopWallLayer.setCollisionBetween(484,485)
        
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
-        let SaveButton = this.add.text(50,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
+        let SaveButton = this.add.text(150,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
+        let DeleteSaveButton = this.add.text(200,0,"Delete Save").setInteractive().on('pointerdown', () => Variables.deleteSave())
+
+        let InventoryButton = this.add.text(50,0,"Inventory").setInteractive().on('pointerdown', () => this.OpenInventory())
 
         this.chest1 = this.physics.add.sprite(760,456,"tilese")
         this.chest2 = this.physics.add.sprite(792,456,"tilese")
@@ -648,6 +684,31 @@ export class GameSceneFloor2 extends Phaser.Scene {
         this.upFloor = new Phaser.Geom.Rectangle(784, 500, 64, 48)
         this.opendoor = new Phaser.Geom.Rectangle(560, 368, 60, 32)
         
+    }
+    OpenInventory()
+    {
+        const InventoryBox = this.add.rectangle(825,270,250,350,0x000000)
+        InventoryBox.setStrokeStyle(2, 0xffffff)
+        const Iron = this.add.text(710, 110, "Iron x"+Variables.iron.NumberOwned)
+        const Steel = this.add.text(710, 160, "Steel x"+Variables.steel.NumberOwned)
+        const Titanium = this.add.text(710, 210, "Titanium x"+Variables.titanium.NumberOwned)
+        const SmallHealthPotions = this.add.text(710, 260, "Samll Health Potions x"+Variables.smallHealthPotion.NumberOwned)
+        const HealthPotions = this.add.text(710, 310, "Health Potions x"+Variables.healthPotion.NumberOwned)
+        const LargeHealthPotions = this.add.text(710, 360, "Large Health Potions x"+Variables.largeHealthPotion.NumberOwned)
+        const Close = this.add.text(710, 410, "Close").setInteractive().on('pointerdown', ()=> this.closeInventory(InventoryBox, Iron, Steel, Titanium, SmallHealthPotions, HealthPotions, LargeHealthPotions, Close))
+
+    }
+
+    closeInventory(InventoryBox, Iron, Steel, Titanium, SmallHealthPotions, HealthPotions, LargeHealthPotions, Close)
+    {
+        InventoryBox.destroy()
+        Iron.destroy()
+        Steel.destroy()
+        Titanium.destroy()
+        SmallHealthPotions.destroy()
+        HealthPotions.destroy()
+        LargeHealthPotions.destroy()
+        Close.destroy()
     }
     ShopClicked()
     {
@@ -804,7 +865,10 @@ export class GameSceneFloor3 extends Phaser.Scene{
         BottomTopWallLayer.setCollisionBetween(484,485)
        
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
-        let SaveButton = this.add.text(50,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
+        let SaveButton = this.add.text(150,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
+        let DeleteSaveButton = this.add.text(200,0,"Delete Save").setInteractive().on('pointerdown', () => Variables.deleteSave())
+
+        let InventoryButton = this.add.text(50,0,"Inventory").setInteractive().on('pointerdown', () => this.OpenInventory())
 
 
         
@@ -903,6 +967,32 @@ export class GameSceneFloor3 extends Phaser.Scene{
         this.opendoor = new Phaser.Geom.Rectangle(300, 128, 64, 32)
 
 
+    }
+
+    OpenInventory()
+    {
+        const InventoryBox = this.add.rectangle(825,270,250,350,0x000000)
+        InventoryBox.setStrokeStyle(2, 0xffffff)
+        const Iron = this.add.text(710, 110, "Iron x"+Variables.iron.NumberOwned)
+        const Steel = this.add.text(710, 160, "Steel x"+Variables.steel.NumberOwned)
+        const Titanium = this.add.text(710, 210, "Titanium x"+Variables.titanium.NumberOwned)
+        const SmallHealthPotions = this.add.text(710, 260, "Samll Health Potions x"+Variables.smallHealthPotion.NumberOwned)
+        const HealthPotions = this.add.text(710, 310, "Health Potions x"+Variables.healthPotion.NumberOwned)
+        const LargeHealthPotions = this.add.text(710, 360, "Large Health Potions x"+Variables.largeHealthPotion.NumberOwned)
+        const Close = this.add.text(710, 410, "Close").setInteractive().on('pointerdown', ()=> this.closeInventory(InventoryBox, Iron, Steel, Titanium, SmallHealthPotions, HealthPotions, LargeHealthPotions, Close))
+
+    }
+
+    closeInventory(InventoryBox, Iron, Steel, Titanium, SmallHealthPotions, HealthPotions, LargeHealthPotions, Close)
+    {
+        InventoryBox.destroy()
+        Iron.destroy()
+        Steel.destroy()
+        Titanium.destroy()
+        SmallHealthPotions.destroy()
+        HealthPotions.destroy()
+        LargeHealthPotions.destroy()
+        Close.destroy()
     }
 
     ShopClicked()
@@ -1132,8 +1222,10 @@ export class GameSceneFloor4 extends Phaser.Scene{
         this.skeletonKing.setImmovable(true)
 
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
-        let SaveButton = this.add.text(50,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
-        let InventoryButton = this.add.text(100,0,"Inventory").setInteractive().on('pointerdown', () => this.OpenInventory())
+        let SaveButton = this.add.text(150,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
+        let DeleteSaveButton = this.add.text(200,0,"Delete Save").setInteractive().on('pointerdown', () => Variables.deleteSave())
+
+        let InventoryButton = this.add.text(50,0,"Inventory").setInteractive().on('pointerdown', () => this.OpenInventory())
 
         this.doors = this.physics.add.sprite(592, 480, 'door').setScale(.38)
         this.doors.setImmovable(true)
@@ -1396,7 +1488,10 @@ export class GameSceneFloor5 extends Phaser.Scene{
         BottomTopWallLayer.setCollisionBetween(484,485)
        
         let ShopButton = this.add.text(0,0,"Shop").setInteractive().on('pointerdown', () => this.ShopClicked())
-        let SaveButton = this.add.text(50,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
+        let SaveButton = this.add.text(150,0,"Save").setInteractive().on('pointerdown', () => Variables.SaveData())
+        let DeleteSaveButton = this.add.text(200,0,"Delete Save").setInteractive().on('pointerdown', () => Variables.deleteSave())
+
+        let InventoryButton = this.add.text(50,0,"Inventory").setInteractive().on('pointerdown', () => this.OpenInventory())
 
         this.chest1 = this.physics.add.sprite(520, 56,"tilese")
         this.chest2 = this.physics.add.sprite(552, 56,"tilese")
@@ -1467,6 +1562,31 @@ export class GameSceneFloor5 extends Phaser.Scene{
             this.scene.switch("scene-battle")
             Variables.enemyID = enemy.id
         }
+    }
+    OpenInventory()
+    {
+        const InventoryBox = this.add.rectangle(825,270,250,350,0x000000)
+        InventoryBox.setStrokeStyle(2, 0xffffff)
+        const Iron = this.add.text(710, 110, "Iron x"+Variables.iron.NumberOwned)
+        const Steel = this.add.text(710, 160, "Steel x"+Variables.steel.NumberOwned)
+        const Titanium = this.add.text(710, 210, "Titanium x"+Variables.titanium.NumberOwned)
+        const SmallHealthPotions = this.add.text(710, 260, "Samll Health Potions x"+Variables.smallHealthPotion.NumberOwned)
+        const HealthPotions = this.add.text(710, 310, "Health Potions x"+Variables.healthPotion.NumberOwned)
+        const LargeHealthPotions = this.add.text(710, 360, "Large Health Potions x"+Variables.largeHealthPotion.NumberOwned)
+        const Close = this.add.text(710, 410, "Close").setInteractive().on('pointerdown', ()=> this.closeInventory(InventoryBox, Iron, Steel, Titanium, SmallHealthPotions, HealthPotions, LargeHealthPotions, Close))
+
+    }
+
+    closeInventory(InventoryBox, Iron, Steel, Titanium, SmallHealthPotions, HealthPotions, LargeHealthPotions, Close)
+    {
+        InventoryBox.destroy()
+        Iron.destroy()
+        Steel.destroy()
+        Titanium.destroy()
+        SmallHealthPotions.destroy()
+        HealthPotions.destroy()
+        LargeHealthPotions.destroy()
+        Close.destroy()
     }
     
     update()

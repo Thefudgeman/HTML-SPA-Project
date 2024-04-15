@@ -38,11 +38,11 @@ export class Orc extends Entity
     {
         super()
         super.name = "Orc";
-        super.attack = 20;
-        super.defence = 5;
-        super.health = 100;
-        this.maxHealth = 100;
-        this.moneyDrop = 5;
-        this.xpDrop = 20;
+        super.attack = 35;
+        super.defence = 15;
+        super.health = 200;
+        this.maxHealth = 200;
+        this.moneyDrop = 50;
+        this.xpDrop = 120;
     }
 }

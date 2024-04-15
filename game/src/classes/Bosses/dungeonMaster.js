@@ -33,10 +33,10 @@ export class DungeonMaster extends Entity
     {
         super()
         super.name = "DungeonMaster";
-        super.attack = 1000000;
-        super.defence = 50000;
-        super.health = 50000000;
-        this.moneyDrop = 5000000;
-        this.xpDrop = 20000000;
+        super.attack = 500;
+        super.defence = 300;
+        super.health = 6000;
+        this.moneyDrop = 5000;
+        this.xpDrop = 20000;
     }
 }

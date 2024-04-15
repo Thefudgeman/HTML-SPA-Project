@@ -420,6 +420,11 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
                         {
                             Variables.boss = true
                         }
+                        while(player.xp >= player.xpToNextLevel)
+                        {
+                            player.xp -= player.xpToNextLevel
+                            player.level++
+                        }
                         enemy.health = 0
                         this.setMeterPercentageAnimatedE(0)
                         this.enemy.play("Death", true)

@@ -38,11 +38,11 @@ export class Skeleton extends Entity
     {
         super()
         super.name = "Skeleton";
-        super.attack = 20;
-        super.defence = 5;
-        super.health = 100;
-        this.maxHealth = 100;
-        this.moneyDrop = 5;
-        this.xpDrop = 20;
+        super.attack = 60;
+        super.defence = 40;
+        super.health = 350;
+        this.maxHealth = 350;
+        this.moneyDrop = 75;
+        this.xpDrop = 250;
     }
 }

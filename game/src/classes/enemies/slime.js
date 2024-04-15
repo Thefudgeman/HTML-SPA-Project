@@ -42,7 +42,7 @@ export class Slime extends Entity
         super.defence = 5;
         super.health = 100;
         this.maxHealth = 100;
-        this.moneyDrop = 5;
-        this.xpDrop = 20;
+        this.moneyDrop = 20;
+        this.xpDrop = 60;
     }
 }

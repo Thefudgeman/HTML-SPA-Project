@@ -53,8 +53,8 @@ export default class shopScene extends Phaser.Scene{
         var MoneyNeededWeapon = Math.round(100*Math.pow(1.3, weapon.level))
         this.ShopUI = this.add.rectangle(450, 350, 480, 150, 0x000000)
         this.ShopUI.setStrokeStyle(5, 0xffffff)
-        let UpgradeWeapon = this.add.text(230,300, "Upgrade Weapon " + MoneyNeededArmour + " gold").setInteractive().on('pointerdown', () =>this.upgradeWeapon(weapon))
-        let UpgradeArmour = this.add.text(230, 350, "Upgrade Armour " + MoneyNeededWeapon + " gold").setInteractive().on('pointerdown', () =>this.upgradeArmour(armour))
+        let UpgradeWeapon = this.add.text(230,300, "Upgrade Weapon " + MoneyNeededArmour + " gold").setInteractive().on('pointerdown', () =>this.upgradeWeapon(weapon, UpgradeWeapon))
+        let UpgradeArmour = this.add.text(230, 350, "Upgrade Armour " + MoneyNeededWeapon + " gold").setInteractive().on('pointerdown', () =>this.upgradeArmour(armour, UpgradeArmour))
         let LeaveUpgradeButton = this.add.text(630,300,"Leave").setInteractive().on('pointerdown', () => this.LeaveUpgradeClicked(UpgradeWeapon, LeaveUpgradeButton, UpgradeArmour))
 
     }
@@ -67,7 +67,7 @@ export default class shopScene extends Phaser.Scene{
         this.create()
     }
 
-    upgradeArmour(armour)
+    upgradeArmour(armour, UpgradeArmour)
     {
         var MoneyNeeded = Math.round(100*Math.pow(1.3, armour.level))
 
@@ -117,18 +117,16 @@ export default class shopScene extends Phaser.Scene{
                 console.log("Not enough ", Variables.iron.ItemName)
                 break upgrade 
             }
-
+            UpgradeArmour.text = "Upgrade Weapon " + MoneyNeededArmour + " gold"
             this.updateMoney()
         }
         else
         {
             console.log("you don't have enough money")
         }
-
-        console.log(Variables.armour.level)
     }
 
-    upgradeWeapon(weapon)
+    upgradeWeapon(weapon, UpgradeWeapon)
     {
         console.log(Variables.money)
         var MoneyNeeded = Math.round(50*Math.pow(1.3, weapon.level))
@@ -187,7 +185,7 @@ export default class shopScene extends Phaser.Scene{
         {
             console.log("you don't have enough money")
         }
-
+        UpgradeWeapon.text = "Upgrade Weapon " + MoneyNeededArmour + " gold"
         console.log(weapon.level)
     }
 
