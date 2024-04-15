@@ -25,7 +25,7 @@ export class variables
     enemyKey = ""
     battleNum = 0
     moneyButton = false
-    player = new Player("name", 150, 999999999999999999999999999, 5, 1);
+    player = new Player("name", 150, 999, 5, 1);
     weapon = new Sword("sword", "description", 50, 1)
     armour = new WarriorArmour("armour", "description", 30, 1)
     iron = new Iron ("description", 20)

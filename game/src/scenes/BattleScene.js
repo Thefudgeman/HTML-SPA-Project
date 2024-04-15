@@ -469,6 +469,7 @@ setMeterPercentageAnimated(percent = 1, duration = 1000)
                                         this.add.text(500,200, "You Lost The Battle")
                                         this.add.text(500, 250, "Respawn").setInteractive().on('pointerdown', () => this.leaveScene())
                                         Variables.money = Variables.money/1.5
+                                        player.health = player.maxHealth
                                         AttackButton.destroy()
                                         ItemButton.destroy()
                                         RunButton.destroy()
