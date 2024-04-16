@@ -78,7 +78,8 @@ export class variables
             Variables.money = file.playerMoney
             Variables.player.Attack = 20 +Variables.player.level*21
             Variables.player.Defence = 5 +Variables.player.level*7
-            Variables.player.Health = 20 +Variables.player.level*100
+            Variables.player.Health = 150 +Variables.player.level*100
+            Variables.player.maxHealth = 150 +Variables.player.level*100
             if(Variables.currentFloor == 1)
             {
                 playerX = 500

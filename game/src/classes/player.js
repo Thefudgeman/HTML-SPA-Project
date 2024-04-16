@@ -50,10 +50,6 @@ export class Player extends Entity
     constructor(Name, Health, Attack, Defence, Level)
     {
         super()
-       // Attack = super.attack
-      //  Name = super.name
-      //  Health =super.health
-      //  Defence = super.defence
       super.attack = Attack
       super.name = Name
       super.health = Health
